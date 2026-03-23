@@ -1,46 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
+import { initialData } from '../data/mockData';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
 
-const scheduleData = [
-  { date: '23/03', title: 'Phát Động Cuộc Thi', desc: 'Công bố thể lệ, tiêu chí và chủ đề STEM tới học sinh.', status: 'done' },
-  { date: '25-27/03', title: 'Mở Cổng Đăng Ký', desc: 'Các đội thi đăng ký online theo form của nhà trường.', status: 'active' },
-  { date: 'Cuối tháng 3', title: 'Gặp Mentor (Lần 1)', desc: 'Tư vấn ý tưởng chuyên sâu cùng các thầy cô Mentor.', status: 'pending' },
-  { date: '06/04', title: 'Nộp Hồ Sơ Sơ Loại', desc: 'Nộp File hoặc Slideshow bản thảo ý tưởng.', status: 'pending' },
-  { date: '08/04', title: 'Công Bố TOP 20', desc: 'BGK chọn 20 đội xuất sắc nhất vào vòng chung kết.', status: 'pending' },
-  { date: '10/04 - 10/05', title: 'Sản Xuất & Mentoring', desc: 'Các đội hoàn thiện chế tạo sản phẩm và làm Poster (Mentor Lần 2, 3).', status: 'pending' },
-  { date: '15/05', title: 'Ngày Hội Chung Kết', desc: 'Trưng bày, thuyết trình tại các gian hàng, kèm hoạt động Passport.', status: 'pending' },
-];
-
 const Schedule = () => {
+  const [timeline, setTimeline] = useState(initialData.timeline || []);
+
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      const { data } = await supabase.from('timeline').select('*').order('id', { ascending: true });
+      if (data && data.length > 0) setTimeline(data);
+    };
+    fetchTimeline();
+  }, []);
+
   return (
     <div className="container py-20" style={{maxWidth: '800px', margin: '0 auto'}}>
-      <div className="text-center mb-12">
-        <h1 className="section-title">Hành Trình Kiến Tạo</h1>
+      <div className="text-center mb-12 animate-fade-in">
+        <div className="inline-block bg-green-100 text-primary px-4 py-1 rounded-full font-bold text-sm mb-4">📅 LỊCH TRÌNH</div>
+        <h1 className="section-title text-green-gradient">Hành Trình Kiến Tạo</h1>
         <p className="text-muted text-lg">Cùng đếm ngược và theo dõi sát sao lịch trình cuộc thi</p>
       </div>
 
-      <div className="card">
-        <div className="timeline-container relative pl-6 border-l-2 border-gray-200 ml-4 py-4">
-          {scheduleData.map((item, index) => (
-            <div key={index} className="timeline-item relative mb-8 last:mb-0">
-               {/* Marker point */}
-              <div className="absolute -left-[37px] top-1 bg-white">
-                 {item.status === 'done' && <CheckCircle2 className="text-primary bg-white" size={24} />}
-                 {item.status === 'active' && <Clock className="text-orange-500 bg-white" size={24} />}
-                 {item.status === 'pending' && <Circle className="text-gray-300 bg-white" size={24} />}
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 hover:shadow-md transition">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className={`text-lg m-0 ${item.status === 'active' ? 'text-orange-500' : 'text-main'}`}>
-                    {item.title}
-                  </h3>
-                  <span className="badge-small bg-blue-100 text-secondary">{item.date}</span>
+      <div className="card glass animate-fade-in" style={{animationDelay: '0.1s'}}>
+        <div className="relative pl-8 border-l-3" style={{borderLeft: '3px solid var(--primary-green)'}}>
+          {timeline.map((item, index) => {
+            const isLast = index === timeline.length - 1;
+            return (
+              <div key={item.id || index} className="relative mb-8" style={{marginBottom: isLast ? 0 : '2rem'}}>
+                <div className="absolute -left-[26px] top-1 bg-white rounded-full">
+                  {isLast ? (
+                    <div className="w-6 h-6 rounded-full bg-nshm flex items-center justify-center shadow-lg">
+                      <CheckCircle2 size={14} color="white" />
+                    </div>
+                  ) : index === 0 ? (
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                      <CheckCircle2 size={14} color="white" />
+                    </div>
+                  ) : (
+                    <Clock size={22} className="text-orange-400" />
+                  )}
                 </div>
-                <p className="text-muted text-sm m-0">{item.desc}</p>
+                <div className={`p-5 rounded-xl border transition-all hover:shadow-md ${isLast ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-100'}`}>
+                  <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
+                    <h3 className={`text-lg m-0 font-bold ${isLast ? 'text-nshm' : ''}`}>
+                      {item.title}
+                    </h3>
+                    <span className={`text-sm font-bold px-3 py-1 rounded-full ${isLast ? 'bg-red-100 text-nshm' : 'bg-blue-100 text-secondary'}`}>
+                      {item.date}
+                    </span>
+                  </div>
+                  <p className="text-muted text-sm m-0">{item.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -100,6 +100,33 @@ const Home = () => {
     else document.body.style.overflow = 'auto';
   }, [activeModal]);
 
+  // Countdown to 22/04/2026
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  useEffect(() => {
+    const target = new Date('2026-04-22T08:00:00+07:00').getTime();
+    const tick = () => {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      setCountdown({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        mins: Math.floor((diff % 3600000) / 60000),
+        secs: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const faqItems = [
+    { q: 'Em đăng ký cá nhân hay nhóm?', a: 'Có thể đăng ký nhóm từ 3-5 bạn cùng khối THCS.' },
+    { q: 'Sản phẩm có cần chạy được không?', a: 'Khuyến khích có mô hình chạy được, hoặc ít nhất là sa bàn mô phỏng thực tế.' },
+    { q: 'Mỗi Mentor hỗ trợ bao nhiêu đội?', a: 'Mỗi giáo viên Mentor hỗ trợ tối đa 04 đội thi.' },
+    { q: 'Passport là gì?', a: 'Passport là cuốn sổ tay để học sinh thu thập dấu mộc khi tham gia các trạm trải nghiệm trong Ngày Hội STEM.' },
+  ];
+  const [openFaq, setOpenFaq] = useState(null);
+
   return (
     <div className="home-container">
       {/* Dynamic Hero Section - IOSTEM Style */}
@@ -123,6 +150,16 @@ const Home = () => {
               <a href="/STEM_Pitch_Blueprints.pptx" download className="btn btn-outline btn-lg" style={{borderColor: '#d97706', color: '#d97706'}}>
                 <Download size={18} /> Mẫu Trình Bày PPT
               </a>
+            </div>
+
+            {/* Countdown Timer */}
+            <div className="flex gap-4 mt-8 flex-wrap animate-fade-in" style={{animationDelay: '0.3s'}}>
+              {[{v: countdown.days, l: 'Ngày'}, {v: countdown.hours, l: 'Giờ'}, {v: countdown.mins, l: 'Phút'}, {v: countdown.secs, l: 'Giây'}].map((c, i) => (
+                <div key={i} className="text-center" style={{background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', padding: '0.8rem 1.2rem', minWidth: '70px'}}>
+                  <div style={{fontSize: '1.8rem', fontWeight: 900, color: 'var(--nshm-red)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
+                  <div style={{fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px'}}>{c.l}</div>
+                </div>
+              ))}
             </div>
           </div>
           
@@ -490,6 +527,48 @@ const Home = () => {
                 <h4 className="m-0 text-white leading-tight">Kỳ thi duy nhất trọn vẹn<br/>4 lĩnh vực cốt lõi</h4>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
+        <div className="container">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white animate-fade-in">
+            {[
+              { num: '200+', label: 'Học sinh tham gia' },
+              { num: '50+', label: 'Đội thi đăng ký' },
+              { num: '11', label: 'Mentor cố vấn' },
+              { num: '5', label: 'Trạm trải nghiệm' },
+            ].map((s, i) => (
+              <div key={i}>
+                <div style={{fontSize: '3rem', fontWeight: 900, lineHeight: 1}}>{s.num}</div>
+                <div className="mt-2 font-medium" style={{opacity: 0.9}}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-light">
+        <div className="container" style={{maxWidth: '800px'}}>
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-block bg-purple-100 text-purple-600 px-4 py-1 rounded-full font-bold text-sm mb-4">❓ HỎI ĐÁP</div>
+            <h2 className="section-title text-green-gradient">Câu Hỏi Thường Gặp</h2>
+          </div>
+          <div className="flex flex-col gap-4 animate-fade-in" style={{animationDelay: '0.1s'}}>
+            {faqItems.map((faq, idx) => (
+              <div key={idx} className="card glass hover-up" style={{cursor: 'pointer', padding: '1.5rem'}} onClick={() => setOpenFaq(openFaq === idx ? null : idx)}>
+                <div className="flex justify-between items-center">
+                  <h4 className="m-0 text-nshm" style={{fontSize: '1rem'}}>{faq.q}</h4>
+                  <span style={{fontSize: '1.5rem', transform: openFaq === idx ? 'rotate(45deg)' : 'rotate(0)', transition: 'transform 0.3s'}}>+</span>
+                </div>
+                {openFaq === idx && (
+                  <p className="text-muted mt-3 mb-0 animate-fade-in" style={{lineHeight: 1.7}}>{faq.a}</p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>

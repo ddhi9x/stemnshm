@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { getLocalData } from '../data/mockData';
+import { supabase } from '../supabaseClient';
+import { initialData } from '../data/mockData';
 
 const About = () => {
-  const [aboutData, setAboutData] = useState(null);
+  const [aboutData, setAboutData] = useState(initialData.about);
 
   useEffect(() => {
-    setAboutData(getLocalData('about'));
+    const fetchAbout = async () => {
+      const { data } = await supabase.from('about').select('*').single();
+      if (data) setAboutData(data);
+    };
+    fetchAbout();
   }, []);
 
   if (!aboutData) return <div className="container py-20">Loading...</div>;
