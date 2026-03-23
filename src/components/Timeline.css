@@ -1,0 +1,119 @@
+/* Timeline CSS */
+.timeline-section {
+  background: var(--bg-light) url('data:image/svg+xml;utf8,<svg width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 100 Q 250 50 500 100 T 1000 100 L 1000 200 L 0 200 Z" fill="rgba(16,185,129,0.03)"/></svg>') no-repeat bottom;
+  position: relative;
+  overflow: hidden;
+}
+
+.timeline-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 4rem 0;
+  margin-top: 2rem;
+}
+
+.timeline-track {
+  position: absolute;
+  top: 40px;
+  left: 5%;
+  right: 5%;
+  height: 8px;
+  background: linear-gradient(90deg, #60a5fa, #f472b6, #34d399, #fbbf24, #f87171);
+  border-radius: 4px;
+  z-index: 0;
+}
+
+.timeline-node {
+  position: relative;
+  z-index: 1;
+  width: 20%;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.timeline-dot {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border: 4px solid var(--secondary-blue);
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.8), 0 0 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  top: -8px;
+}
+
+.timeline-node:nth-child(even) .timeline-dot {
+  border-color: #f472b6;
+}
+
+.timeline-node:nth-child(3) .timeline-dot {
+  border-color: #34d399;
+}
+
+.timeline-node:nth-child(5) .timeline-dot {
+  border-color: #f87171;
+  width: 32px;
+  height: 32px;
+  top: -12px;
+}
+
+.timeline-node:hover .timeline-dot {
+  transform: scale(1.3);
+}
+
+.timeline-date {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+  color: var(--secondary-blue);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-node:nth-child(even) .timeline-title { color: #db2777; }
+.timeline-node:nth-child(3) .timeline-title { color: var(--primary-green); }
+.timeline-node:nth-child(5) .timeline-title { color: #dc2626; font-size: 1.1rem; }
+
+.timeline-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  font-family: var(--font-body);
+}
+
+@media (max-width: 768px) {
+  .timeline-container {
+    flex-direction: column;
+    padding-left: 2rem;
+  }
+  .timeline-track {
+    width: 6px;
+    height: 100%;
+    top: 0;
+    left: 45px;
+    bottom: 0;
+    transform: none;
+  }
+  .timeline-node {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 0;
+  }
+  .timeline-dot {
+    margin: 0 1.5rem 0 0;
+    flex-shrink: 0;
+    top: 0 !important;
+  }
+}
