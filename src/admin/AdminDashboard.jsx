@@ -12,6 +12,7 @@ const AdminDashboard = () => {
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
   const [linksData, setLinksData] = useState({ register: '', submit: '' });
+  const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
@@ -35,6 +36,9 @@ const AdminDashboard = () => {
 
         const { data: linkDb } = await supabase.from('links').select('*').single();
         if (linkDb) setLinksData({ register: linkDb.register, submit: linkDb.submit });
+
+        const { data: stData } = await supabase.from('settings').select('*').single();
+        if (stData) setSettingsData(stData);
 
         const { data: tlData } = await supabase.from('timeline').select('*').order('id', {ascending: true});
         if (tlData) setTimeline(tlData);
@@ -139,6 +143,11 @@ const AdminDashboard = () => {
   const handleSaveLinks = async () => {
     await supabase.from('links').update(linksData).eq('id', 1);
     alert('Đã cập nhật Link Ngày Hội!');
+  };
+
+  const handleSaveSettings = async () => {
+    await supabase.from('settings').update(settingsData).eq('id', 1);
+    alert('Đã cập nhật Cài Đặt Footer!');
   };
 
   const handleAwardChange = (id, field, val) => {
@@ -333,7 +342,7 @@ const AdminDashboard = () => {
               <button className="btn btn-primary btn-lg w-full" onClick={handleSaveAbout}>Lưu Thay Đổi Trang Giới Thiệu</button>
             </div>
             
-            <div className="admin-card card glass border-l-4 border-secondary">
+            <div className="admin-card card glass border-l-4 border-secondary mb-6">
               <h3 className="mb-4 text-secondary">Cập nhật Link Gửi bài / Đăng ký</h3>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Link Form Đăng Ký Tham Gia</label>
@@ -344,6 +353,23 @@ const AdminDashboard = () => {
                 <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" />
               </div>
               <button className="btn btn-nshm w-full" onClick={handleSaveLinks}>Lưu Cập Nhật Link Đồng Bộ</button>
+            </div>
+
+            <div className="admin-card card glass border-l-4 border-primary">
+              <h3 className="mb-4 text-primary">Cài Đặt Footer (Chân trang)</h3>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">Slogan / Thông điệp Ngày Hội</label>
+                <input type="text" value={settingsData.tagline} onChange={e => setSettingsData({...settingsData, tagline: e.target.value})} className="admin-input" />
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">Email hỗ trợ</label>
+                <input type="text" value={settingsData.email} onChange={e => setSettingsData({...settingsData, email: e.target.value})} className="admin-input" />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-muted mb-2">Hotline hỗ trợ</label>
+                <input type="text" value={settingsData.hotline} onChange={e => setSettingsData({...settingsData, hotline: e.target.value})} className="admin-input" />
+              </div>
+              <button className="btn btn-primary w-full" onClick={handleSaveSettings}>Lưu Cập Nhật Footer</button>
             </div>
           </div>
         )}

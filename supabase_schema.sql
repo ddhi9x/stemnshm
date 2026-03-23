@@ -64,6 +64,15 @@ ALTER TABLE awards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE timeline ENABLE ROW LEVEL SECURITY;
 ALTER TABLE links ENABLE ROW LEVEL SECURITY;
 
+-- Bảng Cài Đặt Chung (Footer, v.v.)
+CREATE TABLE IF NOT EXISTS settings (
+  id integer PRIMARY KEY DEFAULT 1,
+  tagline text,
+  email text,
+  hotline text
+);
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+
 -- Tạo Policy cho phép mọi người Đọc và Ghi tạm thời
 CREATE POLICY "Public Access" ON news FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public Access" ON mentors FOR ALL USING (true) WITH CHECK (true);
@@ -71,6 +80,7 @@ CREATE POLICY "Public Access" ON about FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public Access" ON awards FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public Access" ON timeline FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public Access" ON links FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Access" ON settings FOR ALL USING (true) WITH CHECK (true);
 
 -- Chèn dữ liệu mẫu gốc (Seed Data)
 INSERT INTO about (id, message, focus, target, format) VALUES 
@@ -95,4 +105,8 @@ INSERT INTO awards (id, title, qty, value, color, bg) VALUES
 ('ba', 'GIẢI BA', '3 Giải', 'Huy chương đồng + Giấy khen', '#d97706', '#fef3c7'),
 ('khuyen-khich', 'KHUYẾN KHÍCH', '4 Giải', 'Giấy khen', '#3b82f6', '#eff6ff'),
 ('sang-tao', 'GIẢI SÁNG TẠO', '2 Giải', 'Giấy khen', '#ec4899', '#fdf2f8')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO settings (id, tagline, email, hotline) VALUES 
+(1, 'STEM Kiến Tạo Thế Giới Xanh 2025-2026', 'info@ngoisaocaohanoi.edu.vn', '1900 xxxx')
 ON CONFLICT (id) DO NOTHING;
