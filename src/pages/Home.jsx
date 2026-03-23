@@ -332,7 +332,7 @@ const Home = () => {
             
             {timeline.length > 0 && timeline.map((node, index) => {
               const isLast = index === timeline.length - 1;
-              const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : null);
+              const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : (index === 4 ? 'hoat-dong-ngay-hoi' : null));
               
               const handleClick = (e) => {
                 if (targetId) {
@@ -348,13 +348,13 @@ const Home = () => {
               return (
               <div key={node.id} className="timeline-node" style={{marginTop: index % 2 !== 0 ? '3rem' : '0'}}>
                 {isLast ? (
-                  <Link to="/chung-ket" className="block p-3 rounded-xl hover-lift bg-white/50 border-2 border-dashed border-red-300 shadow-sm relative z-10" style={{top: '-15px'}}>
+                  <div onClick={handleClick} className="block p-3 rounded-xl hover-lift bg-white/50 border-2 border-dashed border-red-300 shadow-sm relative z-10 cursor-pointer" style={{top: '-15px'}}>
                     <div className="timeline-dot" style={{marginBottom: '0.5rem'}}></div>
                     <div className="timeline-date">{node.date}</div>
                     <div className="timeline-title">{node.title}</div>
                     <div className="timeline-desc">{node.desc}</div>
-                    <div className="text-nshm font-bold text-xs mt-3 flex items-center justify-center gap-1 hover:underline">Xem Chi Tiết <ChevronRight size={14}/></div>
-                  </Link>
+                    <div className="text-nshm font-bold text-xs mt-3 flex items-center justify-center gap-1 hover:underline">Xem Hoạt Động <ChevronDown size={14}/></div>
+                  </div>
                 ) : (
                   <div 
                     onClick={handleClick} 
@@ -369,6 +369,41 @@ const Home = () => {
                 )}
               </div>
             )})}
+          </div>
+        </div>
+      </section>
+
+      {/* Explore / Activities Section */}
+      <section id="hoat-dong-ngay-hoi" className="explore-section py-20 bg-white">
+        <div className="container">
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-block bg-green-100 text-green-700 px-4 py-1 rounded-full font-bold text-sm mb-4">🌍 KHÁM PHÁ & TRẢI NGHIỆM</div>
+            <h2 className="section-title text-nshm">HOẠT ĐỘNG NGÀY HỘI STEM (22/04)</h2>
+            <p className="text-muted text-lg max-w-3xl mx-auto">Không chỉ thi đấu, toàn bộ học sinh Ngôi Sao Hoàng Mai sẽ dùng "Passport" tham gia chuỗi trải nghiệm tương tác với sự kiện (Dự kiến 8h00 - 11h00).</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-8 animate-fade-in" style={{animationDelay: '0.1s'}}>
+            <div className="card shadow-md p-8 rounded-2xl border-t-4 border-green-500 bg-green-50/20 hover-up">
+              <h3 className="text-xl text-green-600 mb-4 flex items-center gap-2"><CheckCircle2/> Hoạt Động 1: Khán Giả Tương Tác</h3>
+              <p className="text-gray-600">Học sinh tự do tham quan các gian hàng của đội lọt vào Vòng Chung Kết. Quan sát mô hình thực tế, lắng nghe thuyết trình và ghi lại thông tin những dự án ấn tượng nhất vào cuốn Passport của mình.</p>
+            </div>
+            
+            <div className="card shadow-md p-8 rounded-2xl border-t-4 border-blue-500 bg-blue-50/20 hover-up">
+              <h3 className="text-xl text-blue-600 mb-4 flex items-center gap-2"><Navigation/> Hoạt Động 2: 5 Trạm Thực Hành</h3>
+              <p className="text-gray-600 mb-4">Đích thân tham gia và hoàn thành thử thách tại 5 Trạm chuyên môn được thiết kế riêng:</p>
+              <div className="grid grid-cols-2 gap-3 text-sm font-semibold text-gray-700">
+                <div className="flex items-center gap-2"><Leaf size={16} className="text-green-500"/> Trạm Khoa Học</div>
+                <div className="flex items-center gap-2"><Monitor size={16} className="text-blue-500"/> Trạm Công Nghệ</div>
+                <div className="flex items-center gap-2"><FunctionSquare size={16} className="text-purple-500"/> Trạm Toán Học</div>
+                <div className="flex items-center gap-2"><Cpu size={16} className="text-gray-600"/> Trạm Robotic</div>
+                <div className="flex items-center gap-2 col-span-2"><Wrench size={16} className="text-orange-500"/> Trạm Mộc</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card shadow-lg p-8 rounded-2xl border-2 border-nshm bg-red-50/30 text-center hover-lift animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <h3 className="text-2xl text-nshm mb-3 flex items-center justify-center gap-2"><Trophy/> Quay Số May Mắn</h3>
+            <p className="text-gray-700 max-w-2xl mx-auto">Thu thập đủ dấu / thông tin của <strong>6 trạm</strong> (gồm 4 trạm dự thi + 2 trạm trải nghiệm) sẽ nhận mã số để bốc thăm trúng <strong>5 Bộ kit STEM cực xịn</strong> cùng hàng chục chiếc Móc Khóa khoa học phiên bản giới hạn.</p>
           </div>
         </div>
       </section>
