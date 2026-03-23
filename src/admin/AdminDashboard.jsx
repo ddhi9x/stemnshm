@@ -16,6 +16,7 @@ const AdminDashboard = () => {
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '' });
+  const [editingMentorId, setEditingMentorId] = useState(null);
 
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_auth');
@@ -89,14 +90,27 @@ const AdminDashboard = () => {
 
   const handleSaveMentor = async () => {
     if(!newMentor.name) return;
-    const { data, error } = await supabase.from('mentors').insert(newMentor).select();
-    if (error) {
-      console.error('Error adding mentor:', error);
-      alert('Lỗi khi thêm Mentor!');
-    } else if (data && data.length > 0) {
-      setMentors([...mentors, data[0]]);
-      setNewMentor({ name: '', field: '', bio: '', image: '' });
-      alert('Đã thêm Mentor!');
+    if (editingMentorId) {
+      const { data, error } = await supabase.from('mentors').update(newMentor).eq('id', editingMentorId).select();
+      if (error) {
+        console.error('Error updating mentor:', error);
+        alert('Lỗi khi cập nhật Mentor!');
+      } else if (data && data.length > 0) {
+        setMentors(mentors.map(m => m.id === editingMentorId ? data[0] : m));
+        setNewMentor({ name: '', field: '', bio: '', image: '' });
+        setEditingMentorId(null);
+        alert('Đã sửa thông tin Mentor!');
+      }
+    } else {
+      const { data, error } = await supabase.from('mentors').insert(newMentor).select();
+      if (error) {
+        console.error('Error adding mentor:', error);
+        alert('Lỗi khi thêm Mentor!');
+      } else if (data && data.length > 0) {
+        setMentors([...mentors, data[0]]);
+        setNewMentor({ name: '', field: '', bio: '', image: '' });
+        alert('Đã thêm Mentor!');
+      }
     }
   };
 
@@ -215,7 +229,7 @@ const AdminDashboard = () => {
           <div className="fade-in">
             <h2 className="text-secondary mb-6">Quản lý Mentor</h2>
             <div className="admin-card card glass border-l-4 border-primary">
-              <h3 className="mb-4 text-green-gradient">Thêm Mentor mới</h3>
+              <h3 className="mb-4 text-green-gradient">{editingMentorId ? 'Chỉnh Sửa Thông Tin Mentor' : 'Thêm Mentor mới'}</h3>
               <input type="text" placeholder="Tên Mentor (VD: Thầy Hùng)" value={newMentor.name} onChange={e => setNewMentor({...newMentor, name: e.target.value})} className="admin-input" />
               <div className="mb-4">
                 <label className="block text-sm font-bold text-muted mb-2">Tải Ảnh Đại Diện (Nên dưới 500KB)</label>
@@ -255,7 +269,15 @@ const AdminDashboard = () => {
                 <option value="Mathematics">Mathematics (Toán học)</option>
               </select>
               <textarea placeholder="Tiểu sử / Mô tả chuyên môn..." value={newMentor.bio} onChange={e => setNewMentor({...newMentor, bio: e.target.value})} className="admin-input" rows="3"></textarea>
-              <button className="btn btn-primary" onClick={handleSaveMentor}>Thêm Mentor</button>
+              <div className="flex gap-3">
+                <button className="btn btn-primary" onClick={handleSaveMentor}>{editingMentorId ? 'Lưu Cập Nhật Mentor' : 'Thêm Mentor'}</button>
+                {editingMentorId && (
+                  <button className="btn btn-outline" style={{borderColor: '#9ca3af', color: '#6b7280'}} onClick={() => {
+                    setEditingMentorId(null);
+                    setNewMentor({ name: '', field: '', bio: '', image: '' });
+                  }}>Hủy Sửa</button>
+                )}
+              </div>
             </div>
 
             <div className="admin-list grid grid-cols-2 gap-6 p-6">
@@ -273,7 +295,14 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <p className="text-muted text-sm mb-5 flex-1 w-full">{m.bio}</p>
-                  <button className="btn btn-outline w-full" style={{padding: '0.4rem', borderColor: '#f87171', color: '#ef4444'}} onClick={() => handleDeleteMentor(m.id)}>Xóa Mentor</button>
+                  <div className="flex gap-2 w-full mt-auto">
+                    <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#3b82f6', color: '#3b82f6'}} onClick={() => {
+                      setEditingMentorId(m.id);
+                      setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '' });
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}>Sửa Mentor</button>
+                    <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#f87171', color: '#ef4444'}} onClick={() => handleDeleteMentor(m.id)}>Xóa Mentor</button>
+                  </div>
              </div>
               ))}
             </div>
