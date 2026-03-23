@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getLocalData } from '../data/mockData';
 import { supabase } from '../supabaseClient';
 import { ChevronRight, ChevronDown, Leaf, Cpu, Wrench, FunctionSquare, Clock, X, Download, Award, Trophy, Medal, CheckCircle2, Navigation, Monitor } from 'lucide-react';
@@ -69,6 +69,7 @@ const getAwardIcon = (id, color) => {
 }
 
 const Home = () => {
+  const navigate = useNavigate();
   const [mentors, setMentors] = useState([]);
   const [news, setNews] = useState([]);
   const [awards, setAwards] = useState([]);
@@ -147,9 +148,12 @@ const Home = () => {
             {timeline.length > 0 && timeline.map((node, index) => {
               const isLast = index === timeline.length - 1;
               const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : (index === 4 ? 'hoat-dong-ngay-hoi' : null));
+              const linkTo = index === 1 ? '/mentor' : null;
               
               const handleClick = (e) => {
-                if (targetId) {
+                if (linkTo) {
+                  navigate(linkTo);
+                } else if (targetId) {
                   e.preventDefault();
                   const el = document.getElementById(targetId);
                   if (el) {
@@ -172,8 +176,8 @@ const Home = () => {
                 ) : (
                   <div 
                     onClick={handleClick} 
-                    className={targetId ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}
-                    title={targetId ? 'Nhấn để xem chi tiết vòng thi' : ''}
+                    className={(targetId || linkTo) ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}
+                    title={linkTo ? 'Nhấn để xem danh sách Mentor' : (targetId ? 'Nhấn để xem chi tiết vòng thi' : '')}
                   >
                     <div className="timeline-dot"></div>
                     <div className="timeline-date">{node.date}</div>
