@@ -374,36 +374,54 @@ const Home = () => {
       </section>
 
       {/* Explore / Activities Section */}
-      <section id="hoat-dong-ngay-hoi" className="explore-section py-20 bg-white">
-        <div className="container">
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-block bg-green-100 text-green-700 px-4 py-1 rounded-full font-bold text-sm mb-4">🌍 KHÁM PHÁ & TRẢI NGHIỆM</div>
-            <h2 className="section-title text-nshm">HOẠT ĐỘNG NGÀY HỘI STEM (22/04)</h2>
-            <p className="text-muted text-lg max-w-3xl mx-auto">Không chỉ thi đấu, toàn bộ học sinh Ngôi Sao Hoàng Mai sẽ dùng "Passport" tham gia chuỗi trải nghiệm tương tác với sự kiện (Dự kiến 8h00 - 11h00).</p>
+      <section id="hoat-dong-ngay-hoi" className="explore-section py-20 bg-light">
+        <div className="container" style={{maxWidth: '1000px'}}>
+          <div className="text-center mb-10 animate-fade-in">
+            <div className="inline-block px-5 py-1.5 rounded-full font-bold text-sm mb-4" style={{background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0'}}>
+              🌍 KHÁM PHÁ & TRẢI NGHIỆM
+            </div>
+            <h2 className="section-title text-nshm" style={{fontSize: '2rem'}}>HOẠT ĐỘNG NGÀY HỘI STEM (22/04)</h2>
+            <p className="text-gray-700 text-lg mx-auto font-medium">Không chỉ thi đấu, toàn bộ học sinh Ngôi Sao Hoàng Mai sẽ dùng <strong>"Passport"</strong> tham gia chuỗi trải nghiệm tương tác với sự kiện (Dự kiến 8h00 - 11h00).</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-8 animate-fade-in" style={{animationDelay: '0.1s'}}>
-            <div className="card shadow-md p-8 rounded-2xl border-t-4 border-green-500 bg-green-50/20 hover-up">
-              <h3 className="text-xl text-green-600 mb-4 flex items-center gap-2"><CheckCircle2/> Hoạt Động 1: Khán Giả Tương Tác</h3>
-              <p className="text-gray-600">Học sinh tự do tham quan các gian hàng của đội lọt vào Vòng Chung Kết. Quan sát mô hình thực tế, lắng nghe thuyết trình và ghi lại thông tin những dự án ấn tượng nhất vào cuốn Passport của mình.</p>
-            </div>
-            
-            <div className="card shadow-md p-8 rounded-2xl border-t-4 border-blue-500 bg-blue-50/20 hover-up">
-              <h3 className="text-xl text-blue-600 mb-4 flex items-center gap-2"><Navigation/> Hoạt Động 2: 5 Trạm Thực Hành</h3>
-              <p className="text-gray-600 mb-4">Đích thân tham gia và hoàn thành thử thách tại 5 Trạm chuyên môn được thiết kế riêng:</p>
-              <div className="grid grid-cols-2 gap-3 text-sm font-semibold text-gray-700">
-                <div className="flex items-center gap-2"><Leaf size={16} className="text-green-500"/> Trạm Khoa Học</div>
-                <div className="flex items-center gap-2"><Monitor size={16} className="text-blue-500"/> Trạm Công Nghệ</div>
-                <div className="flex items-center gap-2"><FunctionSquare size={16} className="text-purple-500"/> Trạm Toán Học</div>
-                <div className="flex items-center gap-2"><Cpu size={16} className="text-gray-600"/> Trạm Robotic</div>
-                <div className="flex items-center gap-2 col-span-2"><Wrench size={16} className="text-orange-500"/> Trạm Mộc</div>
+          {/* Unified Activities Card */}
+          <div className="card p-0 rounded-3xl mb-8 animate-fade-in block-shadow overflow-hidden bg-white" style={{animationDelay: '0.1s', border: 'none'}}>
+            <div style={{height: '6px', background: 'linear-gradient(90deg, #22c55e 50%, #3b82f6 50%)'}}></div>
+            <div className="p-8 md:p-10 flex flex-col md:flex-row gap-10 md:gap-16">
+              
+              {/* Activity 1 */}
+              <div className="flex-1">
+                <h3 className="text-xl mb-4 font-bold flex items-center gap-3" style={{color: '#166534'}}><CheckCircle2 size={24} className="text-green-500"/> Hoạt Động 1: Khán Giả Tương Tác</h3>
+                <p className="text-gray-600 leading-relaxed text-[15px]">Học sinh tự do tham quan các gian hàng của đội lọt vào Vòng Chung Kết. Quan sát mô hình thực tế, lắng nghe thuyết trình và ghi lại thông tin những dự án ấn tượng nhất vào cuốn Passport của mình.</p>
               </div>
+
+              {/* Vertical Divider (Desktop) / Horizontal (Mobile) */}
+              <div className="hidden md:block w-px bg-gray-200"></div>
+              <div className="md:hidden h-px w-full bg-gray-200"></div>
+
+              {/* Activity 2 */}
+              <div className="flex-1">
+                <h3 className="text-xl mb-4 font-bold flex items-center gap-3" style={{color: '#1e40af'}}><Navigation size={24} className="text-blue-500"/> Hoạt Động 2: 5 Trạm Thực Hành</h3>
+                <p className="text-gray-600 mb-5 leading-relaxed text-[15px]">Đích thân tham gia và hoàn thành thử thách tại 5 Trạm chuyên môn được thiết kế riêng:</p>
+                
+                <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-[15px] font-bold text-gray-700">
+                  <div className="flex items-center gap-2"><Leaf size={18} className="text-green-500"/> Trạm Khoa Học</div>
+                  <div className="flex items-center gap-2"><Monitor size={18} className="text-gray-700"/> Trạm Công Nghệ</div>
+                  <div className="flex items-center gap-2"><FunctionSquare size={18} className="text-purple-600"/> Trạm Toán Học</div>
+                  <div className="flex items-center gap-2"><Cpu size={18} className="text-blue-500"/> Trạm Robotic</div>
+                  <div className="flex items-center gap-2 col-span-2"><Wrench size={18} className="text-orange-500"/> Trạm Mộc</div>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <div className="card shadow-lg p-8 rounded-2xl border-2 border-nshm bg-red-50/30 text-center hover-lift animate-fade-in" style={{animationDelay: '0.2s'}}>
-            <h3 className="text-2xl text-nshm mb-3 flex items-center justify-center gap-2"><Trophy/> Quay Số May Mắn</h3>
-            <p className="text-gray-700 max-w-2xl mx-auto">Thu thập đủ dấu / thông tin của <strong>6 trạm</strong> (gồm 4 trạm dự thi + 2 trạm trải nghiệm) sẽ nhận mã số để bốc thăm trúng <strong>5 Bộ kit STEM cực xịn</strong> cùng hàng chục chiếc Móc Khóa khoa học phiên bản giới hạn.</p>
+          {/* Lucky Draw Card */}
+          <div className="card p-0 rounded-3xl border-2 border-nshm text-center hover-lift animate-fade-in bg-white overflow-hidden relative" style={{animationDelay: '0.2s', boxShadow: '0 10px 25px -5px rgba(239, 68, 68, 0.1)'}}>
+            <div className="p-8 md:p-10">
+              <h3 className="text-2xl text-nshm mb-4 flex items-center justify-center gap-3 font-bold"><Trophy size={28}/> Quay Số May Mắn</h3>
+              <p className="text-gray-700 max-w-2xl mx-auto leading-relaxed text-[15px]">Thu thập đủ dấu / thông tin của <strong>6 trạm</strong> (gồm 4 trạm dự thi + 2 trạm trải nghiệm) sẽ nhận mã số để bốc thăm trúng <strong className="text-nshm text-lg">5 Bộ kit STEM cực xịn</strong> cùng hàng chục chiếc Móc Khóa khoa học phiên bản giới hạn.</p>
+            </div>
           </div>
         </div>
       </section>
