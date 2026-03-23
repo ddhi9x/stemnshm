@@ -217,7 +217,36 @@ const AdminDashboard = () => {
             <div className="admin-card card glass border-l-4 border-primary">
               <h3 className="mb-4 text-green-gradient">Thêm Mentor mới</h3>
               <input type="text" placeholder="Tên Mentor (VD: Thầy Hùng)" value={newMentor.name} onChange={e => setNewMentor({...newMentor, name: e.target.value})} className="admin-input" />
-              <input type="text" placeholder="Link Ảnh Đại Diện (VD: /mentor1.jpg hoặc https://...)" value={newMentor.image} onChange={e => setNewMentor({...newMentor, image: e.target.value})} className="admin-input" />
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-muted mb-2">Tải Ảnh Đại Diện (Nên dưới 500KB)</label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      if (file.size > 500 * 1024) {
+                        alert('Vui lòng chọn ảnh dung lượng nhỏ hơn 500KB để trang web web tải nhanh!');
+                        e.target.value = null;
+                        return;
+                      }
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setNewMentor({...newMentor, image: reader.result});
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }} 
+                  className="admin-input" 
+                  style={{padding: '0.5rem'}} 
+                />
+                {newMentor.image && newMentor.image.startsWith('data:image') && (
+                  <div className="mt-2 flex items-center gap-3">
+                    <img src={newMentor.image} alt="Preview" style={{width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover'}} />
+                    <span className="text-sm text-green-600 font-bold">✓ Ảnh đã sẵn sàng</span>
+                  </div>
+                )}
+              </div>
               <select value={newMentor.field} onChange={e => setNewMentor({...newMentor, field: e.target.value})} className="admin-input">
                 <option value="">-- Chọn lĩnh vực --</option>
                 <option value="Science">Science (Khoa học)</option>
