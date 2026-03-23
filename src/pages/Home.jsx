@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getLocalData } from '../data/mockData';
 import { supabase } from '../supabaseClient';
-import { ChevronRight, Leaf, Cpu, Wrench, FunctionSquare, Clock, X, Download, Award, Trophy, Medal, CheckCircle2, Navigation, Monitor } from 'lucide-react';
+import { ChevronRight, ChevronDown, Leaf, Cpu, Wrench, FunctionSquare, Clock, X, Download, Award, Trophy, Medal, CheckCircle2, Navigation, Monitor } from 'lucide-react';
 import './Home.css';
 import '../components/Timeline.css';
 import '../components/Modal.css';
