@@ -133,6 +133,60 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Timeline Section */}
+      <section className="timeline-section py-20 bg-light">
+        <div className="container">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="section-title text-nshm">HÀNH TRÌNH CHINH PHỤC</h2>
+            <p className="text-muted text-lg max-w-2xl mx-auto">Chuỗi sự kiện và lịch trình chi tiết của Ngày Hội STEM 2026.</p>
+          </div>
+
+          <div className="timeline-container animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <div className="timeline-track"></div>
+            
+            {timeline.length > 0 && timeline.map((node, index) => {
+              const isLast = index === timeline.length - 1;
+              const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : (index === 4 ? 'hoat-dong-ngay-hoi' : null));
+              
+              const handleClick = (e) => {
+                if (targetId) {
+                  e.preventDefault();
+                  const el = document.getElementById(targetId);
+                  if (el) {
+                    const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                  }
+                }
+              };
+
+              return (
+              <div key={node.id} className="timeline-node" style={{marginTop: index % 2 !== 0 ? '3rem' : '0'}}>
+                {isLast ? (
+                  <div onClick={handleClick} className="block p-3 rounded-xl hover-lift bg-white/50 border-2 border-dashed border-red-300 shadow-sm relative z-10 cursor-pointer" style={{top: '-15px'}}>
+                    <div className="timeline-dot" style={{marginBottom: '0.5rem'}}></div>
+                    <div className="timeline-date">{node.date}</div>
+                    <div className="timeline-title">{node.title}</div>
+                    <div className="timeline-desc">{node.desc}</div>
+                    <div className="text-nshm font-bold text-xs mt-3 flex items-center justify-center gap-1 hover:underline">Xem Hoạt Động <ChevronDown size={14}/></div>
+                  </div>
+                ) : (
+                  <div 
+                    onClick={handleClick} 
+                    className={targetId ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}
+                    title={targetId ? 'Nhấn để xem chi tiết vòng thi' : ''}
+                  >
+                    <div className="timeline-dot"></div>
+                    <div className="timeline-date">{node.date}</div>
+                    <div className="timeline-title">{node.title}</div>
+                    <div className="timeline-desc">{node.desc}</div>
+                  </div>
+                )}
+              </div>
+            )})}
+          </div>
+        </div>
+      </section>
+
       {/* 4 Domains Section - Float Cards */}
       <section className="domains-section py-20 relative bg-light">
         <div className="container relative z-10">
@@ -319,59 +373,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="timeline-section py-20 bg-light">
-        <div className="container">
-          <div className="text-center mb-12 animate-fade-in">
-            <h2 className="section-title text-nshm">HÀNH TRÌNH CHINH PHỤC</h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Chuỗi sự kiện và lịch trình chi tiết của Ngày Hội STEM 2026.</p>
-          </div>
 
-          <div className="timeline-container animate-fade-in" style={{animationDelay: '0.2s'}}>
-            <div className="timeline-track"></div>
-            
-            {timeline.length > 0 && timeline.map((node, index) => {
-              const isLast = index === timeline.length - 1;
-              const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : (index === 4 ? 'hoat-dong-ngay-hoi' : null));
-              
-              const handleClick = (e) => {
-                if (targetId) {
-                  e.preventDefault();
-                  const el = document.getElementById(targetId);
-                  if (el) {
-                    const y = el.getBoundingClientRect().top + window.scrollY - 100;
-                    window.scrollTo({top: y, behavior: 'smooth'});
-                  }
-                }
-              };
-
-              return (
-              <div key={node.id} className="timeline-node" style={{marginTop: index % 2 !== 0 ? '3rem' : '0'}}>
-                {isLast ? (
-                  <div onClick={handleClick} className="block p-3 rounded-xl hover-lift bg-white/50 border-2 border-dashed border-red-300 shadow-sm relative z-10 cursor-pointer" style={{top: '-15px'}}>
-                    <div className="timeline-dot" style={{marginBottom: '0.5rem'}}></div>
-                    <div className="timeline-date">{node.date}</div>
-                    <div className="timeline-title">{node.title}</div>
-                    <div className="timeline-desc">{node.desc}</div>
-                    <div className="text-nshm font-bold text-xs mt-3 flex items-center justify-center gap-1 hover:underline">Xem Hoạt Động <ChevronDown size={14}/></div>
-                  </div>
-                ) : (
-                  <div 
-                    onClick={handleClick} 
-                    className={targetId ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}
-                    title={targetId ? 'Nhấn để xem chi tiết vòng thi' : ''}
-                  >
-                    <div className="timeline-dot"></div>
-                    <div className="timeline-date">{node.date}</div>
-                    <div className="timeline-title">{node.title}</div>
-                    <div className="timeline-desc">{node.desc}</div>
-                  </div>
-                )}
-              </div>
-            )})}
-          </div>
-        </div>
-      </section>
 
       {/* Explore / Activities Section */}
       <section id="hoat-dong-ngay-hoi" className="explore-section py-20 bg-light">
