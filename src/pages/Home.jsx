@@ -488,40 +488,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Experience / Passport Section */}
-      <section className="experience-section py-20 bg-light">
-        <div className="container">
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-block bg-green-100 text-primary px-4 py-1 rounded-full font-bold text-sm mb-4">🌍 KHÁM PHÁ & TRẢI NGHIỆM</div>
-            <h2 className="section-title text-nshm">HOẠT ĐỘNG NGÀY HỘI STEM (22/04)</h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Không chỉ thi đấu, toàn bộ học sinh Ngôi Sao Hoàng Mai sẽ dùng "Passport" tham gia chuỗi trải nghiệm tương tác với sự kiện (Dự kiến 8h00 - 11h00).</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8 animate-fade-in" style={{animationDelay: '0.1s'}}>
-            <div className="card glass relative hover-up" style={{borderTop: '5px solid var(--primary-green)'}}>
-              <h3 className="text-xl text-primary mb-4 flex items-center gap-2"><CheckCircle2 /> Hoạt Động 1: Khán Giả Tương Tác</h3>
-              <p className="text-muted">Học sinh tự do tham quan các gian hàng của đội lọt vào Vòng Chung Kết. Quan sát mô hình thực tế, lắng nghe thuyết trình và ghi lại thông tin những dự án ấn tượng nhất vào cuốn Passport của mình.</p>
-            </div>
-            <div className="card glass relative hover-up" style={{borderTop: '5px solid var(--secondary-blue)'}}>
-              <h3 className="text-xl text-secondary mb-4 flex items-center gap-2"><Navigation /> Hoạt Động 2: 5 Trạm Thực Hành</h3>
-              <p className="text-muted">Đích thân tham gia và hoàn thành thử thách tại 5 Trạm chuyên môn được thiết kế riêng:</p>
-              <ul className="text-muted mt-2 grid grid-cols-2 gap-2 font-medium">
-                <li>🧪 Trạm Khoa Học</li>
-                <li>💻 Trạm Công Nghệ</li>
-                <li>📐 Trạm Toán Học</li>
-                <li>🤖 Trạm Robotic</li>
-                <li>🪵 Trạm Mộc</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="card mt-8 bg-blue-50 border-dashed border-2 text-center animate-fade-in" style={{borderColor: 'var(--secondary-blue)', animationDelay: '0.2s'}}>
-            <h3 className="text-nshm text-2xl mb-2 flex justify-center items-center gap-2"><Award /> Quay Số May Mắn</h3>
-            <p className="text-muted text-lg">Thu thập đủ dấu / thông tin của <strong>6 trạm</strong> (gồm 4 trạm dự thi + 2 trạm trải nghiệm) sẽ nhận mã số để bốc thăm trúng <strong>5 Bộ kit STEM</strong> cực xịn cùng hàng chục chiếc Móc Khóa khoa học phiên bản giới hạn.</p>
-          </div>
-        </div>
-      </section>
-
       {/* Domain Detail Modal */}
       {activeModal && (
         <div className="modal-overlay" onClick={() => setActiveModal(null)}>
