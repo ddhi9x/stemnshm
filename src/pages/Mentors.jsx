@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getLocalData } from '../data/mockData';
+import { supabase } from '../supabaseClient';
 import { Users } from 'lucide-react';
 import './Mentors.css';
 
@@ -8,7 +8,11 @@ const Mentors = () => {
   const [filter, setFilter] = useState('All');
 
   useEffect(() => {
-    setMentors(getLocalData('mentors'));
+    const fetchMentors = async () => {
+      const { data } = await supabase.from('mentors').select('*');
+      if (data) setMentors(data);
+    };
+    fetchMentors();
   }, []);
 
   const fields = ['All', 'Science', 'Technology', 'Engineering', 'Mathematics'];

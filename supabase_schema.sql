@@ -110,3 +110,17 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO settings (id, tagline, email, hotline) VALUES 
 (1, 'STEM Kiến Tạo Thế Giới Xanh 2025-2026', 'info@ngoisaocaohanoi.edu.vn', '1900 xxxx')
 ON CONFLICT (id) DO NOTHING;
+
+-- Seed dữ liệu Mentor có sẵn (để Admin dễ dàng thay ảnh sau)
+INSERT INTO mentors (name, field, bio) VALUES
+('Cô Nguyễn Thị Lan Anh (Hóa)', 'Science', 'Nhận tối đa 04 đội thi.'),
+('Thầy Phạm Minh Đức', 'Science', 'Nhận tối đa 04 đội thi.'),
+('Cô Nguyễn Thị Oanh', 'Science', 'Nhận tối đa 04 đội thi.'),
+('Thầy Nguyễn Nhật Hoàng', 'Technology', 'Nhận tối đa 04 đội thi.'),
+('Cô Nguyễn Ngọc Ánh', 'Technology', 'Nhận tối đa 04 đội thi.'),
+('Cô Ngô Thu Hằng', 'Engineering', 'Nhận tối đa 04 đội thi.'),
+('Cô Hoàng Thị Thùy Linh', 'Engineering', 'Nhận tối đa 04 đội thi.'),
+('Cô Vũ Thị Phương Thảo', 'Engineering', 'Nhận tối đa 04 đội thi.'),
+('Cô Trần Phương Thảo', 'Engineering', 'Nhận tối đa 04 đội thi.'),
+('Cô Nguyễn Hồng Loan', 'Mathematics', 'Nhận tối đa 04 đội thi.'),
+('Thầy Phạm Minh Hiếu', 'Mathematics', 'Nhận tối đa 04 đội thi.');
