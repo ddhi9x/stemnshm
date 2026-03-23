@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { initialData } from '../data/mockData';
 import { Users } from 'lucide-react';
 import './Mentors.css';
 
 const Mentors = () => {
-  const [mentors, setMentors] = useState([]);
+  const [mentors, setMentors] = useState(initialData.mentors);
   const [filter, setFilter] = useState('All');
 
   useEffect(() => {
     const fetchMentors = async () => {
       const { data } = await supabase.from('mentors').select('*');
-      if (data) setMentors(data);
+      if (data && data.length > 0) setMentors(data);
     };
     fetchMentors();
   }, []);
