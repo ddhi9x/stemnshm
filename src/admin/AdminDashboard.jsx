@@ -276,15 +276,19 @@ const AdminDashboard = () => {
                     for (const item of items) {
                       if (item.type.startsWith('image/')) {
                         const file = item.getAsFile();
-                        if (file.size > 500 * 1024) {
-                          alert('Ảnh quá lớn! Vui lòng dùng ảnh dưới 500KB.');
-                          return;
-                        }
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setNewMentor({...newMentor, image: reader.result});
+                        const img = new Image();
+                        img.onload = () => {
+                          const canvas = document.createElement('canvas');
+                          const MAX = 200;
+                          let w = img.width, h = img.height;
+                          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                          else { w = Math.round(w * MAX / h); h = MAX; }
+                          canvas.width = w; canvas.height = h;
+                          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                          const resized = canvas.toDataURL('image/jpeg', 0.8);
+                          setNewMentor(prev => ({...prev, image: resized}));
                         };
-                        reader.readAsDataURL(file);
+                        img.src = URL.createObjectURL(file);
                         break;
                       }
                     }
@@ -300,13 +304,13 @@ const AdminDashboard = () => {
                   {newMentor.image ? (
                     <div className="flex items-center justify-center gap-3">
                       <img src={newMentor.image} alt="Preview" style={{width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover'}} />
-                      <span className="text-sm text-green-600 font-bold">✓ Ảnh đã sẵn sàng (bấm vào đây rồi Ctrl+V để đổi ảnh)</span>
+                      <span className="text-sm text-green-600 font-bold">✓ Ảnh đã sẵn sàng (Ctrl+V để đổi ảnh)</span>
                     </div>
                   ) : (
                     <div>
                       <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>📋</div>
-                      <p className="text-muted m-0 font-bold">Bấm vào đây rồi <span className="text-primary">Ctrl + V</span> để dán ảnh từ clipboard</p>
-                      <p className="text-muted m-0 text-xs mt-1">Hoặc dùng nút chọn file bên dưới</p>
+                      <p className="text-muted m-0 font-bold">Bấm vào đây rồi <span className="text-primary">Ctrl + V</span> để dán ảnh</p>
+                      <p className="text-muted m-0 text-xs mt-1">Ảnh tự động resize nhẹ đẹp • Hoặc chọn file bên dưới</p>
                     </div>
                   )}
                 </div>
@@ -317,16 +321,19 @@ const AdminDashboard = () => {
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (file) {
-                      if (file.size > 500 * 1024) {
-                        alert('Vui lòng chọn ảnh dung lượng nhỏ hơn 500KB!');
-                        e.target.value = null;
-                        return;
-                      }
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setNewMentor({...newMentor, image: reader.result});
+                      const img = new Image();
+                      img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX = 200;
+                        let w = img.width, h = img.height;
+                        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                        else { w = Math.round(w * MAX / h); h = MAX; }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        const resized = canvas.toDataURL('image/jpeg', 0.8);
+                        setNewMentor(prev => ({...prev, image: resized}));
                       };
-                      reader.readAsDataURL(file);
+                      img.src = URL.createObjectURL(file);
                     }
                   }} 
                   className="admin-input mt-2" 
