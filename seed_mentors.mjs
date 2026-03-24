@@ -6,13 +6,8 @@ const supabase = createClient(
 );
 
 async function test() {
-  // Try to read slogan column
-  const { data, error } = await supabase.from('mentors').select('slogan').limit(1);
-  if (error) {
-    console.log('❌ Cột slogan chưa tồn tại. Cần chạy SQL:');
-    console.log(`ALTER TABLE mentors ADD COLUMN slogan TEXT;`);
-  } else {
-    console.log('✅ Cột slogan đã tồn tại!');
-  }
+  const { data, error } = await supabase.from('mentors').select('id, name, sort_order');
+  console.log('Error:', error);
+  console.log('Data:', data);
 }
 test();
