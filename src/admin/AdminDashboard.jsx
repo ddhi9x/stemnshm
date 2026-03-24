@@ -12,11 +12,13 @@ const AdminDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
-  const [linksData, setLinksData] = useState({ register: '', submit: '' });
+  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '' });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
   const [finalSchedule, setFinalSchedule] = useState([]);
   const [newScheduleItem, setNewScheduleItem] = useState({ time: '', title: '', desc: '' });
+  const [faqItems, setFaqItems] = useState([]);
+  const [newFaq, setNewFaq] = useState({ question: '', answer: '' });
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '', slogan: '' });
@@ -40,7 +42,7 @@ const AdminDashboard = () => {
         if (awData) setAwards(awData);
 
         const { data: linkDb } = await supabase.from('links').select('*').single();
-        if (linkDb) setLinksData({ register: linkDb.register, submit: linkDb.submit });
+        if (linkDb) setLinksData(linkDb);
 
         const { data: stData } = await supabase.from('settings').select('*').single();
         if (stData) setSettingsData(stData);
@@ -53,6 +55,9 @@ const AdminDashboard = () => {
 
         const { data: fsData } = await supabase.from('final_schedule').select('*').order('id', { ascending: true });
         if (fsData) setFinalSchedule(fsData);
+
+        const { data: faqData } = await supabase.from('faq').select('*').order('sort_order', { ascending: true });
+        if (faqData) setFaqItems(faqData);
       }
       fetchAdminData();
     }
@@ -149,7 +154,10 @@ const AdminDashboard = () => {
   };
 
   const handleSaveLinks = async () => {
-    await supabase.from('links').update(linksData).eq('id', 1);
+    await supabase.from('links').update({
+      register: linksData.register, submit: linksData.submit,
+      template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt
+    }).eq('id', 1);
     alert('Đã cập nhật Link Ngày Hội!');
   };
 
@@ -236,6 +244,7 @@ const AdminDashboard = () => {
           <li className={activeTab === 'awards' ? 'active' : ''} onClick={() => setActiveTab('awards')}>Cơ Cấu Giải Thưởng</li>
           <li className={activeTab === 'timeline' ? 'active' : ''} onClick={() => setActiveTab('timeline')}>Lịch Trình</li>
           <li className={activeTab === 'final' ? 'active' : ''} onClick={() => setActiveTab('final')}>Chung Kết</li>
+          <li className={activeTab === 'faq' ? 'active' : ''} onClick={() => setActiveTab('faq')}>FAQ</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -438,9 +447,17 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-bold text-muted mb-2">Link Form Đăng Ký Tham Gia</label>
                 <input type="text" placeholder="https://..." value={linksData.register} onChange={e => setLinksData({...linksData, register: e.target.value})} className="admin-input" />
               </div>
-              <div className="mb-6">
+              <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Link Nộp Sản Phẩm / Nộp Bài</label>
                 <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" />
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">📄 Link Tải Mẫu Hồ Sơ (file .docx)</label>
+                <input type="text" placeholder="/Mau_Ho_So.docx hoặc https://drive.google.com/..." value={linksData.template_hoso || ''} onChange={e => setLinksData({...linksData, template_hoso: e.target.value})} className="admin-input" />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-muted mb-2">📊 Link Mẫu Trình Bày PPT (file .pptx)</label>
+                <input type="text" placeholder="/STEM_Pitch.pptx hoặc https://drive.google.com/..." value={linksData.template_ppt || ''} onChange={e => setLinksData({...linksData, template_ppt: e.target.value})} className="admin-input" />
               </div>
               <button className="btn btn-nshm w-full" onClick={handleSaveLinks}>Lưu Cập Nhật Link Đồng Bộ</button>
             </div>
@@ -652,6 +669,60 @@ const AdminDashboard = () => {
                 }
                 alert('Đã cập nhật Lịch Trình Chung Kết!');
               }}>Lưu Cập Nhật Lịch Trình</button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'faq' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">Quản Lý Câu Hỏi Thường Gặp (FAQ)</h2>
+            <div className="admin-card card glass border-l-4 mb-6" style={{borderColor: '#9333ea'}}>
+              <h3 className="mb-4" style={{color: '#9333ea'}}>Thêm Câu Hỏi Mới</h3>
+              <input type="text" placeholder="Câu hỏi..." value={newFaq.question} onChange={e => setNewFaq({...newFaq, question: e.target.value})} className="admin-input" />
+              <textarea placeholder="Câu trả lời..." value={newFaq.answer} onChange={e => setNewFaq({...newFaq, answer: e.target.value})} className="admin-input" rows="3"></textarea>
+              <button className="btn btn-primary" onClick={async () => {
+                if (!newFaq.question) return;
+                const { data } = await supabase.from('faq').insert({ ...newFaq, sort_order: faqItems.length + 1 }).select();
+                if (data && data[0]) { setFaqItems([...faqItems, data[0]]); setNewFaq({ question: '', answer: '' }); alert('Đã thêm câu hỏi!'); }
+              }}>Thêm Câu Hỏi</button>
+            </div>
+            <div className="admin-card card glass border-l-4" style={{borderColor: '#9333ea'}}>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="m-0" style={{color: '#9333ea'}}>Danh sách FAQ ({faqItems.length})</h3>
+                <button className="btn btn-primary" style={{padding: '0.4rem 1rem', fontSize: '0.85rem'}} onClick={async () => {
+                  for (let i = 0; i < faqItems.length; i++) {
+                    await supabase.from('faq').update({ question: faqItems[i].question, answer: faqItems[i].answer, sort_order: i + 1 }).eq('id', faqItems[i].id);
+                  }
+                  alert('Đã lưu tất cả FAQ!');
+                }}>💾 Lưu Tất Cả</button>
+              </div>
+              <div className="flex flex-col gap-4">
+                {faqItems.map((faq, idx) => (
+                  <div key={faq.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200" style={{position: 'relative'}}>
+                    <div style={{position: 'absolute', top: '0.5rem', right: '0.5rem', display: 'flex', gap: '4px', alignItems: 'center'}}>
+                      <button disabled={idx === 0} style={{background: idx === 0 ? '#e2e8f0' : '#9333ea', color: 'white', border: 'none', borderRadius: '5px', width: '24px', height: '24px', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '0.6rem'}} onClick={() => {
+                        const arr = [...faqItems]; [arr[idx], arr[idx-1]] = [arr[idx-1], arr[idx]];
+                        arr.forEach((item, i) => item.sort_order = i + 1); setFaqItems([...arr]);
+                      }}>▲</button>
+                      <button disabled={idx === faqItems.length - 1} style={{background: idx === faqItems.length - 1 ? '#e2e8f0' : '#9333ea', color: 'white', border: 'none', borderRadius: '5px', width: '24px', height: '24px', cursor: idx === faqItems.length - 1 ? 'default' : 'pointer', fontSize: '0.6rem'}} onClick={() => {
+                        const arr = [...faqItems]; [arr[idx], arr[idx+1]] = [arr[idx+1], arr[idx]];
+                        arr.forEach((item, i) => item.sort_order = i + 1); setFaqItems([...arr]);
+                      }}>▼</button>
+                      <button style={{background: '#ef4444', color: 'white', border: 'none', borderRadius: '5px', padding: '0.2rem 0.5rem', cursor: 'pointer', fontSize: '0.7rem'}} onClick={async () => {
+                        if (window.confirm('Xóa câu hỏi này?')) {
+                          await supabase.from('faq').delete().eq('id', faq.id);
+                          setFaqItems(faqItems.filter(f => f.id !== faq.id));
+                        }
+                      }}>🗑</button>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem'}}>
+                      <span style={{background: '#9333ea', color: 'white', width: '22px', height: '22px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 900, flexShrink: 0}}>{idx + 1}</span>
+                      <input type="text" className="admin-input" style={{fontWeight: 700, color: '#c8102e', marginBottom: 0}} value={faq.question} onChange={e => { const arr = [...faqItems]; arr[idx].question = e.target.value; setFaqItems(arr); }} />
+                    </div>
+                    <textarea className="admin-input" rows="2" style={{marginBottom: 0, fontSize: '0.9rem'}} value={faq.answer} onChange={e => { const arr = [...faqItems]; arr[idx].answer = e.target.value; setFaqItems(arr); }} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

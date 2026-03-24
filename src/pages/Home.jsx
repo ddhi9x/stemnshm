@@ -87,7 +87,7 @@ const Home = () => {
       if (awardsData) setAwards(awardsData);
 
       const { data: linksDb } = await supabase.from('links').select('*').single();
-      if (linksDb) setLinksData({ register: linksDb.register, submit: linksDb.submit });
+      if (linksDb) setLinksData(linksDb);
 
       const { data: timelineData } = await supabase.from('timeline').select('*').order('id', { ascending: true });
       if (timelineData) setTimeline(timelineData);
@@ -123,12 +123,14 @@ const Home = () => {
     return () => clearInterval(id);
   }, []);
 
-  const faqItems = [
-    { q: 'Em đăng ký cá nhân hay nhóm?', a: 'Có thể đăng ký nhóm từ 3-5 bạn cùng khối THCS.' },
-    { q: 'Sản phẩm có cần chạy được không?', a: 'Khuyến khích có mô hình chạy được, hoặc ít nhất là sa bàn mô phỏng thực tế.' },
-    { q: 'Mỗi Mentor hỗ trợ bao nhiêu đội?', a: 'Mỗi giáo viên Mentor hỗ trợ tối đa 04 đội thi.' },
-    { q: 'Passport là gì?', a: 'Passport là cuốn sổ tay để học sinh thu thập dấu mộc khi tham gia các trạm trải nghiệm trong Ngày Hội STEM.' },
-  ];
+  const [faqList, setFaqList] = useState([]);
+  useEffect(() => {
+    const fetchFaq = async () => {
+      const { data } = await supabase.from('faq').select('*').order('sort_order', { ascending: true });
+      if (data) setFaqList(data);
+    };
+    fetchFaq();
+  }, []);
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
@@ -148,10 +150,10 @@ const Home = () => {
             <div className="hero-cta flex gap-4 flex-wrap">
               <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm btn-lg pulse-shadow">Đăng Ký Tham Gia</a>
               <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary btn-lg">Nộp Bài / Sản Phẩm</a>
-              <a href="/Mau_Ho_So_So_Loai.docx" download className="btn btn-outline btn-lg" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)'}}>
+              <a href={linksData.template_hoso || '/Mau_Ho_So_So_Loai.docx'} download className="btn btn-outline btn-lg" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)'}}>
                 <Download size={18} /> Tải Mẫu Hồ Sơ
               </a>
-              <a href="/STEM_Pitch_Blueprints.pptx" download className="btn btn-outline btn-lg" style={{borderColor: '#d97706', color: '#d97706'}}>
+              <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline btn-lg" style={{borderColor: '#d97706', color: '#d97706'}}>
                 <Download size={18} /> Mẫu Trình Bày PPT
               </a>
             </div>
@@ -558,14 +560,14 @@ const Home = () => {
             <h2 className="section-title text-green-gradient">Câu Hỏi Thường Gặp</h2>
           </div>
           <div className="flex flex-col gap-4 animate-fade-in" style={{animationDelay: '0.1s'}}>
-            {faqItems.map((faq, idx) => (
-              <div key={idx} className="card glass hover-up" style={{cursor: 'pointer', padding: '1.5rem'}} onClick={() => setOpenFaq(openFaq === idx ? null : idx)}>
+            {faqList.map((faq, idx) => (
+              <div key={faq.id} className="card glass hover-up" style={{cursor: 'pointer', padding: '1.5rem'}} onClick={() => setOpenFaq(openFaq === idx ? null : idx)}>
                 <div className="flex justify-between items-center">
-                  <h4 className="m-0 text-nshm" style={{fontSize: '1rem'}}>{faq.q}</h4>
+                  <h4 className="m-0 text-nshm" style={{fontSize: '1rem'}}>{faq.question}</h4>
                   <span style={{fontSize: '1.5rem', transform: openFaq === idx ? 'rotate(45deg)' : 'rotate(0)', transition: 'transform 0.3s'}}>+</span>
                 </div>
                 {openFaq === idx && (
-                  <p className="text-muted mt-3 mb-0 animate-fade-in" style={{lineHeight: 1.7}}>{faq.a}</p>
+                  <p className="text-muted mt-3 mb-0 animate-fade-in" style={{lineHeight: 1.7}}>{faq.answer}</p>
                 )}
               </div>
             ))}
