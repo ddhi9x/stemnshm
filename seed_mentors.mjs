@@ -5,35 +5,42 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdveGVtZ3JsYWJwenhveHV4emJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNzg5MzksImV4cCI6MjA4OTg1NDkzOX0.0Zd5rco7w7vOvKGIF6DoLbgfrd-An6qICUuaOQBmPVY'
 );
 
-async function reorder() {
-  // Correct chronological order:
-  // 1: Truyền thông & Đăng ký (Tháng 03)
-  // 2: Gặp gỡ Mentor lần 1 (30.03)
-  // 3: Nộp Sản Phẩm Sơ Loại (06.04)
-  // 4: Công Bố Chung Kết (08.04)
-  // 5: Gặp gỡ Mentor lần 2 (09-10.04) -- was id 6
-  // 6: Gặp gỡ Mentor lần 3 (16-17.04) -- was id 7
-  // 7: NGÀY HỘI QUYẾT ĐẤU (22.04) -- was id 5
-
-  // Move id 5 (Ngày Hội) to id 8, then update 6->5, 7->6, 8->7
-  // Since primary key, we need to delete and re-insert all
-
-  // Delete id 5,6,7
-  await supabase.from('timeline').delete().in('id', [5, 6, 7]);
+async function setup() {
+  // Check if table exists by trying to query
+  const { data: existing } = await supabase.from('final_schedule').select('*');
   
-  // Re-insert in correct order
-  const { data, error } = await supabase.from('timeline').insert([
-    { id: 5, date: '09-10.04.2026', title: 'Gặp gỡ Mentor (Lần 2)', desc: 'Trao đổi tiến độ, chỉnh sửa thiết kế và hoàn thiện ý tưởng sản phẩm.' },
-    { id: 6, date: '16-17.04.2026', title: 'Gặp gỡ Mentor (Lần 3)', desc: 'Rà soát lần cuối, hoàn thiện sản phẩm/mô hình và chuẩn bị cho Ngày Hội.' },
-    { id: 7, date: '22.04.2026', title: 'NGÀY HỘI QUYẾT ĐẤU', desc: 'Trưng bày gian hàng, bảo vệ mô hình và tham gia 5 trạm thi đấu.' },
+  if (existing && existing.length > 0) {
+    console.log('✅ Table final_schedule already has data:', existing.length, 'items');
+    return;
+  }
+
+  // Insert seed data
+  const { data, error } = await supabase.from('final_schedule').insert([
+    { id: 1, time: '7h30 - 8h30', title: 'Chuẩn bị & Setup', desc: '7h30 - 7h45: Các đội thi trưng bày sản phẩm dự thi dưới sân bóng. Các trạm trải nghiệm setup. 8h25: HS tham gia trải nghiệm di chuyển xuống sân.' },
+    { id: 2, time: '8h30 - 9h00', title: 'Khai mạc Ngày Hội', desc: '8h30 - 8h40: Ổn định tổ chức. 8h40 - 9h00: Khai mạc (có các thí nghiệm biểu diễn tạo hứng thú cho HS).' },
+    { id: 3, time: '9h00 - 10h00', title: 'Thi đấu & Trải nghiệm', desc: 'Các đội thi thuyết trình về sản phẩm dự thi (2 phút/đội). BGK chấm điểm. HS tham gia 2 hoạt động: tham quan gian hàng ghi chép vào Passport + vượt qua thử thách tại các Trạm Trải nghiệm. Thu thập đủ 8 sticker (5 trạm dự thi + 3 trạm trải nghiệm) để đổi số may mắn.' },
+    { id: 4, time: '10h00 - 10h30', title: 'Tổng kết & Trao giải', desc: 'BGK hoàn thành chấm, tính điểm và xếp giải. Công bố giải thưởng, trao giải. Quay số may mắn. Kết thúc chương trình.' },
   ]).select();
-  
-  if (error) console.error('Lỗi:', error.message);
-  else {
-    console.log('✅ Đã sắp xếp lại timeline:');
-    const { data: all } = await supabase.from('timeline').select('*').order('id');
-    all.forEach(t => console.log(`  ${t.id}: ${t.date} - ${t.title}`));
+
+  if (error) {
+    console.error('❌ Error:', error.message);
+    console.log('');
+    console.log('Bạn cần tạo bảng final_schedule trong Supabase SQL Editor:');
+    console.log(`
+CREATE TABLE IF NOT EXISTS final_schedule (
+  id INTEGER PRIMARY KEY,
+  time TEXT NOT NULL,
+  title TEXT NOT NULL,
+  desc TEXT
+);
+
+ALTER TABLE final_schedule ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read" ON final_schedule FOR SELECT USING (true);
+CREATE POLICY "Allow all operations" ON final_schedule FOR ALL USING (true) WITH CHECK (true);
+    `);
+  } else {
+    console.log('✅ Đã tạo dữ liệu lịch trình chung kết!', data.length, 'mục');
   }
 }
 
-reorder();
+setup();

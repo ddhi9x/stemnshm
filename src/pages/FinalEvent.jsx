@@ -4,13 +4,22 @@ import { Trophy, MapPin, Clock, Users, CheckCircle2, Leaf, Cpu, Wrench, Function
 
 const FinalEvent = () => {
   const [awards, setAwards] = useState([]);
+  const [scheduleItems, setScheduleItems] = useState([
+    { time: '7h30 - 8h30', title: 'Chuẩn bị & Setup', desc: '7h30 - 7h45: Các đội thi trưng bày sản phẩm dự thi dưới sân bóng. Các trạm trải nghiệm setup. 8h25: HS tham gia trải nghiệm di chuyển xuống sân.' },
+    { time: '8h30 - 9h00', title: 'Khai mạc Ngày Hội', desc: '8h30 - 8h40: Ổn định tổ chức. 8h40 - 9h00: Khai mạc (có các thí nghiệm biểu diễn tạo hứng thú cho HS).' },
+    { time: '9h00 - 10h00', title: 'Thi đấu & Trải nghiệm', desc: 'Các đội thi thuyết trình về sản phẩm dự thi (2 phút/đội). BGK chấm điểm.' },
+    { time: '10h00 - 10h30', title: 'Tổng kết & Trao giải', desc: 'BGK hoàn thành chấm, tính điểm và xếp giải. Công bố giải thưởng, trao giải. Quay số may mắn.' },
+  ]);
 
   useEffect(() => {
-    const fetchAwards = async () => {
-      const { data } = await supabase.from('awards').select('*');
-      if (data) setAwards(data);
+    const fetchData = async () => {
+      const { data: awData } = await supabase.from('awards').select('*');
+      if (awData) setAwards(awData);
+
+      const { data: schData } = await supabase.from('final_schedule').select('*').order('id', { ascending: true });
+      if (schData && schData.length > 0) setScheduleItems(schData);
     };
-    fetchAwards();
+    fetchData();
   }, []);
 
   const stations = [
@@ -19,13 +28,6 @@ const FinalEvent = () => {
     { icon: <FunctionSquare size={28} className="text-purple-600" />, name: 'Trạm Toán Học', color: '#9333ea', bg: '#faf5ff', desc: 'Giải đố logic & đo lường thực tế' },
     { icon: <Wrench size={28} className="text-orange-500" />, name: 'Trạm Robotic', color: '#f97316', bg: '#fff7ed', desc: 'Điều khiển robot & thi đấu' },
     { icon: <Star size={28} className="text-amber-500" />, name: 'Trạm Mộc', color: '#d97706', bg: '#fffbeb', desc: 'Chế tạo mô hình bằng gỗ & vật liệu tái chế' },
-  ];
-
-  const scheduleItems = [
-    { time: '7h30 - 8h30', title: 'Chuẩn bị & Setup', desc: '7h30 - 7h45: Các đội thi trưng bày sản phẩm dự thi dưới sân bóng. Các trạm trải nghiệm setup. 8h25: HS tham gia trải nghiệm di chuyển xuống sân.' },
-    { time: '8h30 - 9h00', title: 'Khai mạc Ngày Hội', desc: '8h30 - 8h40: Ổn định tổ chức. 8h40 - 9h00: Khai mạc (có các thí nghiệm biểu diễn tạo hứng thú cho HS).' },
-    { time: '9h00 - 10h00', title: 'Thi đấu & Trải nghiệm', desc: 'Các đội thi thuyết trình về sản phẩm dự thi (2 phút/đội). BGK chấm điểm. HS tham gia 2 hoạt động: tham quan gian hàng ghi chép vào Passport + vượt qua thử thách tại các Trạm Trải nghiệm. Thu thập đủ 8 sticker (5 trạm dự thi + 3 trạm trải nghiệm) để đổi số may mắn.' },
-    { time: '10h00 - 10h30', title: 'Tổng kết & Trao giải', desc: 'BGK hoàn thành chấm, tính điểm và xếp giải. Công bố giải thưởng, trao giải. Quay số may mắn. Kết thúc chương trình.' },
   ];
 
   return (

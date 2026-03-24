@@ -14,6 +14,8 @@ const AdminDashboard = () => {
   const [linksData, setLinksData] = useState({ register: '', submit: '' });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
+  const [finalSchedule, setFinalSchedule] = useState([]);
+  const [newScheduleItem, setNewScheduleItem] = useState({ time: '', title: '', desc: '' });
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '' });
@@ -46,6 +48,9 @@ const AdminDashboard = () => {
 
         const { data: abData } = await supabase.from('about').select('*').single();
         if (abData) setAboutData(abData);
+
+        const { data: fsData } = await supabase.from('final_schedule').select('*').order('id', { ascending: true });
+        if (fsData) setFinalSchedule(fsData);
       }
       fetchAdminData();
     }
@@ -222,6 +227,7 @@ const AdminDashboard = () => {
           <li className={activeTab === 'about' ? 'active' : ''} onClick={() => setActiveTab('about')}>Trang Giới Thiệu</li>
           <li className={activeTab === 'awards' ? 'active' : ''} onClick={() => setActiveTab('awards')}>Cơ Cấu Giải Thưởng</li>
           <li className={activeTab === 'timeline' ? 'active' : ''} onClick={() => setActiveTab('timeline')}>Lịch Trình</li>
+          <li className={activeTab === 'final' ? 'active' : ''} onClick={() => setActiveTab('final')}>Chung Kết</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -485,6 +491,88 @@ const AdminDashboard = () => {
                 ))}
               </div>
               <button className="btn btn-nshm mt-6 w-full" onClick={handleSaveTimeline}>Lưu Hành Trình Ngày Hội</button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'final' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">Quản Lý Lịch Trình Chung Kết</h2>
+
+            {/* Form thêm mục mới */}
+            <div className="admin-card card glass border-l-4 border-primary mb-6">
+              <h3 className="mb-4 text-green-gradient">Thêm Mốc Lịch Trình Mới</h3>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Khung giờ</label>
+                  <input type="text" placeholder="VD: 8h30 - 9h00" className="admin-input" value={newScheduleItem.time} onChange={e => setNewScheduleItem({...newScheduleItem, time: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Tiêu đề</label>
+                  <input type="text" placeholder="VD: Khai mạc" className="admin-input" value={newScheduleItem.title} onChange={e => setNewScheduleItem({...newScheduleItem, title: e.target.value})} />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-xs font-bold text-muted mb-1">Mô tả chi tiết</label>
+                <textarea className="admin-input" rows="3" placeholder="Nội dung hoạt động..." value={newScheduleItem.desc} onChange={e => setNewScheduleItem({...newScheduleItem, desc: e.target.value})}></textarea>
+              </div>
+              <button className="btn btn-primary" onClick={async () => {
+                if (!newScheduleItem.time || !newScheduleItem.title) return;
+                const maxId = finalSchedule.length > 0 ? Math.max(...finalSchedule.map(s => s.id)) : 0;
+                const { data, error } = await supabase.from('final_schedule').insert({ id: maxId + 1, ...newScheduleItem }).select();
+                if (error) { alert('Lỗi: ' + error.message); return; }
+                if (data && data.length > 0) {
+                  setFinalSchedule([...finalSchedule, data[0]]);
+                  setNewScheduleItem({ time: '', title: '', desc: '' });
+                  alert('Đã thêm!');
+                }
+              }}>+ Thêm Mốc Lịch Trình</button>
+            </div>
+
+            {/* Danh sách hiện có */}
+            <div className="admin-card card glass border-l-4" style={{borderColor: '#fbbf24'}}>
+              <h3 className="mb-4 text-green-gradient">Lịch Trình Hiện Có</h3>
+              <div className="flex flex-col gap-6">
+                {finalSchedule.map(item => (
+                  <div key={item.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="bg-green-100 text-primary px-3 py-1 rounded-full text-sm font-bold">Mốc {item.id}</span>
+                      <button className="btn btn-outline" style={{padding: '0.3rem 0.8rem', borderColor: '#ef4444', color: '#ef4444', fontSize: '0.8rem'}} onClick={async () => {
+                        if (window.confirm('Xóa mốc này?')) {
+                          await supabase.from('final_schedule').delete().eq('id', item.id);
+                          setFinalSchedule(finalSchedule.filter(s => s.id !== item.id));
+                        }
+                      }}>Xóa</button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <label className="block text-xs font-bold text-muted mb-1">Khung giờ</label>
+                        <input type="text" className="admin-input" value={item.time} onChange={e => {
+                          setFinalSchedule(finalSchedule.map(s => s.id === item.id ? { ...s, time: e.target.value } : s));
+                        }} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-muted mb-1">Tiêu đề</label>
+                        <input type="text" className="admin-input" value={item.title} onChange={e => {
+                          setFinalSchedule(finalSchedule.map(s => s.id === item.id ? { ...s, title: e.target.value } : s));
+                        }} />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-muted mb-1">Mô tả</label>
+                      <textarea className="admin-input" rows="2" value={item.desc || ''} onChange={e => {
+                        setFinalSchedule(finalSchedule.map(s => s.id === item.id ? { ...s, desc: e.target.value } : s));
+                      }}></textarea>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button className="btn btn-primary mt-6 w-full" onClick={async () => {
+                for (const s of finalSchedule) {
+                  await supabase.from('final_schedule').update({ time: s.time, title: s.title, desc: s.desc }).eq('id', s.id);
+                }
+                alert('Đã cập nhật Lịch Trình Chung Kết!');
+              }}>Lưu Cập Nhật Lịch Trình</button>
             </div>
           </div>
         )}
