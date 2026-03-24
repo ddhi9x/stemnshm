@@ -19,6 +19,10 @@ const AdminDashboard = () => {
   const [newScheduleItem, setNewScheduleItem] = useState({ time: '', title: '', desc: '' });
   const [faqItems, setFaqItems] = useState([]);
   const [newFaq, setNewFaq] = useState({ question: '', answer: '' });
+  const [criteria, setCriteria] = useState([]);
+  const [scoring, setScoring] = useState([]);
+  const [newCriteria, setNewCriteria] = useState({ title: '', description: '', icon: '🔬' });
+  const [newScoring, setNewScoring] = useState({ title: '', points: '', percent: '' });
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '', slogan: '' });
@@ -58,6 +62,12 @@ const AdminDashboard = () => {
 
         const { data: faqData } = await supabase.from('faq').select('*').order('sort_order', { ascending: true });
         if (faqData) setFaqItems(faqData);
+
+        const { data: crData } = await supabase.from('criteria').select('*').order('sort_order', { ascending: true });
+        if (crData) setCriteria(crData);
+
+        const { data: scData } = await supabase.from('scoring').select('*').order('sort_order', { ascending: true });
+        if (scData) setScoring(scData);
       }
       fetchAdminData();
     }
@@ -245,6 +255,7 @@ const AdminDashboard = () => {
           <li className={activeTab === 'timeline' ? 'active' : ''} onClick={() => setActiveTab('timeline')}>Lịch Trình</li>
           <li className={activeTab === 'final' ? 'active' : ''} onClick={() => setActiveTab('final')}>Chung Kết</li>
           <li className={activeTab === 'faq' ? 'active' : ''} onClick={() => setActiveTab('faq')}>FAQ</li>
+          <li className={activeTab === 'criteria' ? 'active' : ''} onClick={() => setActiveTab('criteria')}>Tiêu Chuẩn & Điểm</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -724,6 +735,89 @@ const AdminDashboard = () => {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'criteria' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">Tiêu Chuẩn "Quality Seal" & Ma Trận Điểm</h2>
+
+            {/* Quality Seal Criteria */}
+            <div className="admin-card card glass border-l-4 mb-6" style={{borderColor: '#22c55e'}}>
+              <h3 className="mb-4" style={{color: '#22c55e'}}>✅ Tiêu chuẩn Quality Seal</h3>
+              <div className="flex gap-2 mb-4">
+                <input type="text" placeholder="Icon (🔬, 🛡️...)" value={newCriteria.icon} onChange={e => setNewCriteria({...newCriteria, icon: e.target.value})} className="admin-input" style={{width: '80px', marginBottom: 0}} />
+                <input type="text" placeholder="Tiêu đề" value={newCriteria.title} onChange={e => setNewCriteria({...newCriteria, title: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                <button className="btn btn-primary" style={{whiteSpace: 'nowrap'}} onClick={async () => {
+                  if (!newCriteria.title) return;
+                  const { data } = await supabase.from('criteria').insert({...newCriteria, sort_order: criteria.length + 1}).select();
+                  if (data?.[0]) { setCriteria([...criteria, data[0]]); setNewCriteria({title:'', description:'', icon:'🔬'}); }
+                }}>+ Thêm</button>
+              </div>
+              <input type="text" placeholder="Mô tả tiêu chí..." value={newCriteria.description} onChange={e => setNewCriteria({...newCriteria, description: e.target.value})} className="admin-input" />
+              <div className="flex flex-col gap-3 mt-2">
+                {criteria.map((c, idx) => (
+                  <div key={c.id} className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex gap-3 items-start" style={{position: 'relative'}}>
+                    <input type="text" value={c.icon} onChange={e => { const arr = [...criteria]; arr[idx].icon = e.target.value; setCriteria(arr); }} className="admin-input" style={{width: '50px', marginBottom: 0, textAlign: 'center'}} />
+                    <div style={{flex: 1}}>
+                      <input type="text" value={c.title} onChange={e => { const arr = [...criteria]; arr[idx].title = e.target.value; setCriteria(arr); }} className="admin-input" style={{fontWeight: 700, marginBottom: 4}} />
+                      <input type="text" value={c.description} onChange={e => { const arr = [...criteria]; arr[idx].description = e.target.value; setCriteria(arr); }} className="admin-input" style={{fontSize: '0.85rem', marginBottom: 0}} />
+                    </div>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                      <button disabled={idx === 0} style={{background: idx === 0 ? '#e2e8f0' : '#22c55e', color: 'white', border: 'none', borderRadius: '4px', width: '22px', height: '18px', fontSize: '0.5rem', cursor: idx === 0 ? 'default' : 'pointer'}} onClick={() => { const arr=[...criteria]; [arr[idx],arr[idx-1]]=[arr[idx-1],arr[idx]]; arr.forEach((x,i)=>x.sort_order=i+1); setCriteria(arr); }}>▲</button>
+                      <button disabled={idx===criteria.length-1} style={{background: idx===criteria.length-1?'#e2e8f0':'#22c55e', color:'white', border:'none', borderRadius:'4px', width:'22px', height:'18px', fontSize:'0.5rem', cursor: idx===criteria.length-1?'default':'pointer'}} onClick={() => { const arr=[...criteria]; [arr[idx],arr[idx+1]]=[arr[idx+1],arr[idx]]; arr.forEach((x,i)=>x.sort_order=i+1); setCriteria(arr); }}>▼</button>
+                      <button style={{background:'#ef4444', color:'white', border:'none', borderRadius:'4px', width:'22px', height:'18px', fontSize:'0.5rem', cursor:'pointer'}} onClick={async () => {
+                        await supabase.from('criteria').delete().eq('id', c.id);
+                        setCriteria(criteria.filter(x=>x.id!==c.id));
+                      }}>✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Scoring Matrix */}
+            <div className="admin-card card glass border-l-4 mb-6" style={{borderColor: '#c8102e'}}>
+              <h3 className="mb-4" style={{color: '#c8102e'}}>🏆 Ma trận Điểm Sơ loại</h3>
+              <div className="flex gap-2 mb-4">
+                <input type="text" placeholder="Tiêu chí chấm điểm" value={newScoring.title} onChange={e => setNewScoring({...newScoring, title: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                <input type="text" placeholder="Điểm (VD: 6đ)" value={newScoring.points} onChange={e => setNewScoring({...newScoring, points: e.target.value})} className="admin-input" style={{width: '80px', marginBottom: 0}} />
+                <input type="text" placeholder="%" value={newScoring.percent} onChange={e => setNewScoring({...newScoring, percent: e.target.value})} className="admin-input" style={{width: '80px', marginBottom: 0}} />
+                <button className="btn btn-nshm" style={{whiteSpace: 'nowrap'}} onClick={async () => {
+                  if (!newScoring.title) return;
+                  const { data } = await supabase.from('scoring').insert({...newScoring, sort_order: scoring.length + 1}).select();
+                  if (data?.[0]) { setScoring([...scoring, data[0]]); setNewScoring({title:'', points:'', percent:''}); }
+                }}>+ Thêm</button>
+              </div>
+              <div className="flex flex-col gap-3">
+                {scoring.map((s, idx) => (
+                  <div key={s.id} className="p-3 bg-white rounded-lg border border-gray-200 flex gap-3 items-center">
+                    <span style={{background: '#c8102e', color: 'white', width: '22px', height: '22px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 900, flexShrink: 0}}>{idx+1}</span>
+                    <input type="text" value={s.title} onChange={e => { const arr=[...scoring]; arr[idx].title=e.target.value; setScoring(arr); }} className="admin-input" style={{flex: 1, marginBottom: 0, fontWeight: 600}} />
+                    <input type="text" value={s.points} onChange={e => { const arr=[...scoring]; arr[idx].points=e.target.value; setScoring(arr); }} className="admin-input" style={{width: '70px', marginBottom: 0, textAlign: 'center', fontWeight: 700, color: '#c8102e'}} />
+                    <input type="text" value={s.percent} onChange={e => { const arr=[...scoring]; arr[idx].percent=e.target.value; setScoring(arr); }} className="admin-input" style={{width: '70px', marginBottom: 0, textAlign: 'center'}} />
+                    <div style={{display: 'flex', gap: '2px'}}>
+                      <button disabled={idx===0} style={{background: idx===0?'#e2e8f0':'#c8102e', color:'white', border:'none', borderRadius:'4px', width:'20px', height:'20px', fontSize:'0.5rem', cursor:idx===0?'default':'pointer'}} onClick={() => { const arr=[...scoring]; [arr[idx],arr[idx-1]]=[arr[idx-1],arr[idx]]; arr.forEach((x,i)=>x.sort_order=i+1); setScoring(arr); }}>▲</button>
+                      <button disabled={idx===scoring.length-1} style={{background:idx===scoring.length-1?'#e2e8f0':'#c8102e', color:'white', border:'none', borderRadius:'4px', width:'20px', height:'20px', fontSize:'0.5rem', cursor:idx===scoring.length-1?'default':'pointer'}} onClick={() => { const arr=[...scoring]; [arr[idx],arr[idx+1]]=[arr[idx+1],arr[idx]]; arr.forEach((x,i)=>x.sort_order=i+1); setScoring(arr); }}>▼</button>
+                      <button style={{background:'#ef4444', color:'white', border:'none', borderRadius:'4px', width:'20px', height:'20px', fontSize:'0.5rem', cursor:'pointer'}} onClick={async () => {
+                        await supabase.from('scoring').delete().eq('id', s.id);
+                        setScoring(scoring.filter(x=>x.id!==s.id));
+                      }}>✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="btn btn-primary w-full" onClick={async () => {
+              for (let i = 0; i < criteria.length; i++) {
+                await supabase.from('criteria').update({ title: criteria[i].title, description: criteria[i].description, icon: criteria[i].icon, sort_order: i + 1 }).eq('id', criteria[i].id);
+              }
+              for (let i = 0; i < scoring.length; i++) {
+                await supabase.from('scoring').update({ title: scoring[i].title, points: scoring[i].points, percent: scoring[i].percent, sort_order: i + 1 }).eq('id', scoring[i].id);
+              }
+              alert('Đã lưu Tiêu Chuẩn & Ma Trận Điểm!');
+            }}>💾 Lưu Tất Cả Tiêu Chuẩn & Điểm</button>
           </div>
         )}
       </div>

@@ -77,6 +77,8 @@ const Home = () => {
   const [timeline, setTimeline] = useState([]);
   const [settings, setSettings] = useState({});
   const [activeModal, setActiveModal] = useState(null);
+  const [criteriaList, setCriteriaList] = useState([]);
+  const [scoringList, setScoringList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,6 +96,12 @@ const Home = () => {
 
       const { data: stData } = await supabase.from('settings').select('*').single();
       if (stData) setSettings(stData);
+
+      const { data: crData } = await supabase.from('criteria').select('*').order('sort_order', { ascending: true });
+      if (crData) setCriteriaList(crData);
+
+      const { data: scData } = await supabase.from('scoring').select('*').order('sort_order', { ascending: true });
+      if (scData) setScoringList(scData);
     };
 
     fetchData();
@@ -348,67 +356,54 @@ const Home = () => {
             <div className="card shadow-lg p-8 rounded-2xl border-t-4 border-primary bg-green-50/30 hover-up">
               <h3 className="text-2xl text-primary mb-6 flex items-center gap-3"><CheckCircle2/> Tiêu chuẩn "Quality Seal"</h3>
               <ul className="space-y-6">
-                <li className="flex gap-4">
-                  <div className="bg-green-100 text-green-700 p-3 rounded-lg shrink-0 h-fit"><Leaf size={24}/></div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">Vật liệu xanh (Khuyến khích)</h4>
-                    <p className="text-muted text-sm text-gray-600">Ưu tiên sử dụng nguyên liệu tái chế, vật liệu đã qua sử dụng, rẻ tiền và thân thiện với môi trường.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <div className="bg-blue-100 text-blue-700 p-3 rounded-lg shrink-0 h-fit"><span className="font-bold text-xl">🛡️</span></div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">An toàn tuyệt đối</h4>
-                    <p className="text-muted text-sm text-gray-600">Đảm bảo an toàn cho người sử dụng; không có nguyên liệu gây cháy, nổ hoặc ô nhiễm môi trường.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <div className="bg-orange-100 text-orange-700 p-3 rounded-lg shrink-0 h-fit"><Wrench size={24}/></div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">Tính thực tiễn</h4>
-                    <p className="text-muted text-sm text-gray-600">Sản phẩm phải có mục đích rõ ràng và có khả năng áp dụng vào thực tiễn cuộc sống.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <div className="bg-purple-100 text-purple-700 p-3 rounded-lg shrink-0 h-fit"><FunctionSquare size={24}/></div>
-                  <div>
-                    <h4 className="font-bold text-lg mb-1">Hàm lượng chuyên môn</h4>
-                    <p className="text-muted text-sm text-gray-600">Khuyến khích các sản phẩm thể hiện sự đầu tư nghiên cứu sâu sắc về mặt học thuật và kỹ thuật.</p>
-                  </div>
-                </li>
+                {criteriaList.length > 0 ? criteriaList.map((c, i) => {
+                  const colors = ['green', 'blue', 'orange', 'purple', 'red', 'yellow'];
+                  const clr = colors[i % colors.length];
+                  return (
+                    <li key={c.id} className="flex gap-4">
+                      <div className={`bg-${clr}-100 text-${clr}-700 p-3 rounded-lg shrink-0 h-fit`} style={{fontSize: '1.3rem'}}>{c.icon}</div>
+                      <div>
+                        <h4 className="font-bold text-lg mb-1">{c.title}</h4>
+                        <p className="text-muted text-sm text-gray-600">{c.description}</p>
+                      </div>
+                    </li>
+                  );
+                }) : (
+                  <>
+                    <li className="flex gap-4"><div className="bg-green-100 text-green-700 p-3 rounded-lg shrink-0 h-fit"><Leaf size={24}/></div><div><h4 className="font-bold text-lg mb-1">Vật liệu xanh (Khuyến khích)</h4><p className="text-muted text-sm text-gray-600">Ưu tiên sử dụng nguyên liệu tái chế, vật liệu đã qua sử dụng, rẻ tiền và thân thiện với môi trường.</p></div></li>
+                    <li className="flex gap-4"><div className="bg-blue-100 text-blue-700 p-3 rounded-lg shrink-0 h-fit"><span className="font-bold text-xl">🛡️</span></div><div><h4 className="font-bold text-lg mb-1">An toàn tuyệt đối</h4><p className="text-muted text-sm text-gray-600">Đảm bảo an toàn cho người sử dụng; không có nguyên liệu gây cháy, nổ hoặc ô nhiễm môi trường.</p></div></li>
+                    <li className="flex gap-4"><div className="bg-orange-100 text-orange-700 p-3 rounded-lg shrink-0 h-fit"><Wrench size={24}/></div><div><h4 className="font-bold text-lg mb-1">Tính thực tiễn</h4><p className="text-muted text-sm text-gray-600">Sản phẩm phải có mục đích rõ ràng và có khả năng áp dụng vào thực tiễn cuộc sống.</p></div></li>
+                    <li className="flex gap-4"><div className="bg-purple-100 text-purple-700 p-3 rounded-lg shrink-0 h-fit"><FunctionSquare size={24}/></div><div><h4 className="font-bold text-lg mb-1">Hàm lượng chuyên môn</h4><p className="text-muted text-sm text-gray-600">Khuyến khích các sản phẩm thể hiện sự đầu tư nghiên cứu sâu sắc về mặt học thuật và kỹ thuật.</p></div></li>
+                  </>
+                )}
               </ul>
             </div>
 
             {/* Matrix Points */}
             <div className="card shadow-lg p-8 rounded-2xl border-t-4 border-nshm bg-red-50/30 hover-up">
-              <h3 className="text-2xl text-nshm mb-6 flex items-center gap-3"><Trophy/> Ma trận Điểm Sơ loại (30đ)</h3>
+              <h3 className="text-2xl text-nshm mb-6 flex items-center gap-3"><Trophy/> Ma trận Điểm Sơ loại ({scoringList.reduce((sum, s) => sum + parseInt(s.points || '0'), 0) || 30}đ)</h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">Mô tả ý tưởng & Nguyên lý</span>
-                  <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold">6đ (20%)</span>
-                </div>
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">Xác định Vấn đề & Mục tiêu</span>
-                  <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span>
-                </div>
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">Phù hợp Chủ đề (Thế giới xanh)</span>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span>
-                </div>
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">Tính Sáng tạo & Khả thi</span>
-                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">8đ (26.6%)</span>
-                </div>
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">Hàm lượng STEM/STEAM</span>
-                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span>
-                </div>
-                <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-700">An toàn & Hình thức hồ sơ</span>
-                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span>
-                </div>
+                {scoringList.length > 0 ? scoringList.map((s, i) => {
+                  const badgeColors = ['red', 'orange', 'green', 'blue', 'purple', 'gray'];
+                  const bc = badgeColors[i % badgeColors.length];
+                  return (
+                    <div key={s.id} className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                      <span className="font-semibold text-gray-700">{s.title}</span>
+                      <span className={`bg-${bc}-100 text-${bc}-700 px-3 py-1 rounded-full font-bold`}>{s.points} ({s.percent})</span>
+                    </div>
+                  );
+                }) : (
+                  <>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">Mô tả ý tưởng & Nguyên lý</span><span className="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold">6đ (20%)</span></div>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">Xác định Vấn đề & Mục tiêu</span><span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span></div>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">Phù hợp Chủ đề (Thế giới xanh)</span><span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span></div>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">Tính Sáng tạo & Khả thi</span><span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">8đ (26.6%)</span></div>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">Hàm lượng STEM/STEAM</span><span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span></div>
+                    <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100"><span className="font-semibold text-gray-700">An toàn & Hình thức hồ sơ</span><span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-bold">4đ (13.3%)</span></div>
+                  </>
+                )}
               </div>
-              <div className="mt-6 bg-nshm text-white text-sm p-4 rounded-xl i talic opacity-90">
+              <div className="mt-6 bg-nshm text-white text-sm p-4 rounded-xl italic opacity-90">
                 <span className="font-bold">💡 Mẹo Nhỏ:</span> Giám khảo ưu tiên giải pháp RÕ RÀNG và HÀM LƯỢNG KIẾN THỨC hơn là trang trí rườm rà.
               </div>
             </div>
