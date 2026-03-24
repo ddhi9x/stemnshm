@@ -8,6 +8,7 @@ import Mentors from './pages/Mentors';
 import Schedule from './pages/Schedule';
 import News from './pages/News';
 import FinalEvent from './pages/FinalEvent';
+import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import NotFound from './pages/NotFound';
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/lich-trinh" element={<Schedule />} />
             <Route path="/tin-tuc" element={<News />} />
             <Route path="/chung-ket" element={<FinalEvent />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
