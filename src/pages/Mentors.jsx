@@ -115,7 +115,13 @@ const Mentors = () => {
                 <div className="mentor-avatar-gradient mentor-modal-avatar"></div>
               )}
               
-              <h2 className="text-nshm" style={{fontSize: '1.6rem', fontWeight: 800, margin: '1rem 0 0.5rem'}}>{selectedMentor.name}</h2>
+              <h2 className="text-nshm" style={{fontSize: '1.6rem', fontWeight: 800, margin: '1rem 0 0.3rem'}}>{selectedMentor.name}</h2>
+              
+              {selectedMentor.slogan && (
+                <p style={{color: '#64748b', fontStyle: 'italic', fontSize: '0.95rem', margin: '0 0 0.5rem'}}>
+                  "{selectedMentor.slogan}"
+                </p>
+              )}
               
               <span className={`badge-tag ${getBadgeColor(selectedMentor.field)}`} style={{fontSize: '0.9rem', padding: '0.4rem 1.2rem'}}>
                 {selectedMentor.field} — {getFieldLabel(selectedMentor.field)}

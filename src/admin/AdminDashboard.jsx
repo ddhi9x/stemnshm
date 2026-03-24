@@ -19,7 +19,7 @@ const AdminDashboard = () => {
   const [newScheduleItem, setNewScheduleItem] = useState({ time: '', title: '', desc: '' });
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
-  const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '' });
+  const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '', slogan: '' });
   const [editingMentorId, setEditingMentorId] = useState(null);
   const [rawImage, setRawImage] = useState(null);
   const [newAward, setNewAward] = useState({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
@@ -109,7 +109,7 @@ const AdminDashboard = () => {
         alert('Lỗi khi cập nhật Mentor!');
       } else if (data && data.length > 0) {
         setMentors(mentors.map(m => m.id === editingMentorId ? data[0] : m));
-        setNewMentor({ name: '', field: '', bio: '', image: '' });
+        setNewMentor({ name: '', field: '', bio: '', image: '', slogan: '' });
         setEditingMentorId(null);
         alert('Đã sửa thông tin Mentor!');
       }
@@ -120,7 +120,7 @@ const AdminDashboard = () => {
         alert('Lỗi khi thêm Mentor!');
       } else if (data && data.length > 0) {
         setMentors([...mentors, data[0]]);
-        setNewMentor({ name: '', field: '', bio: '', image: '' });
+        setNewMentor({ name: '', field: '', bio: '', image: '', slogan: '' });
         alert('Đã thêm Mentor!');
       }
     }
@@ -154,8 +154,14 @@ const AdminDashboard = () => {
   };
 
   const handleSaveSettings = async () => {
-    await supabase.from('settings').update(settingsData).eq('id', 1);
-    alert('Đã cập nhật Cài Đặt Footer!');
+    await supabase.from('settings').update({
+      tagline: settingsData.tagline, email: settingsData.email, hotline: settingsData.hotline,
+      stat1_num: settingsData.stat1_num, stat1_label: settingsData.stat1_label,
+      stat2_num: settingsData.stat2_num, stat2_label: settingsData.stat2_label,
+      stat3_num: settingsData.stat3_num, stat3_label: settingsData.stat3_label,
+      stat4_num: settingsData.stat4_num, stat4_label: settingsData.stat4_label,
+    }).eq('id', 1);
+    alert('Đã cập nhật Cài Đặt!');
   };
 
   const handleAwardChange = (id, field, val) => {
@@ -325,13 +331,14 @@ const AdminDashboard = () => {
                 <option value="Engineering">Engineering (Kỹ thuật)</option>
                 <option value="Mathematics">Mathematics (Toán học)</option>
               </select>
+              <input type="text" placeholder="Slogan / Châm ngôn (có thể để trống)" value={newMentor.slogan || ''} onChange={e => setNewMentor({...newMentor, slogan: e.target.value})} className="admin-input" style={{fontStyle: 'italic'}} />
               <textarea placeholder="Tiểu sử / Mô tả chuyên môn..." value={newMentor.bio} onChange={e => setNewMentor({...newMentor, bio: e.target.value})} className="admin-input" rows="3"></textarea>
               <div className="flex gap-3">
                 <button className="btn btn-primary" onClick={handleSaveMentor}>{editingMentorId ? 'Lưu Cập Nhật Mentor' : 'Thêm Mentor'}</button>
                 {editingMentorId && (
                   <button className="btn btn-outline" style={{borderColor: '#9ca3af', color: '#6b7280'}} onClick={() => {
                     setEditingMentorId(null);
-                    setNewMentor({ name: '', field: '', bio: '', image: '' });
+                    setNewMentor({ name: '', field: '', bio: '', image: '', slogan: '' });
                   }}>Hủy Sửa</button>
                 )}
               </div>
@@ -355,7 +362,7 @@ const AdminDashboard = () => {
                   <div className="flex gap-2 w-full mt-auto">
                     <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#3b82f6', color: '#3b82f6'}} onClick={() => {
                       setEditingMentorId(m.id);
-                      setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '' });
+                      setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '', slogan: m.slogan || '' });
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}>Sửa Mentor</button>
                     <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#f87171', color: '#ef4444'}} onClick={() => handleDeleteMentor(m.id)}>Xóa Mentor</button>
@@ -401,6 +408,20 @@ const AdminDashboard = () => {
                 <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" />
               </div>
               <button className="btn btn-nshm w-full" onClick={handleSaveLinks}>Lưu Cập Nhật Link Đồng Bộ</button>
+            </div>
+
+            <div className="admin-card card glass border-l-4 mb-6" style={{borderColor: '#8b5cf6'}}>
+              <h3 className="mb-4" style={{color: '#8b5cf6', fontWeight: 800}}>Đổi Số Thống Kê (Trang Chủ)</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <label className="block text-xs font-bold text-muted mb-1">Số liệu {i}</label>
+                    <input type="text" className="admin-input mb-2" placeholder="VD: 200+" value={settingsData[`stat${i}_num`] || ''} onChange={e => setSettingsData({...settingsData, [`stat${i}_num`]: e.target.value})} style={{fontWeight: 900, fontSize: '1.1rem', color: '#22c55e'}} />
+                    <label className="block text-xs font-bold text-muted mb-1">Nhãn</label>
+                    <input type="text" className="admin-input" placeholder="VD: Học sinh tham gia" value={settingsData[`stat${i}_label`] || ''} onChange={e => setSettingsData({...settingsData, [`stat${i}_label`]: e.target.value})} />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="admin-card card glass border-l-4 border-primary">

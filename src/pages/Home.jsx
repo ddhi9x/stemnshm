@@ -75,6 +75,7 @@ const Home = () => {
   const [awards, setAwards] = useState([]);
   const [linksData, setLinksData] = useState({ register: '#', submit: '#' });
   const [timeline, setTimeline] = useState([]);
+  const [settings, setSettings] = useState({});
   const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
@@ -90,6 +91,9 @@ const Home = () => {
 
       const { data: timelineData } = await supabase.from('timeline').select('*').order('id', { ascending: true });
       if (timelineData) setTimeline(timelineData);
+
+      const { data: stData } = await supabase.from('settings').select('*').single();
+      if (stData) setSettings(stData);
     };
 
     fetchData();
@@ -532,10 +536,10 @@ const Home = () => {
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white animate-fade-in">
             {[
-              { num: '200+', label: 'Học sinh tham gia' },
-              { num: '50+', label: 'Đội thi đăng ký' },
-              { num: '11', label: 'Mentor cố vấn' },
-              { num: '5', label: 'Trạm trải nghiệm' },
+              { num: settings.stat1_num || '200+', label: settings.stat1_label || 'Học sinh tham gia' },
+              { num: settings.stat2_num || '50+', label: settings.stat2_label || 'Đội thi đăng ký' },
+              { num: settings.stat3_num || '11', label: settings.stat3_label || 'Mentor cố vấn' },
+              { num: settings.stat4_num || '5', label: settings.stat4_label || 'Trạm trải nghiệm' },
             ].map((s, i) => (
               <div key={i}>
                 <div style={{fontSize: '3rem', fontWeight: 900, lineHeight: 1}}>{s.num}</div>
