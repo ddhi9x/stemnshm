@@ -22,11 +22,10 @@ const FinalEvent = () => {
   ];
 
   const scheduleItems = [
-    { time: '7h30 - 8h00', title: 'Đón tiếp & Check-in', desc: 'Phát Passport cho toàn bộ học sinh, hướng dẫn luật chơi.' },
-    { time: '8h00 - 8h15', title: 'Khai mạc Ngày Hội', desc: 'Phát biểu của Ban Giám Hiệu, giới thiệu chương trình.' },
-    { time: '8h15 - 9h30', title: 'Tham quan Gian hàng & Trạm trải nghiệm', desc: 'Học sinh tự do khám phá các gian hàng chung kết và hoàn thành 5 trạm thực hành.' },
-    { time: '9h30 - 10h30', title: 'Chấm điểm & Thuyết trình', desc: 'Ban Giám Khảo đánh giá trực tiếp tại từng gian hàng của các đội thi.' },
-    { time: '10h30 - 11h00', title: 'Tổng kết & Trao giải', desc: 'Công bố kết quả, trao giải thưởng và Quay Số May Mắn.' },
+    { time: '7h30 - 8h30', title: 'Chuẩn bị & Setup', desc: '7h30 - 7h45: Các đội thi trưng bày sản phẩm dự thi dưới sân bóng. Các trạm trải nghiệm setup. 8h25: HS tham gia trải nghiệm di chuyển xuống sân.' },
+    { time: '8h30 - 9h00', title: 'Khai mạc Ngày Hội', desc: '8h30 - 8h40: Ổn định tổ chức. 8h40 - 9h00: Khai mạc (có các thí nghiệm biểu diễn tạo hứng thú cho HS).' },
+    { time: '9h00 - 10h00', title: 'Thi đấu & Trải nghiệm', desc: 'Các đội thi thuyết trình về sản phẩm dự thi (2 phút/đội). BGK chấm điểm. HS tham gia 2 hoạt động: tham quan gian hàng ghi chép vào Passport + vượt qua thử thách tại các Trạm Trải nghiệm. Thu thập đủ 8 sticker (5 trạm dự thi + 3 trạm trải nghiệm) để đổi số may mắn.' },
+    { time: '10h00 - 10h30', title: 'Tổng kết & Trao giải', desc: 'BGK hoàn thành chấm, tính điểm và xếp giải. Công bố giải thưởng, trao giải. Quay số may mắn. Kết thúc chương trình.' },
   ];
 
   return (
@@ -119,8 +118,8 @@ const FinalEvent = () => {
           <div style={{fontSize: '3rem', marginBottom: '1rem'}}>🎰</div>
           <h2 className="section-title text-nshm">Quay Số May Mắn</h2>
           <p className="text-gray-700 text-lg mb-4">
-            Thu thập đủ dấu mộc của <strong>6 trạm</strong> (4 trạm dự thi + 2 trạm trải nghiệm) sẽ nhận mã số để bốc thăm trúng 
-            <strong className="text-nshm"> 5 Bộ kit STEM cực xịn</strong> cùng hàng chục chiếc Móc Khóa khoa học phiên bản giới hạn.
+            Thu thập đủ sticker của <strong>8 trạm</strong> (gồm 5 trạm dự thi + 3 trạm trải nghiệm) sẽ được đổi 
+            <strong className="text-nshm"> 1 số may mắn</strong> để tham gia quay số may mắn!
           </p>
         </div>
       </section>

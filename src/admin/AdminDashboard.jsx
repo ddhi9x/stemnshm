@@ -18,6 +18,7 @@ const AdminDashboard = () => {
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '' });
   const [editingMentorId, setEditingMentorId] = useState(null);
+  const [newAward, setNewAward] = useState({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
 
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_auth');
@@ -157,9 +158,27 @@ const AdminDashboard = () => {
 
   const handleSaveAwards = async () => {
     for (const a of awards) {
-      await supabase.from('awards').update({ qty: a.qty, value: a.value }).eq('id', a.id);
+      await supabase.from('awards').update({ title: a.title, qty: a.qty, value: a.value, color: a.color, bg: a.bg }).eq('id', a.id);
     }
     alert('Đã cập nhật Cơ Cấu Giải Thưởng!');
+  };
+
+  const handleAddAward = async () => {
+    if (!newAward.title) return;
+    const { data, error } = await supabase.from('awards').insert(newAward).select();
+    if (error) { alert('Lỗi khi thêm giải!'); return; }
+    if (data && data.length > 0) {
+      setAwards([...awards, data[0]]);
+      setNewAward({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
+      alert('Đã thêm giải thưởng mới!');
+    }
+  };
+
+  const handleDeleteAward = async (id) => {
+    if (window.confirm('Bạn có chắc muốn xóa giải thưởng này?')) {
+      const { error } = await supabase.from('awards').delete().eq('id', id);
+      if (!error) setAwards(awards.filter(a => a.id !== id));
+    }
   };
 
   const handleTimelineChange = (id, field, val) => {
@@ -376,12 +395,45 @@ const AdminDashboard = () => {
 
         {activeTab === 'awards' && (
           <div className="fade-in">
-            <h2 className="text-secondary mb-6">Chỉnh Sửa Cơ Cấu Giải Thưởng</h2>
+            <h2 className="text-secondary mb-6">Quản Lý Cơ Cấu Giải Thưởng</h2>
+
+            {/* Form thêm giải mới */}
+            <div className="admin-card card glass border-l-4 border-primary mb-6">
+              <h3 className="mb-4 text-green-gradient">Thêm Loại Giải Mới</h3>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Tên giải</label>
+                  <input type="text" placeholder="VD: GIẢI ĐẶC BIỆT" className="admin-input" value={newAward.title} onChange={e => setNewAward({...newAward, title: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Số lượng</label>
+                  <input type="text" placeholder="VD: 1 Giải" className="admin-input" value={newAward.qty} onChange={e => setNewAward({...newAward, qty: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Giá trị giải thưởng</label>
+                  <input type="text" placeholder="VD: Huy chương + Giấy khen" className="admin-input" value={newAward.value} onChange={e => setNewAward({...newAward, value: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Màu sắc</label>
+                  <div className="flex gap-2">
+                    <input type="color" value={newAward.color} onChange={e => setNewAward({...newAward, color: e.target.value})} style={{width: '40px', height: '38px', border: 'none', cursor: 'pointer'}} />
+                    <input type="color" value={newAward.bg} onChange={e => setNewAward({...newAward, bg: e.target.value})} style={{width: '40px', height: '38px', border: 'none', cursor: 'pointer'}} title="Màu nền" />
+                  </div>
+                </div>
+              </div>
+              <button className="btn btn-primary" onClick={handleAddAward}>+ Thêm Giải Thưởng</button>
+            </div>
+
+            {/* Danh sách giải hiện có */}
             <div className="admin-card card glass border-l-4" style={{borderColor: '#fbbf24'}}>
+              <h3 className="mb-4 text-green-gradient">Danh Sách Giải Hiện Có</h3>
               <div className="flex flex-col gap-6">
                 {awards && awards.map(aw => (
                   <div key={aw.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <h4 className="mb-3" style={{color: aw.color}}>{aw.title}</h4>
+                    <div className="flex justify-between items-center mb-3">
+                      <input type="text" className="admin-input" style={{fontWeight: 900, color: aw.color, fontSize: '1.1rem', maxWidth: '300px'}} value={aw.title} onChange={(e) => handleAwardChange(aw.id, 'title', e.target.value)} />
+                      <button className="btn btn-outline" style={{padding: '0.3rem 0.8rem', borderColor: '#ef4444', color: '#ef4444', fontSize: '0.8rem'}} onClick={() => handleDeleteAward(aw.id)}>Xóa</button>
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-muted mb-1">Số lượng giải</label>
@@ -391,11 +443,18 @@ const AdminDashboard = () => {
                         <label className="block text-xs font-bold text-muted mb-1">Giá trị giải thưởng</label>
                         <input type="text" className="admin-input" value={aw.value} onChange={(e) => handleAwardChange(aw.id, 'value', e.target.value)} />
                       </div>
+                      <div>
+                        <label className="block text-xs font-bold text-muted mb-1">Màu chữ / Nền</label>
+                        <div className="flex gap-2">
+                          <input type="color" value={aw.color || '#22c55e'} onChange={(e) => handleAwardChange(aw.id, 'color', e.target.value)} style={{width: '40px', height: '38px', border: 'none', cursor: 'pointer'}} title="Màu chữ" />
+                          <input type="color" value={aw.bg || '#ecfdf5'} onChange={(e) => handleAwardChange(aw.id, 'bg', e.target.value)} style={{width: '40px', height: '38px', border: 'none', cursor: 'pointer'}} title="Màu nền" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <button className="btn btn-primary mt-6 w-full" onClick={handleSaveAwards}>Lưu Cập Nhật Giải Thưởng</button>
+              <button className="btn btn-primary mt-6 w-full" onClick={handleSaveAwards}>Lưu Cập Nhật Tất Cả Giải Thưởng</button>
             </div>
           </div>
         )}

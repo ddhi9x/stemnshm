@@ -184,8 +184,10 @@ const Home = () => {
             
             {timeline.length > 0 && timeline.map((node, index) => {
               const isLast = index === timeline.length - 1;
-              const targetId = index === 2 ? 'vong-so-loai' : (index === 3 ? 'vong-chung-ket' : (index === 4 ? 'hoat-dong-ngay-hoi' : null));
-              const linkTo = index === 1 ? '/mentor' : null;
+              const title = (node.title || '').toLowerCase();
+              const isMentor = title.includes('mentor');
+              const targetId = title.includes('sơ loại') ? 'vong-so-loai' : (title.includes('chung kết') ? 'vong-chung-ket' : (title.includes('quyết đấu') || title.includes('ngày hội') ? 'hoat-dong-ngay-hoi' : null));
+              const linkTo = isMentor ? '/mentor' : null;
               
               const handleClick = (e) => {
                 if (linkTo) {
