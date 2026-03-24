@@ -33,7 +33,7 @@ const AdminDashboard = () => {
         const { data: newsData } = await supabase.from('news').select('*').order('date', { ascending: false });
         if (newsData) setNews(newsData);
 
-        const { data: mentorsData } = await supabase.from('mentors').select('*');
+        const { data: mentorsData } = await supabase.from('mentors').select('*').order('sort_order', { ascending: true });
         if (mentorsData) setMentors(mentorsData);
 
         const { data: awData } = await supabase.from('awards').select('*');
@@ -344,31 +344,55 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="admin-list grid grid-cols-2 gap-6 p-6">
-              {mentors.map(m => (
-                <div key={m.id} className="card block-shadow flex flex-col items-start p-5">
+            <div className="admin-list p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="m-0 text-green-gradient">Danh sách Mentor ({mentors.length})</h3>
+                <button className="btn btn-primary" style={{padding: '0.4rem 1rem', fontSize: '0.85rem'}} onClick={async () => {
+                  for (let i = 0; i < mentors.length; i++) {
+                    await supabase.from('mentors').update({ sort_order: i + 1 }).eq('id', mentors[i].id);
+                  }
+                  alert('Đã lưu thứ tự Mentor!');
+                }}>💾 Lưu Thứ Tự</button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+              {mentors.sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999)).map((m, idx) => (
+                <div key={m.id} className="card block-shadow flex flex-col items-start p-4" style={{position: 'relative'}}>
+                  <div style={{position: 'absolute', top: '0.5rem', right: '0.5rem', display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                    <button disabled={idx === 0} style={{background: idx === 0 ? '#e2e8f0' : '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', width: '28px', height: '24px', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '0.7rem'}} onClick={() => {
+                      const arr = [...mentors];
+                      [arr[idx], arr[idx - 1]] = [arr[idx - 1], arr[idx]];
+                      arr.forEach((item, i) => item.sort_order = i + 1);
+                      setMentors([...arr]);
+                    }}>▲</button>
+                    <button disabled={idx === mentors.length - 1} style={{background: idx === mentors.length - 1 ? '#e2e8f0' : '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', width: '28px', height: '24px', cursor: idx === mentors.length - 1 ? 'default' : 'pointer', fontSize: '0.7rem'}} onClick={() => {
+                      const arr = [...mentors];
+                      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+                      arr.forEach((item, i) => item.sort_order = i + 1);
+                      setMentors([...arr]);
+                    }}>▼</button>
+                  </div>
                   <div className="flex items-center gap-3 mb-3">
                     {m.image ? (
-                       <img src={m.image} alt={m.name} style={{width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover'}} />
+                       <img src={m.image} alt={m.name} style={{width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover'}} />
                     ) : (
-                       <div style={{width: '60px', height: '60px', borderRadius: '50%', background: '#eee'}}></div>
+                       <div style={{width: '50px', height: '50px', borderRadius: '50%', background: '#eee'}}></div>
                     )}
                     <div>
-                      <h4 className="m-0 text-nshm">{m.name}</h4>
-                      <span className="text-secondary text-sm bg-blue-50 px-2 py-1 rounded inline-block mt-1">{m.field}</span>
+                      <h4 className="m-0 text-nshm" style={{fontSize: '0.95rem'}}>{m.name}</h4>
+                      <span className="text-secondary text-xs bg-blue-50 px-2 py-0.5 rounded inline-block mt-1">{m.field}</span>
                     </div>
                   </div>
-                  <p className="text-muted text-sm mb-5 flex-1 w-full">{m.bio}</p>
                   <div className="flex gap-2 w-full mt-auto">
-                    <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#3b82f6', color: '#3b82f6'}} onClick={() => {
+                    <button className="btn btn-outline flex-1" style={{padding: '0.35rem', fontSize: '0.8rem', borderColor: '#3b82f6', color: '#3b82f6'}} onClick={() => {
                       setEditingMentorId(m.id);
                       setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '', slogan: m.slogan || '' });
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}>Sửa Mentor</button>
-                    <button className="btn btn-outline flex-1" style={{padding: '0.4rem', borderColor: '#f87171', color: '#ef4444'}} onClick={() => handleDeleteMentor(m.id)}>Xóa Mentor</button>
+                    }}>Sửa</button>
+                    <button className="btn btn-outline flex-1" style={{padding: '0.35rem', fontSize: '0.8rem', borderColor: '#f87171', color: '#ef4444'}} onClick={() => handleDeleteMentor(m.id)}>Xóa</button>
                   </div>
-             </div>
+                </div>
               ))}
+              </div>
             </div>
           </div>
         )}

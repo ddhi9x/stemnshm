@@ -64,8 +64,8 @@ const Mentors = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredMentors.map((m, idx) => (
+      <div className={`grid gap-8 ${filter === 'All' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center'}`} style={filter !== 'All' ? {maxWidth: '1000px', margin: '0 auto'} : {}}>
+        {filteredMentors.sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999)).map((m, idx) => (
           <div 
             key={m.id} 
             className="card glass hover-lift cursor-pointer" 
