@@ -354,46 +354,56 @@ const AdminDashboard = () => {
                   alert('Đã lưu thứ tự Mentor!');
                 }}>💾 Lưu Thứ Tự</button>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {mentors.sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999)).map((m, idx) => (
-                <div key={m.id} style={{position: 'relative', background: 'white', borderRadius: '16px', padding: '1.5rem 1rem 1rem', textAlign: 'center', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0', transition: 'all 0.2s'}}>
-                  {/* Thứ tự badge */}
-                  <div style={{position: 'absolute', top: '0.5rem', left: '0.5rem', background: '#22c55e', color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 900}}>{idx + 1}</div>
-                  {/* Nút ▲▼ */}
-                  <div style={{position: 'absolute', top: '0.4rem', right: '0.4rem', display: 'flex', gap: '3px'}}>
-                    <button disabled={idx === 0} style={{background: idx === 0 ? '#e2e8f0' : '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', width: '26px', height: '26px', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '0.7rem', fontWeight: 900}} onClick={() => {
-                      const arr = [...mentors];
-                      [arr[idx], arr[idx - 1]] = [arr[idx - 1], arr[idx]];
-                      arr.forEach((item, i) => item.sort_order = i + 1);
-                      setMentors([...arr]);
-                    }}>◀</button>
-                    <button disabled={idx === mentors.length - 1} style={{background: idx === mentors.length - 1 ? '#e2e8f0' : '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', width: '26px', height: '26px', cursor: idx === mentors.length - 1 ? 'default' : 'pointer', fontSize: '0.7rem', fontWeight: 900}} onClick={() => {
-                      const arr = [...mentors];
-                      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
-                      arr.forEach((item, i) => item.sort_order = i + 1);
-                      setMentors([...arr]);
-                    }}>▶</button>
+              {[
+                { field: 'Science', label: '🔬 Science (Khoa học)', color: '#22c55e', bg: '#f0fdf4' },
+                { field: 'Technology', label: '💻 Technology (Công nghệ)', color: '#3b82f6', bg: '#eff6ff' },
+                { field: 'Engineering', label: '⚙️ Engineering (Kỹ thuật)', color: '#f97316', bg: '#fff7ed' },
+                { field: 'Mathematics', label: '📐 Mathematics (Toán học)', color: '#9333ea', bg: '#faf5ff' },
+              ].map(group => {
+                const groupMentors = mentors.filter(m => m.field === group.field).sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999));
+                if (groupMentors.length === 0) return null;
+                return (
+                  <div key={group.field} style={{marginBottom: '1.5rem'}}>
+                    <div style={{padding: '0.5rem 1rem', background: group.bg, borderRadius: '10px', marginBottom: '0.75rem', borderLeft: `4px solid ${group.color}`}}>
+                      <h4 style={{margin: 0, color: group.color, fontSize: '0.95rem'}}>{group.label} ({groupMentors.length})</h4>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      {groupMentors.map((m, idx) => (
+                        <div key={m.id} style={{position: 'relative', background: 'white', borderRadius: '16px', padding: '1.5rem 0.8rem 0.8rem', textAlign: 'center', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0'}}>
+                          <div style={{position: 'absolute', top: '0.4rem', left: '0.4rem', background: group.color, color: 'white', width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 900}}>{idx + 1}</div>
+                          <div style={{position: 'absolute', top: '0.4rem', right: '0.4rem', display: 'flex', gap: '2px'}}>
+                            <button disabled={idx === 0} style={{background: idx === 0 ? '#e2e8f0' : group.color, color: 'white', border: 'none', borderRadius: '5px', width: '22px', height: '22px', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '0.6rem'}} onClick={() => {
+                              const all = [...mentors]; const gIdxs = all.map((mm, i) => mm.field === group.field ? i : -1).filter(i => i >= 0);
+                              [all[gIdxs[idx]], all[gIdxs[idx - 1]]] = [all[gIdxs[idx - 1]], all[gIdxs[idx]]];
+                              all.forEach((item, i) => item.sort_order = i + 1); setMentors([...all]);
+                            }}>◀</button>
+                            <button disabled={idx === groupMentors.length - 1} style={{background: idx === groupMentors.length - 1 ? '#e2e8f0' : group.color, color: 'white', border: 'none', borderRadius: '5px', width: '22px', height: '22px', cursor: idx === groupMentors.length - 1 ? 'default' : 'pointer', fontSize: '0.6rem'}} onClick={() => {
+                              const all = [...mentors]; const gIdxs = all.map((mm, i) => mm.field === group.field ? i : -1).filter(i => i >= 0);
+                              [all[gIdxs[idx]], all[gIdxs[idx + 1]]] = [all[gIdxs[idx + 1]], all[gIdxs[idx]]];
+                              all.forEach((item, i) => item.sort_order = i + 1); setMentors([...all]);
+                            }}>▶</button>
+                          </div>
+                          {m.image ? (
+                            <img src={m.image} alt={m.name} style={{width: '70px', height: '70px', borderRadius: '50%', objectFit: 'cover', border: '3px solid white', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', margin: '0.3rem auto 0.5rem'}} />
+                          ) : (
+                            <div style={{width: '70px', height: '70px', borderRadius: '50%', background: 'linear-gradient(135deg, #e0e7ff, #dbeafe)', margin: '0.3rem auto 0.5rem'}}></div>
+                          )}
+                          <h4 style={{margin: '0 0 0.2rem', color: '#c8102e', fontSize: '0.8rem', fontWeight: 800}}>{m.name}</h4>
+                          {m.slogan && <p style={{color: '#94a3b8', fontSize: '0.65rem', fontStyle: 'italic', margin: '0 0 0.4rem'}}>"{m.slogan}"</p>}
+                          <div style={{display: 'flex', gap: '3px', marginTop: '0.4rem'}}>
+                            <button style={{flex: 1, padding: '0.25rem', fontSize: '0.7rem', borderRadius: '6px', border: `1px solid ${group.color}`, background: 'white', color: group.color, cursor: 'pointer', fontWeight: 600}} onClick={() => {
+                              setEditingMentorId(m.id);
+                              setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '', slogan: m.slogan || '' });
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}>✏️ Sửa</button>
+                            <button style={{flex: 1, padding: '0.25rem', fontSize: '0.7rem', borderRadius: '6px', border: '1px solid #f87171', background: 'white', color: '#ef4444', cursor: 'pointer', fontWeight: 600}} onClick={() => handleDeleteMentor(m.id)}>🗑 Xóa</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  {/* Avatar */}
-                  {m.image ? (
-                    <img src={m.image} alt={m.name} style={{width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid white', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', margin: '0.5rem auto 0.75rem'}} />
-                  ) : (
-                    <div style={{width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #e0e7ff, #dbeafe)', margin: '0.5rem auto 0.75rem'}}></div>
-                  )}
-                  <h4 style={{margin: '0 0 0.3rem', color: '#c8102e', fontSize: '0.9rem', fontWeight: 800}}>{m.name}</h4>
-                  <span style={{display: 'inline-block', background: '#eff6ff', color: '#3b82f6', padding: '0.15rem 0.6rem', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, marginBottom: '0.6rem'}}>{m.field}</span>
-                  {m.slogan && <p style={{color: '#94a3b8', fontSize: '0.75rem', fontStyle: 'italic', margin: '0 0 0.5rem'}}>"{m.slogan}"</p>}
-                  <div style={{display: 'flex', gap: '4px'}}>
-                    <button style={{flex: 1, padding: '0.3rem', fontSize: '0.75rem', borderRadius: '8px', border: '1px solid #3b82f6', background: 'white', color: '#3b82f6', cursor: 'pointer', fontWeight: 600}} onClick={() => {
-                      setEditingMentorId(m.id);
-                      setNewMentor({ name: m.name, field: m.field, bio: m.bio, image: m.image || '', slogan: m.slogan || '' });
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}>✏️ Sửa</button>
-                    <button style={{flex: 1, padding: '0.3rem', fontSize: '0.75rem', borderRadius: '8px', border: '1px solid #f87171', background: 'white', color: '#ef4444', cursor: 'pointer', fontWeight: 600}} onClick={() => handleDeleteMentor(m.id)}>🗑 Xóa</button>
-                  </div>
-                </div>
-              ))}
-              </div>
+                );
+              })}
             </div>
           </div>
         )}
