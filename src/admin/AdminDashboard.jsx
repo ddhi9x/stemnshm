@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import AvatarCropper from './AvatarCropper';
 import './Admin.css';
 
 const AdminDashboard = () => {
@@ -20,6 +21,7 @@ const AdminDashboard = () => {
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '' });
   const [editingMentorId, setEditingMentorId] = useState(null);
+  const [rawImage, setRawImage] = useState(null);
   const [newAward, setNewAward] = useState({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
 
   useEffect(() => {
@@ -276,19 +278,7 @@ const AdminDashboard = () => {
                     for (const item of items) {
                       if (item.type.startsWith('image/')) {
                         const file = item.getAsFile();
-                        const img = new Image();
-                        img.onload = () => {
-                          const canvas = document.createElement('canvas');
-                          const MAX = 200;
-                          let w = img.width, h = img.height;
-                          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-                          else { w = Math.round(w * MAX / h); h = MAX; }
-                          canvas.width = w; canvas.height = h;
-                          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                          const resized = canvas.toDataURL('image/jpeg', 0.8);
-                          setNewMentor(prev => ({...prev, image: resized}));
-                        };
-                        img.src = URL.createObjectURL(file);
+                        setRawImage(URL.createObjectURL(file));
                         break;
                       }
                     }
@@ -321,19 +311,7 @@ const AdminDashboard = () => {
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (file) {
-                      const img = new Image();
-                      img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX = 200;
-                        let w = img.width, h = img.height;
-                        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-                        else { w = Math.round(w * MAX / h); h = MAX; }
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        const resized = canvas.toDataURL('image/jpeg', 0.8);
-                        setNewMentor(prev => ({...prev, image: resized}));
-                      };
-                      img.src = URL.createObjectURL(file);
+                      setRawImage(URL.createObjectURL(file));
                     }
                   }} 
                   className="admin-input mt-2" 
@@ -622,6 +600,18 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Avatar Cropper Modal */}
+      {rawImage && (
+        <AvatarCropper
+          imageSrc={rawImage}
+          onCrop={(croppedImg) => {
+            setNewMentor(prev => ({...prev, image: croppedImg}));
+            setRawImage(null);
+          }}
+          onCancel={() => setRawImage(null)}
+        />
+      )}
     </div>
   );
 };
