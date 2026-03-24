@@ -188,6 +188,7 @@ const Home = () => {
               const isMentor = title.includes('mentor');
               const targetId = title.includes('sơ loại') ? 'vong-so-loai' : (title.includes('chung kết') ? 'vong-chung-ket' : (title.includes('quyết đấu') || title.includes('ngày hội') ? 'hoat-dong-ngay-hoi' : null));
               const linkTo = isMentor ? '/mentor' : null;
+              const isTop = index % 2 === 0;
               
               const handleClick = (e) => {
                 if (linkTo) {
@@ -203,27 +204,20 @@ const Home = () => {
               };
 
               return (
-              <div key={node.id} className="timeline-node" style={{marginTop: index % 2 !== 0 ? '3rem' : '0'}}>
-                {isLast ? (
-                  <div onClick={handleClick} className="block p-3 rounded-xl hover-lift bg-white/50 border-2 border-dashed border-red-300 shadow-sm relative z-10 cursor-pointer" style={{top: '-15px'}}>
-                    <div className="timeline-dot" style={{marginBottom: '0.5rem'}}></div>
-                    <div className="timeline-date">{node.date}</div>
-                    <div className="timeline-title">{node.title}</div>
-                    <div className="timeline-desc">{node.desc}</div>
-                    <div className="text-nshm font-bold text-xs mt-3 flex items-center justify-center gap-1 hover:underline">Xem Hoạt Động <ChevronDown size={14}/></div>
-                  </div>
-                ) : (
-                  <div 
-                    onClick={handleClick} 
-                    className={(targetId || linkTo) ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}
-                    title={linkTo ? 'Nhấn để xem danh sách Mentor' : (targetId ? 'Nhấn để xem chi tiết vòng thi' : '')}
-                  >
-                    <div className="timeline-dot"></div>
-                    <div className="timeline-date">{node.date}</div>
-                    <div className="timeline-title">{node.title}</div>
-                    <div className="timeline-desc">{node.desc}</div>
-                  </div>
-                )}
+              <div key={node.id} className={`timeline-node ${isTop ? 'node-top' : 'node-bottom'}`}>
+                <div className="timeline-dot"></div>
+                <div 
+                  className={`node-content ${(targetId || linkTo) ? 'cursor-pointer hover-up p-2 rounded-lg transition-all duration-300 hover:bg-black/5' : ''}`}
+                  onClick={handleClick}
+                  title={linkTo ? 'Nhấn để xem Mentor' : (targetId ? 'Nhấn để xem chi tiết' : '')}
+                >
+                  <div className="timeline-date">{node.date}</div>
+                  <div className="timeline-title">{node.title}</div>
+                  <div className="timeline-desc">{node.desc}</div>
+                  {isLast && (
+                    <div className="text-nshm font-bold text-xs mt-2 flex items-center justify-center gap-1 hover:underline">Xem Hoạt Động <ChevronDown size={14}/></div>
+                  )}
+                </div>
               </div>
             )})}
           </div>
