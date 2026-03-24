@@ -266,7 +266,51 @@ const AdminDashboard = () => {
               <h3 className="mb-4 text-green-gradient">{editingMentorId ? 'Chỉnh Sửa Thông Tin Mentor' : 'Thêm Mentor mới'}</h3>
               <input type="text" placeholder="Tên Mentor (VD: Thầy Hùng)" value={newMentor.name} onChange={e => setNewMentor({...newMentor, name: e.target.value})} className="admin-input" />
               <div className="mb-4">
-                <label className="block text-sm font-bold text-muted mb-2">Tải Ảnh Đại Diện (Nên dưới 500KB)</label>
+                <label className="block text-sm font-bold text-muted mb-2">Ảnh Đại Diện</label>
+                {/* Paste zone */}
+                <div 
+                  tabIndex={0}
+                  onPaste={(e) => {
+                    const items = e.clipboardData?.items;
+                    if (!items) return;
+                    for (const item of items) {
+                      if (item.type.startsWith('image/')) {
+                        const file = item.getAsFile();
+                        if (file.size > 500 * 1024) {
+                          alert('Ảnh quá lớn! Vui lòng dùng ảnh dưới 500KB.');
+                          return;
+                        }
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setNewMentor({...newMentor, image: reader.result});
+                        };
+                        reader.readAsDataURL(file);
+                        break;
+                      }
+                    }
+                  }}
+                  style={{
+                    border: '2px dashed #cbd5e1', borderRadius: '12px', padding: '1.5rem',
+                    textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s',
+                    background: newMentor.image ? '#f0fdf4' : '#f8fafc',
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#22c55e'}
+                  onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
+                >
+                  {newMentor.image ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <img src={newMentor.image} alt="Preview" style={{width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover'}} />
+                      <span className="text-sm text-green-600 font-bold">✓ Ảnh đã sẵn sàng (bấm vào đây rồi Ctrl+V để đổi ảnh)</span>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>📋</div>
+                      <p className="text-muted m-0 font-bold">Bấm vào đây rồi <span className="text-primary">Ctrl + V</span> để dán ảnh từ clipboard</p>
+                      <p className="text-muted m-0 text-xs mt-1">Hoặc dùng nút chọn file bên dưới</p>
+                    </div>
+                  )}
+                </div>
+                {/* Fallback file input */}
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -274,7 +318,7 @@ const AdminDashboard = () => {
                     const file = e.target.files[0];
                     if (file) {
                       if (file.size > 500 * 1024) {
-                        alert('Vui lòng chọn ảnh dung lượng nhỏ hơn 500KB để trang web web tải nhanh!');
+                        alert('Vui lòng chọn ảnh dung lượng nhỏ hơn 500KB!');
                         e.target.value = null;
                         return;
                       }
@@ -285,15 +329,9 @@ const AdminDashboard = () => {
                       reader.readAsDataURL(file);
                     }
                   }} 
-                  className="admin-input" 
-                  style={{padding: '0.5rem'}} 
+                  className="admin-input mt-2" 
+                  style={{padding: '0.5rem', fontSize: '0.8rem'}} 
                 />
-                {newMentor.image && newMentor.image.startsWith('data:image') && (
-                  <div className="mt-2 flex items-center gap-3">
-                    <img src={newMentor.image} alt="Preview" style={{width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover'}} />
-                    <span className="text-sm text-green-600 font-bold">✓ Ảnh đã sẵn sàng</span>
-                  </div>
-                )}
               </div>
               <select value={newMentor.field} onChange={e => setNewMentor({...newMentor, field: e.target.value})} className="admin-input">
                 <option value="">-- Chọn lĩnh vực --</option>
