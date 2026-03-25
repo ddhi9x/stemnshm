@@ -82,6 +82,7 @@ const Home = () => {
   const [criteriaList, setCriteriaList] = useState([]);
   const [scoringList, setScoringList] = useState([]);
   const [viewCount, setViewCount] = useState(0);
+  const [roundsData, setRoundsData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,6 +109,9 @@ const Home = () => {
 
       const { data: newsData } = await supabase.from('news').select('id,title,created_at').order('created_at', { ascending: false }).limit(3);
       if (newsData) setNews(newsData);
+
+      const { data: roundsDb } = await supabase.from('rounds').select('*').order('sort_order', { ascending: true });
+      if (roundsDb) setRoundsData(roundsDb);
     };
 
     fetchData();
@@ -487,68 +491,66 @@ const Home = () => {
           </div>
           
           <div className="grid grid-cols-2 gap-8 relative z-10 animate-fade-in" style={{animationDelay: '0.1s'}}>
-             {/* Round 1 */}
-             <div id="vong-so-loai" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #f0fdf4, #ffffff)', borderColor: '#bbf7d0', padding: '3rem'}}>
-               <div className="flex items-center gap-4 mb-4">
-                 <div className="bg-primary text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><CheckCircle2 size={30} /></div>
-                 <h3 className="text-2xl m-0 text-primary">Vòng Sơ Loại</h3>
-               </div>
-               <div style={{background: '#ecfdf5', borderRadius: '10px', padding: '0.8rem 1rem', marginBottom: '1.2rem', fontSize: '0.85rem', lineHeight: 1.8}}>
-                 <strong className="text-primary">📋 Học sinh cần:</strong> ① Tải mẫu hồ sơ → ② Viết ý tưởng dự án → ③ Làm PPT trình bày → ④ Nộp trước <span className="text-nshm font-bold">06/04/2026</span>
-               </div>
-               
-               <div className="space-y-4 text-left">
-                 <div className="flex gap-3">
-                   <Navigation size={20} className="text-muted shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Hình thức:</strong> Nộp hồ sơ bản cứng và đăng ký dự thi trực tuyến.</div>
-                 </div>
-                 <div className="flex gap-3">
-                   <Clock size={20} className="text-muted shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Thời hạn:</strong> Nộp hồ sơ chậm nhất vào ngày <span className="text-nshm font-bold">06/04/2026</span>.</div>
-                 </div>
-                 <div className="flex gap-3">
-                   <Leaf size={20} className="text-muted shrink-0 mt-1" />
-                   <div>
-                     <strong className="text-gray-700">Nội dung:</strong> Đội thi nộp Mẫu hồ sơ ý tưởng và Bản trình bày PowerPoint. Bắt buộc có Mentor bảo trợ. 
-                     <br/><a href="/STEM_Pitch_Blueprints.pptx" download className="text-secondary font-bold inline-flex items-center gap-1 mt-1 hover:underline"><Download size={14}/> Tải Hướng Dẫn Kèm Theo</a>
+             {roundsData.length > 0 ? roundsData.map((round, ri) => {
+               const isRound1 = ri === 0;
+               const cardBg = isRound1 ? 'linear-gradient(to bottom right, #f0fdf4, #ffffff)' : 'linear-gradient(to bottom right, #fdf2f8, #ffffff)';
+               const borderClr = isRound1 ? '#bbf7d0' : '#fbcfe8';
+               const iconBg = isRound1 ? 'bg-primary' : 'bg-nshm';
+               const textClr = isRound1 ? 'text-primary' : 'text-nshm';
+               const highlightBg = isRound1 ? '#ecfdf5' : '#fef2f2';
+               const RoundIcon = isRound1 ? CheckCircle2 : Trophy;
+               const sectionId = isRound1 ? 'vong-so-loai' : 'vong-chung-ket';
+               const detailLabels = isRound1
+                 ? ['Hình thức:', 'Thời hạn:', 'Nội dung:', 'Yêu cầu:']
+                 : ['Hình thức:', 'Thời gian sự kiện:', 'Nội dung:', 'Tiêu chí Chấm:'];
+               const detailIcons = [Navigation, Clock, Leaf, Award];
+               const detailValues = [round.format, round.deadline, round.content, round.requirements];
+
+               return (
+                 <div key={round.id} id={sectionId} className="card glass relative overflow-hidden" style={{background: cardBg, borderColor: borderClr, padding: '3rem'}}>
+                   <div className="flex items-center gap-4 mb-4">
+                     <div className={`${iconBg} text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg`}><RoundIcon size={30} /></div>
+                     <h3 className={`text-2xl m-0 ${textClr}`}>{round.title}</h3>
+                   </div>
+                   {round.highlight_steps && (
+                     <div style={{background: highlightBg, borderRadius: '10px', padding: '0.8rem 1rem', marginBottom: '1.2rem', fontSize: '0.85rem', lineHeight: 1.8}}>
+                       <span dangerouslySetInnerHTML={{__html: round.highlight_steps}} />
+                     </div>
+                   )}
+                   <div className="space-y-4 text-left">
+                     {detailLabels.map((label, di) => {
+                       const IconComp = detailIcons[di];
+                       const val = detailValues[di];
+                       if (!val) return null;
+                       return (
+                         <div key={di} className="flex gap-3">
+                           <IconComp size={20} className={`${di === 3 ? textClr : 'text-muted'} shrink-0 mt-1`} />
+                           <div><strong className="text-gray-700">{label}</strong> {val}</div>
+                         </div>
+                       );
+                     })}
                    </div>
                  </div>
-                 <div className="flex gap-3">
-                   <Award size={20} className="text-primary shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Yêu cầu:</strong> Ý tưởng phải khả thi, sáng tạo và bám sát chủ đề Bảo vệ Môi trường (Green World).</div>
+               );
+             }) : (
+               /* Fallback khi chưa có dữ liệu rounds */
+               <>
+               <div id="vong-so-loai" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #f0fdf4, #ffffff)', borderColor: '#bbf7d0', padding: '3rem'}}>
+                 <div className="flex items-center gap-4 mb-4">
+                   <div className="bg-primary text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><CheckCircle2 size={30} /></div>
+                   <h3 className="text-2xl m-0 text-primary">Vòng Sơ Loại</h3>
                  </div>
+                 <p className="text-muted">Đang cập nhật...</p>
                </div>
-             </div>
-
-             {/* Round 2 */}
-             <div id="vong-chung-ket" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #fdf2f8, #ffffff)', borderColor: '#fbcfe8', padding: '3rem'}}>
-               <div className="flex items-center gap-4 mb-4">
-                 <div className="bg-nshm text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><Trophy size={30} /></div>
-                 <h3 className="text-2xl m-0 text-nshm">Vòng Chung Kết (Ngày Hội STEM)</h3>
+               <div id="vong-chung-ket" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #fdf2f8, #ffffff)', borderColor: '#fbcfe8', padding: '3rem'}}>
+                 <div className="flex items-center gap-4 mb-4">
+                   <div className="bg-nshm text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><Trophy size={30} /></div>
+                   <h3 className="text-2xl m-0 text-nshm">Vòng Chung Kết</h3>
+                 </div>
+                 <p className="text-muted">Đang cập nhật...</p>
                </div>
-               <div style={{background: '#fef2f2', borderRadius: '10px', padding: '0.8rem 1rem', marginBottom: '1.2rem', fontSize: '0.85rem', lineHeight: 1.8}}>
-                 <strong className="text-nshm">📋 Đội thi cần:</strong> ① Hoàn thiện sản phẩm → ② Làm poster A0 → ③ Dựng gian hàng → ④ Thuyết trình & demo trước BGK
-               </div>
-               
-               <div className="space-y-4 text-left">
-                 <div className="flex gap-3">
-                   <Navigation size={20} className="text-muted shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Hình thức:</strong> Trưng bày gian hàng và thi đấu/thuyết trình trực tiếp tại Trường.</div>
-                 </div>
-                 <div className="flex gap-3">
-                   <Clock size={20} className="text-muted shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Thời gian sự kiện:</strong> Ngày <span className="text-nshm font-bold">22/04/2026</span>.</div>
-                 </div>
-                 <div className="flex gap-3">
-                   <Leaf size={20} className="text-muted shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Nội dung:</strong> Đội thi mang sản phẩm/mô hình vật lý hoàn chỉnh đến trưng bày. Trực tiếp thực hiện thuyết trình và trả lời phản biện với Ban Giám Khảo ngay tại gian hàng.</div>
-                 </div>
-                 <div className="flex gap-3">
-                   <Award size={20} className="text-nshm shrink-0 mt-1" />
-                   <div><strong className="text-gray-700">Tiêu chí Chấm:</strong> Khả năng ứng dụng thực tiễn, tính thẩm mỹ, vật liệu tái chế xanh và bản lĩnh trình bày.</div>
-                 </div>
-               </div>
-             </div>
+               </>
+             )}
           </div>
         </div>
       </section>

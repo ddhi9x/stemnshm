@@ -39,6 +39,7 @@ const AdminDashboard = () => {
   const [teamFilter, setTeamFilter] = useState('all');
   const [galleryItems, setGalleryItems] = useState([]);
   const [newGalleryItem, setNewGalleryItem] = useState({ url: '', caption: '', type: 'image' });
+  const [roundsData, setRoundsData] = useState([]);
 
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_auth');
@@ -84,6 +85,9 @@ const AdminDashboard = () => {
 
         const { data: galData } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
         if (galData) setGalleryItems(galData);
+
+        const { data: rnData } = await supabase.from('rounds').select('*').order('sort_order', { ascending: true });
+        if (rnData) setRoundsData(rnData);
       }
       fetchAdminData();
     }
@@ -354,6 +358,7 @@ const AdminDashboard = () => {
           <li className={activeTab === 'teams' ? 'active' : ''} onClick={() => setActiveTab('teams')}>🏆 Đội Thi <span style={{background: '#ef4444', color: 'white', borderRadius: '10px', padding: '0 6px', fontSize: '0.7rem', marginLeft: '4px'}}>{teams.length}</span></li>
           <li className={activeTab === 'gallery' ? 'active' : ''} onClick={() => setActiveTab('gallery')}>🖼️ Thư Viện</li>
           <li className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>📊 Thống Kê</li>
+          <li className={activeTab === 'rounds' ? 'active' : ''} onClick={() => setActiveTab('rounds')}>🎯 Vòng Thi</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -1233,9 +1238,70 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+
+        {/* Rounds Tab */}
+        {activeTab === 'rounds' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">🎯 Quản lý Vòng Thi</h2>
+            <p className="text-muted mb-6" style={{fontSize: '0.85rem'}}>Chỉnh sửa nội dung phần "Cấu Trúc Cuộc Thi" (2 Vòng) trên trang chủ. Thay đổi sẽ cập nhật ngay trên website.</p>
+            {roundsData.length === 0 ? (
+              <div className="admin-card card glass" style={{padding: '2rem', textAlign: 'center'}}>
+                <p className="text-muted">Chưa có dữ liệu. Hãy chạy SQL tạo bảng <code>rounds</code> trong Supabase.</p>
+              </div>
+            ) : (
+              <div style={{display: 'grid', gap: '1.5rem'}}>
+                {roundsData.map((round, idx) => (
+                  <div key={round.id} className="admin-card card glass" style={{padding: '1.5rem', borderLeft: `4px solid ${idx === 0 ? '#22c55e' : '#dc2626'}`}}>
+                    <h3 style={{color: idx === 0 ? '#22c55e' : '#dc2626', marginBottom: '1rem'}}>{idx === 0 ? '✅ Vòng 1: Sơ Loại' : '🏆 Vòng 2: Chung Kết'}</h3>
+                    <div style={{display: 'grid', gap: '0.8rem'}}>
+                      <div>
+                        <label className="admin-label">Tên Vòng</label>
+                        <input type="text" className="admin-input" value={round.title || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, title: e.target.value} : r))} />
+                      </div>
+                      <div>
+                        <label className="admin-label">Các bước nổi bật (hỗ trợ HTML)</label>
+                        <textarea className="admin-input" rows={2} value={round.highlight_steps || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, highlight_steps: e.target.value} : r))} />
+                      </div>
+                      <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem'}}>
+                        <div>
+                          <label className="admin-label">Hình thức</label>
+                          <input type="text" className="admin-input" value={round.format || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, format: e.target.value} : r))} />
+                        </div>
+                        <div>
+                          <label className="admin-label">Thời hạn / Thời gian</label>
+                          <input type="text" className="admin-input" value={round.deadline || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, deadline: e.target.value} : r))} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="admin-label">Nội dung chi tiết</label>
+                        <textarea className="admin-input" rows={3} value={round.content || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, content: e.target.value} : r))} />
+                      </div>
+                      <div>
+                        <label className="admin-label">Yêu cầu / Tiêu chí</label>
+                        <textarea className="admin-input" rows={2} value={round.requirements || ''} onChange={e => setRoundsData(prev => prev.map(r => r.id === round.id ? {...r, requirements: e.target.value} : r))} />
+                      </div>
+                      <button className="btn btn-primary" style={{width: 'fit-content'}} onClick={async () => {
+                        const { error } = await supabase.from('rounds').update({
+                          title: round.title,
+                          highlight_steps: round.highlight_steps,
+                          format: round.format,
+                          deadline: round.deadline,
+                          content: round.content,
+                          requirements: round.requirements
+                        }).eq('id', round.id);
+                        if (error) alert('Lỗi: ' + error.message);
+                        else alert('✅ Đã lưu ' + round.title);
+                      }}>💾 Lưu {round.title}</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
-      {/* Avatar Cropper Modal */}
       {rawImage && (
         <AvatarCropper
           imageSrc={rawImage}
