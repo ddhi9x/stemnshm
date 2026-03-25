@@ -11,6 +11,7 @@ import NewsDetail from './pages/NewsDetail';
 import FinalEvent from './pages/FinalEvent';
 import Results from './pages/Results';
 import Gallery from './pages/Gallery';
+import Passport from './pages/Passport';
 import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import NotFound from './pages/NotFound';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/chung-ket" element={<FinalEvent />} />
             <Route path="/ket-qua" element={<Results />} />
             <Route path="/thu-vien" element={<Gallery />} />
+            <Route path="/passport" element={<Passport />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
