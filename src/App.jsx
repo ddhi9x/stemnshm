@@ -10,6 +10,7 @@ import News from './pages/News';
 import NewsDetail from './pages/NewsDetail';
 import FinalEvent from './pages/FinalEvent';
 import Results from './pages/Results';
+import Gallery from './pages/Gallery';
 import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import NotFound from './pages/NotFound';
@@ -29,6 +30,7 @@ function App() {
             <Route path="/tin-tuc/:id" element={<NewsDetail />} />
             <Route path="/chung-ket" element={<FinalEvent />} />
             <Route path="/ket-qua" element={<Results />} />
+            <Route path="/thu-vien" element={<Gallery />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />

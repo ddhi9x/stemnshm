@@ -37,6 +37,8 @@ const AdminDashboard = () => {
   const [newTeam, setNewTeam] = useState({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' });
   const [editingTeamId, setEditingTeamId] = useState(null);
   const [teamFilter, setTeamFilter] = useState('all');
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [newGalleryItem, setNewGalleryItem] = useState({ url: '', caption: '', type: 'image' });
 
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_auth');
@@ -79,6 +81,9 @@ const AdminDashboard = () => {
 
         const { data: teamsData } = await supabase.from('teams').select('*').order('created_at', { ascending: false });
         if (teamsData) setTeams(teamsData);
+
+        const { data: galData } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+        if (galData) setGalleryItems(galData);
       }
       fetchAdminData();
     }
@@ -296,6 +301,24 @@ const AdminDashboard = () => {
     XLSX.writeFile(wb, `${filename}.xlsx`);
   };
 
+  // === Gallery handlers ===
+  const handleAddGallery = async () => {
+    if (!newGalleryItem.url) return;
+    const { data, error } = await supabase.from('gallery').insert(newGalleryItem).select();
+    if (!error && data?.length) {
+      setGalleryItems([data[0], ...galleryItems]);
+      setNewGalleryItem({ url: '', caption: '', type: 'image' });
+      alert('Đã thêm ảnh/video!');
+    }
+  };
+
+  const handleDeleteGallery = async (id) => {
+    if (window.confirm('Xóa ảnh/video này?')) {
+      await supabase.from('gallery').delete().eq('id', id);
+      setGalleryItems(galleryItems.filter(g => g.id !== id));
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container py-20 flex justify-center items-center" style={{minHeight: '60vh'}}>
@@ -329,6 +352,8 @@ const AdminDashboard = () => {
           <li className={activeTab === 'faq' ? 'active' : ''} onClick={() => setActiveTab('faq')}>FAQ</li>
           <li className={activeTab === 'criteria' ? 'active' : ''} onClick={() => setActiveTab('criteria')}>Tiêu Chuẩn & Điểm</li>
           <li className={activeTab === 'teams' ? 'active' : ''} onClick={() => setActiveTab('teams')}>🏆 Đội Thi <span style={{background: '#ef4444', color: 'white', borderRadius: '10px', padding: '0 6px', fontSize: '0.7rem', marginLeft: '4px'}}>{teams.length}</span></li>
+          <li className={activeTab === 'gallery' ? 'active' : ''} onClick={() => setActiveTab('gallery')}>🖼️ Thư Viện</li>
+          <li className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>📊 Thống Kê</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -1126,6 +1151,85 @@ const AdminDashboard = () => {
               {teams.filter(t => teamFilter === 'all' || t.status === teamFilter).length === 0 && (
                 <p className="text-muted text-center py-8">Chưa có đội thi nào {teamFilter !== 'all' ? 'với trạng thái này' : ''}.</p>
               )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'gallery' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">🖼️ Quản lý Thư Viện</h2>
+            <div className="admin-card card glass border-l-4 border-secondary mb-6">
+              <h3 className="mb-4 text-green-gradient">➕ Thêm ảnh/video</h3>
+              <input type="text" placeholder="URL ảnh hoặc video *" value={newGalleryItem.url} onChange={e => setNewGalleryItem({...newGalleryItem, url: e.target.value})} className="admin-input" />
+              <input type="text" placeholder="Chú thích (tùy chọn)" value={newGalleryItem.caption} onChange={e => setNewGalleryItem({...newGalleryItem, caption: e.target.value})} className="admin-input mt-2" />
+              <div className="flex gap-2 mt-2">
+                <select value={newGalleryItem.type} onChange={e => setNewGalleryItem({...newGalleryItem, type: e.target.value})} className="admin-input" style={{maxWidth: '200px'}}>
+                  <option value="image">📷 Ảnh</option>
+                  <option value="video">🎬 Video</option>
+                </select>
+                <button className="btn btn-nshm" onClick={handleAddGallery}>➕ Thêm</button>
+              </div>
+            </div>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.8rem'}}>
+              {galleryItems.map(item => (
+                <div key={item.id} style={{position: 'relative', borderRadius: '10px', overflow: 'hidden', aspectRatio: '4/3', boxShadow: '0 2px 8px rgba(0,0,0,0.08)'}}>
+                  {item.type === 'video' ? (
+                    <video src={item.url} style={{width: '100%', height: '100%', objectFit: 'cover'}} muted />
+                  ) : (
+                    <img src={item.url} alt={item.caption || ''} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                  )}
+                  <div style={{position: 'absolute', top: '4px', right: '4px'}}>
+                    <button onClick={() => handleDeleteGallery(item.id)} style={{background: 'rgba(239,68,68,0.9)', color: 'white', border: 'none', borderRadius: '6px', padding: '0.2rem 0.4rem', cursor: 'pointer', fontSize: '0.7rem'}}>🗑️</button>
+                  </div>
+                  {item.caption && <div style={{position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.6))', padding: '0.5rem', color: 'white', fontSize: '0.7rem'}}>{item.caption}</div>}
+                </div>
+              ))}
+            </div>
+            {galleryItems.length === 0 && <p className="text-muted text-center py-8">Chưa có ảnh/video nào.</p>}
+          </div>
+        )}
+
+        {activeTab === 'stats' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">📊 Thống Kê Tổng Quan</h2>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem'}}>
+              {[
+                { icon: '👀', label: 'Lượt ghé thăm', value: settingsData.view_count || 0, color: '#8b5cf6' },
+                { icon: '🏆', label: 'Tổng đội thi', value: teams.length, color: '#f59e0b' },
+                { icon: '✅', label: 'Đã duyệt', value: teams.filter(t => t.status === 'approved').length, color: '#22c55e' },
+                { icon: '⏳', label: 'Chờ duyệt', value: teams.filter(t => t.status === 'pending').length, color: '#eab308' },
+                { icon: '👨‍🏫', label: 'Mentors', value: mentors.length, color: '#3b82f6' },
+                { icon: '📰', label: 'Bài viết', value: news.length, color: '#ec4899' },
+                { icon: '📷', label: 'Ảnh/Video', value: galleryItems.length, color: '#14b8a6' },
+                { icon: '❓', label: 'FAQ', value: faqItems.length, color: '#64748b' },
+              ].map((stat, i) => (
+                <div key={i} className="card glass text-center" style={{padding: '1.2rem', borderTop: `3px solid ${stat.color}`}}>
+                  <div style={{fontSize: '1.8rem'}}>{stat.icon}</div>
+                  <div style={{fontSize: '2rem', fontWeight: 900, color: stat.color, lineHeight: 1.1}}>{stat.value.toLocaleString()}</div>
+                  <div style={{fontSize: '0.78rem', color: '#64748b', fontWeight: 600, marginTop: '0.3rem'}}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Field Distribution */}
+            <div className="admin-card card glass">
+              <h3 className="mb-4 text-green-gradient">📊 Phân bố Đội Thi theo Lĩnh Vực</h3>
+              {['Science', 'Technology', 'Engineering', 'Mathematics'].map(field => {
+                const count = teams.filter(t => t.field === field).length;
+                const pct = teams.length > 0 ? Math.round(count / teams.length * 100) : 0;
+                const colors = { Science: '#22c55e', Technology: '#3b82f6', Engineering: '#f59e0b', Mathematics: '#ec4899' };
+                return (
+                  <div key={field} style={{marginBottom: '0.8rem'}}>
+                    <div className="flex justify-between" style={{fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.3rem'}}>
+                      <span>{field}</span>
+                      <span>{count} đội ({pct}%)</span>
+                    </div>
+                    <div style={{background: '#f1f5f9', borderRadius: '8px', height: '8px', overflow: 'hidden'}}>
+                      <div style={{width: `${pct}%`, height: '100%', background: colors[field], borderRadius: '8px', transition: 'width 0.5s ease'}}></div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
