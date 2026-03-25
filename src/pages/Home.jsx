@@ -110,13 +110,20 @@ const Home = () => {
 
     fetchData();
 
-    // Increment view count
+    // Increment view count (once per session only)
     const incrementViews = async () => {
-      try {
-        const { data } = await supabase.rpc('increment_view_count');
-        if (data) setViewCount(data);
-      } catch (e) {
-        // Fallback: read from settings
+      const alreadyCounted = sessionStorage.getItem('stem_visited');
+      if (!alreadyCounted) {
+        try {
+          const { data } = await supabase.rpc('increment_view_count');
+          if (data) setViewCount(data);
+          sessionStorage.setItem('stem_visited', '1');
+        } catch (e) {
+          const { data } = await supabase.from('settings').select('view_count').single();
+          if (data) setViewCount(data.view_count || 0);
+        }
+      } else {
+        // Already counted this session, just read
         const { data } = await supabase.from('settings').select('view_count').single();
         if (data) setViewCount(data.view_count || 0);
       }
