@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 const Footer = () => {
@@ -34,8 +35,10 @@ const Footer = () => {
         <div>
           <h4 style={{ color: 'white' }}>Hỗ Trợ</h4>
           <ul style={{ listStyle: 'none', color: 'var(--text-muted)' }}>
-            <li style={{ marginBottom: '0.5rem' }}><a href="/gioi-thieu">Thể lệ chi tiết</a></li>
-            <li style={{ marginBottom: '0.5rem' }}><a href="/faq">Câu hỏi thường gặp</a></li>
+            <li style={{ marginBottom: '0.5rem' }}><Link to="/gioi-thieu" style={{color: '#94a3b8', transition: 'color 0.3s'}} onMouseEnter={e => e.target.style.color='#10b981'} onMouseLeave={e => e.target.style.color='#94a3b8'}>Thể lệ chi tiết</Link></li>
+            <li style={{ marginBottom: '0.5rem' }}><Link to="/faq" style={{color: '#94a3b8', transition: 'color 0.3s'}} onMouseEnter={e => e.target.style.color='#10b981'} onMouseLeave={e => e.target.style.color='#94a3b8'}>Câu hỏi thường gặp</Link></li>
+            <li style={{ marginBottom: '0.5rem' }}><Link to="/mentor" style={{color: '#94a3b8', transition: 'color 0.3s'}} onMouseEnter={e => e.target.style.color='#10b981'} onMouseLeave={e => e.target.style.color='#94a3b8'}>Mentor & Hỗ trợ</Link></li>
+            <li style={{ marginBottom: '0.5rem' }}><Link to="/lich-trinh" style={{color: '#94a3b8', transition: 'color 0.3s'}} onMouseEnter={e => e.target.style.color='#10b981'} onMouseLeave={e => e.target.style.color='#94a3b8'}>Lịch trình sự kiện</Link></li>
           </ul>
         </div>
       </div>

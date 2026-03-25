@@ -171,28 +171,39 @@ const Home = () => {
             <p className="hero-subtitle mb-8">
               Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai. Hành trình kiến tạo tương lai bắt đầu từ hôm nay.
             </p>
-            <div className="hero-cta flex gap-3 flex-wrap">
-              <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm pulse-shadow" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>{linksData.label_register || 'Đăng Ký Tham Gia'}</a>
-              <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>{linksData.label_submit || 'Nộp Bài / Sản Phẩm'}</a>
-              <a href={linksData.template_hoso || '/Mau_Ho_So_So_Loai.docx'} download className="btn btn-outline" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)', padding: '0.6rem 1rem', fontSize: '0.85rem'}}>
-                <Download size={16} /> {linksData.label_hoso || 'Tải Mẫu Hồ Sơ'}
+            {/* Primary CTA - 2 nút chính */}
+            <div className="hero-cta flex gap-4 flex-wrap mb-4">
+              <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm btn-lg pulse-shadow" style={{padding: '0.9rem 2rem', fontSize: '1rem', minWidth: '180px'}}>
+                {linksData.label_register || 'Đăng Ký Tham Gia'}
               </a>
-              <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline" style={{borderColor: '#d97706', color: '#d97706', padding: '0.6rem 1rem', fontSize: '0.85rem'}}>
-                <Download size={16} /> {linksData.label_ppt || 'Mẫu Trình Bày PPT'}
+              <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary btn-lg" style={{padding: '0.9rem 2rem', fontSize: '1rem', minWidth: '180px'}}>
+                {linksData.label_submit || 'Nộp Bài / Sản Phẩm'}
               </a>
-              <a href={linksData.template_guide || '#'} download={!!linksData.template_guide} className="btn btn-outline" style={{borderColor: '#8b5cf6', color: '#8b5cf6', padding: '0.6rem 1rem', fontSize: '0.85rem'}} onClick={e => { if (!linksData.template_guide) { e.preventDefault(); alert('File hướng dẫn chưa được cập nhật. Vui lòng quay lại sau!'); }}}>
-                <Download size={16} /> {linksData.label_guide || 'HD Trình Chiếu'}
+            </div>
+            {/* Secondary CTA - Tài liệu */}
+            <div className="flex gap-3 flex-wrap">
+              <a href={linksData.template_hoso || '/Mau_Ho_So_So_Loai.docx'} download className="btn btn-outline" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)', padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
+                <Download size={14} /> {linksData.label_hoso || 'Mẫu Hồ Sơ'}
+              </a>
+              <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline" style={{borderColor: '#d97706', color: '#d97706', padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
+                <Download size={14} /> {linksData.label_ppt || 'Mẫu PPT'}
+              </a>
+              <a href={linksData.template_guide || '#'} download={!!linksData.template_guide} className="btn btn-outline" style={{borderColor: '#8b5cf6', color: '#8b5cf6', padding: '0.5rem 1rem', fontSize: '0.8rem'}} onClick={e => { if (!linksData.template_guide) { e.preventDefault(); alert('File hướng dẫn chưa được cập nhật.'); }}}>
+                <Download size={14} /> {linksData.label_guide || 'HD Trình Chiếu'}
               </a>
             </div>
 
             {/* Countdown Timer */}
-            <div className="flex gap-4 mt-8 flex-wrap animate-fade-in" style={{animationDelay: '0.3s'}}>
-              {[{v: countdown.days, l: 'Ngày'}, {v: countdown.hours, l: 'Giờ'}, {v: countdown.mins, l: 'Phút'}, {v: countdown.secs, l: 'Giây'}].map((c, i) => (
-                <div key={i} className="text-center" style={{background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', padding: '0.8rem 1.2rem', minWidth: '70px'}}>
-                  <div style={{fontSize: '1.8rem', fontWeight: 900, color: 'var(--nshm-red)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
-                  <div style={{fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px'}}>{c.l}</div>
-                </div>
-              ))}
+            <div className="mt-8 animate-fade-in" style={{animationDelay: '0.3s'}}>
+              <p style={{fontSize: '0.85rem', color: '#64748b', fontWeight: 600, marginBottom: '0.5rem', letterSpacing: '0.5px'}}>⏳ Còn lại đến <span className="text-nshm" style={{fontWeight: 800}}>Ngày Hội STEM</span>:</p>
+              <div className="flex gap-4 flex-wrap">
+                {[{v: countdown.days, l: 'Ngày'}, {v: countdown.hours, l: 'Giờ'}, {v: countdown.mins, l: 'Phút'}, {v: countdown.secs, l: 'Giây'}].map((c, i) => (
+                  <div key={i} className="text-center" style={{background: 'rgba(255,255,255,0.9)', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '0.8rem 1.2rem', minWidth: '70px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
+                    <div style={{fontSize: '1.8rem', fontWeight: 900, color: 'var(--nshm-red)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
+                    <div style={{fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px'}}>{c.l}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           
@@ -200,6 +211,33 @@ const Home = () => {
             <div className="hero-orb orb-1"></div>
             <div className="hero-orb orb-2"></div>
             <img src="/hero.png" alt="STEM Green Tech" className="hero-image float-animation" />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Start Block */}
+      <section className="py-12 bg-white reveal">
+        <div className="container" style={{maxWidth: '900px'}}>
+          <div className="text-center mb-8">
+            <div className="stem-section-badge" style={{background: 'rgba(220,38,38,0.1)', color: 'var(--nshm-red)'}}>🚀 BẮT ĐẦU NHANH</div>
+            <h2 style={{fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-main)'}}>3 Bước Cho Đội Thi Mới</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="text-center" style={{padding: '1.5rem'}}>
+              <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>1️⃣</div>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--primary-green)'}}>Chọn Lĩnh Vực</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Xem 4 lĩnh vực S-T-E-M và gợi ý đề tài phù hợp bên dưới.</p>
+            </div>
+            <div className="text-center" style={{padding: '1.5rem'}}>
+              <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>2️⃣</div>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--secondary-blue)'}}>Tải Mẫu & Hướng Dẫn</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Tải mẫu hồ sơ, PPT và hướng dẫn trình chiếu ở các nút phía trên.</p>
+            </div>
+            <div className="text-center" style={{padding: '1.5rem'}}>
+              <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #fee2e2, #fecaca)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>3️⃣</div>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--nshm-red)'}}>Đăng Ký & Nộp Bài</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Đăng ký đội thi, chuẩn bị hồ sơ và nộp trước hạn Vòng Sơ Loại.</p>
+            </div>
           </div>
         </div>
       </section>
