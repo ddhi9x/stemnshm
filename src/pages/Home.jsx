@@ -347,9 +347,12 @@ const Home = () => {
           <div className="grid grid-cols-2 gap-8 relative z-10 animate-fade-in" style={{animationDelay: '0.1s'}}>
              {/* Round 1 */}
              <div id="vong-so-loai" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #f0fdf4, #ffffff)', borderColor: '#bbf7d0', padding: '3rem'}}>
-               <div className="flex items-center gap-4 mb-6">
+               <div className="flex items-center gap-4 mb-4">
                  <div className="bg-primary text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><CheckCircle2 size={30} /></div>
                  <h3 className="text-2xl m-0 text-primary">Vòng Sơ Loại</h3>
+               </div>
+               <div style={{background: '#ecfdf5', borderRadius: '10px', padding: '0.8rem 1rem', marginBottom: '1.2rem', fontSize: '0.85rem', lineHeight: 1.8}}>
+                 <strong className="text-primary">📋 Học sinh cần:</strong> ① Tải mẫu hồ sơ → ② Viết ý tưởng dự án → ③ Làm PPT trình bày → ④ Nộp trước <span className="text-nshm font-bold">06/04/2026</span>
                </div>
                
                <div className="space-y-4 text-left">
@@ -377,9 +380,12 @@ const Home = () => {
 
              {/* Round 2 */}
              <div id="vong-chung-ket" className="card glass relative overflow-hidden" style={{background: 'linear-gradient(to bottom right, #fdf2f8, #ffffff)', borderColor: '#fbcfe8', padding: '3rem'}}>
-               <div className="flex items-center gap-4 mb-6">
+               <div className="flex items-center gap-4 mb-4">
                  <div className="bg-nshm text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><Trophy size={30} /></div>
                  <h3 className="text-2xl m-0 text-nshm">Vòng Chung Kết (Ngày Hội STEM)</h3>
+               </div>
+               <div style={{background: '#fef2f2', borderRadius: '10px', padding: '0.8rem 1rem', marginBottom: '1.2rem', fontSize: '0.85rem', lineHeight: 1.8}}>
+                 <strong className="text-nshm">📋 Đội thi cần:</strong> ① Hoàn thiện sản phẩm → ② Làm poster A0 → ③ Dựng gian hàng → ④ Thuyết trình & demo trước BGK
                </div>
                
                <div className="space-y-4 text-left">

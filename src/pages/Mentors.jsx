@@ -63,6 +63,7 @@ const Mentors = () => {
           </button>
         ))}
       </div>
+      <p className="text-center text-muted mb-8" style={{fontSize: '0.85rem', marginTop: '-0.5rem'}}>👆 Bấm vào từng mentor để xem giới thiệu chi tiết và thế mạnh hỗ trợ</p>
 
       <div className={`grid gap-8 ${filter === 'All' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center'}`} style={filter !== 'All' ? {maxWidth: '1000px', margin: '0 auto'} : {}}>
         {filteredMentors.sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999)).map((m, idx) => (
@@ -83,7 +84,7 @@ const Mentors = () => {
               <span className={`badge-tag ${getBadgeColor(m.field)}`}>
                 {m.field}
               </span>
-              <p className="text-muted text-sm flex-1 pt-2 w-full">
+              <p className="text-muted text-sm flex-1 pt-2 w-full" style={{display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
                 {m.bio}
               </p>
             </div>
@@ -135,6 +136,9 @@ const Mentors = () => {
 
               <div style={{marginTop: '1rem', padding: '0.6rem 1rem', background: '#fef3c7', borderRadius: '8px', fontSize: '0.85rem', color: '#92400e', fontWeight: 600}}>
                 📌 Nhận hỗ trợ tối đa 04 đội thi
+              </div>
+              <div style={{marginTop: '0.6rem', padding: '0.5rem 1rem', background: '#f0f9ff', borderRadius: '8px', fontSize: '0.8rem', color: '#0369a1', lineHeight: 1.5}}>
+                💡 Học sinh trao đổi với GVCN trước khi liên hệ mentor để được sắp xếp phù hợp.
               </div>
             </div>
           </div>

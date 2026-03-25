@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { initialData } from '../data/mockData';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
@@ -56,6 +57,12 @@ const Schedule = () => {
             );
           })}
         </div>
+      </div>
+
+      {/* Navigation links */}
+      <div className="flex justify-center gap-4 mt-8 flex-wrap animate-fade-in" style={{animationDelay: '0.2s'}}>
+        <Link to="/chung-ket" className="btn btn-primary" style={{padding: '0.7rem 1.5rem'}}>🎉 Xem Hoạt Động Ngày Hội</Link>
+        <Link to="/" className="btn btn-outline" style={{borderColor: 'var(--primary-green)', color: 'var(--primary-green)', padding: '0.7rem 1.5rem'}}>← Về Trang Chủ</Link>
       </div>
     </div>
   );
