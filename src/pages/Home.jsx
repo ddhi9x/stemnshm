@@ -135,6 +135,38 @@ const Home = () => {
     return () => clearInterval(id);
   }, [settings.event_date]);
 
+  // Milestone countdown - nearest future milestone from timeline
+  const [milestoneCD, setMilestoneCD] = useState(null);
+  useEffect(() => {
+    if (!timeline.length) return;
+    const now = new Date();
+    const future = timeline
+      .filter(t => {
+        const match = t.date && t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (!match) return false;
+        return new Date(match[3], match[2] - 1, match[1]) > now;
+      })
+      .map(t => {
+        const match = t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        return { ...t, target: new Date(match[3], match[2] - 1, match[1], 23, 59, 59).getTime() };
+      });
+    if (!future.length) return;
+    const nearest = future[0];
+    const tickM = () => {
+      const diff = Math.max(0, nearest.target - Date.now());
+      setMilestoneCD({
+        title: nearest.title,
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        mins: Math.floor((diff % 3600000) / 60000),
+        secs: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tickM();
+    const mid = setInterval(tickM, 1000);
+    return () => clearInterval(mid);
+  }, [timeline]);
+
   const [faqList, setFaqList] = useState([]);
   useEffect(() => {
     const fetchFaq = async () => {
@@ -241,34 +273,44 @@ const Home = () => {
               <div className="flex items-center gap-2 mb-2">
                 <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-blue)', background: '#eff6ff', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>⏰ MỐC QUAN TRỌNG</span>
               </div>
+              {/* Nearest milestone - live countdown */}
+              {milestoneCD && (
+                <div style={{background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)', borderRadius: '10px', padding: '0.6rem 0.8rem', marginBottom: '0.5rem'}}>
+                  <div style={{fontSize: '0.78rem', color: '#334155', fontWeight: 600, marginBottom: '0.3rem'}}>{milestoneCD.title}</div>
+                  <div className="flex gap-2">
+                    {[{v: milestoneCD.days, l: 'ngày'}, {v: milestoneCD.hours, l: 'giờ'}, {v: milestoneCD.mins, l: 'phút'}, {v: milestoneCD.secs, l: 'giây'}].map((c, i) => (
+                      <div key={i} style={{textAlign: 'center', background: 'white', borderRadius: '8px', padding: '0.3rem 0.5rem', minWidth: '42px', border: '1px solid #e2e8f0'}}>
+                        <div style={{fontSize: '1.1rem', fontWeight: 900, color: milestoneCD.days <= 7 ? 'var(--nshm-red)' : 'var(--secondary-blue)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
+                        <div style={{fontSize: '0.55rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase'}}>{c.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Other milestones */}
               {(() => {
                 const now = new Date();
-                // Parse dates from timeline, filter future ones
                 const milestones = timeline
                   .filter(t => {
                     const match = t.date && t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
                     if (!match) return false;
-                    const d = new Date(match[3], match[2] - 1, match[1]);
-                    return d > now;
+                    return new Date(match[3], match[2] - 1, match[1]) > now;
                   })
                   .map(t => {
                     const match = t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
                     const d = new Date(match[3], match[2] - 1, match[1]);
-                    const daysLeft = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
-                    return { ...t, targetDate: d, daysLeft };
+                    return { ...t, daysLeft: Math.ceil((d - now) / 86400000) };
                   })
-                  .slice(0, 3);
+                  .slice(1, 3); // skip first (shown above), show next 2
 
-                return milestones.length > 0 ? milestones.map((m, i) => (
-                  <div key={m.id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
+                return milestones.map((m, i) => (
+                  <div key={m.id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: '1px solid #f1f5f9', gap: '0.5rem'}}>
                     <span style={{fontSize: '0.82rem', color: '#334155', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1}}>{m.title}</span>
                     <span style={{fontSize: '0.7rem', fontWeight: 700, color: m.daysLeft <= 7 ? 'var(--nshm-red)' : 'var(--primary-green)', background: m.daysLeft <= 7 ? '#fef2f2' : '#ecfdf5', padding: '0.2rem 0.5rem', borderRadius: '6px', whiteSpace: 'nowrap'}}>
                       còn {m.daysLeft} ngày
                     </span>
                   </div>
-                )) : (
-                  <p style={{fontSize: '0.82rem', color: '#94a3b8', margin: 0}}>Chưa có mốc nào sắp tới</p>
-                );
+                ));
               })()}
             </div>
           </div>
