@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { X, ChevronLeft, ChevronRight, Image, Film } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
+import { X, ChevronLeft, ChevronRight, Film } from 'lucide-react';
 
 const Gallery = () => {
+  const { t } = useI18n();
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('all');
   const [lightbox, setLightbox] = useState(null);
@@ -24,7 +26,6 @@ const Gallery = () => {
   const prevItem = () => setLightbox(l => (l > 0 ? l - 1 : filtered.length - 1));
   const nextItem = () => setLightbox(l => (l < filtered.length - 1 ? l + 1 : 0));
 
-  // Keyboard navigation
   useEffect(() => {
     if (lightbox === null) return;
     const handleKey = (e) => {
@@ -39,14 +40,14 @@ const Gallery = () => {
   return (
     <div className="container py-20" style={{maxWidth: '1100px', margin: '0 auto'}}>
       <div className="text-center mb-12 animate-fade-in">
-        <div className="stem-section-badge" style={{background: '#ede9fe', color: '#7c3aed'}}>📸 THƯ VIỆN</div>
-        <h1 className="section-title text-green-gradient">Thư Viện Ảnh & Video</h1>
-        <p className="text-muted text-lg max-w-2xl mx-auto">Những khoảnh khắc ấn tượng từ Ngày Hội STEM.</p>
+        <div className="stem-section-badge" style={{background: '#ede9fe', color: '#7c3aed'}}>{t('gallery_page.badge')}</div>
+        <h1 className="section-title text-green-gradient">{t('gallery_page.title')}</h1>
+        <p className="text-muted text-lg max-w-2xl mx-auto">{t('gallery_page.desc')}</p>
       </div>
 
       {/* Filter */}
       <div className="flex gap-2 justify-center mb-8 animate-fade-in">
-        {[['all', '🖼️ Tất cả', items.length], ['image', '📷 Ảnh', items.filter(i => i.type === 'image').length], ['video', '🎬 Video', items.filter(i => i.type === 'video').length]].map(([val, label, count]) => (
+        {[['all', t('gallery_page.all'), items.length], ['image', t('gallery_page.photos'), items.filter(i => i.type === 'image').length], ['video', t('gallery_page.videos'), items.filter(i => i.type === 'video').length]].map(([val, label, count]) => (
           <button key={val} className={`btn ${filter === val ? 'btn-nshm' : 'btn-outline'}`} style={{fontSize: '0.85rem'}} onClick={() => setFilter(val)}>
             {label} ({count})
           </button>
@@ -54,12 +55,12 @@ const Gallery = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-16"><div style={{fontSize: '3rem'}}>⏳</div><p className="text-muted">Đang tải...</p></div>
+        <div className="text-center py-16"><div style={{fontSize: '3rem'}}>⏳</div><p className="text-muted">{t('gallery_page.loading')}</p></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 animate-fade-in">
           <div style={{fontSize: '4rem', marginBottom: '1rem'}}>📷</div>
-          <h3 className="text-muted text-xl mb-2">Chưa có ảnh/video</h3>
-          <p className="text-muted">Thư viện sẽ được cập nhật sau sự kiện.</p>
+          <h3 className="text-muted text-xl mb-2">{t('gallery_page.empty')}</h3>
+          <p className="text-muted">{t('gallery_page.empty_desc')}</p>
         </div>
       ) : (
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem'}}>

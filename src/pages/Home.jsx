@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getLocalData } from '../data/mockData';
 import { supabase } from '../supabaseClient';
+import { useI18n } from '../i18n/I18nContext';
 import { ChevronRight, ChevronDown, Leaf, Cpu, Wrench, FunctionSquare, Clock, X, Download, Award, Trophy, Medal, CheckCircle2, Navigation, Monitor } from 'lucide-react';
 import './Home.css';
 import '../components/Timeline.css';
@@ -70,6 +71,7 @@ const getAwardIcon = (id, color) => {
 
 const Home = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [mentors, setMentors] = useState([]);
   const [news, setNews] = useState([]);
   const [awards, setAwards] = useState([]);
@@ -230,13 +232,13 @@ const Home = () => {
       <section className="hero-section">
         <div className="container hero-grid gap-8 items-center">
           <div className="hero-content animate-fade-in">
-            <div className="badge mb-4 pulse-glow">Mùa Giải 2025-2026</div>
+            <div className="badge mb-4 pulse-glow">{t('hero.badge')}</div>
             <h1 className="hero-title">
-              <span className="text-nshm">Ngày Hội STEM</span> <br/>
-              <span className="text-gradient">Kiến Tạo Thế Giới Xanh</span>
+              <span className="text-nshm">{t('hero.title_1')}</span> <br/>
+              <span className="text-gradient">{t('hero.title_2')}</span>
             </h1>
             <p className="hero-subtitle mb-8">
-              Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai. Hành trình kiến tạo tương lai bắt đầu từ hôm nay.
+              {t('hero.desc')}
             </p>
             {/* Primary CTA - 2 nút chính */}
             <div className="hero-cta flex gap-4 flex-wrap mb-4">
@@ -262,9 +264,9 @@ const Home = () => {
 
             {/* Countdown Timer */}
             <div className="mt-8 animate-fade-in" style={{animationDelay: '0.3s'}}>
-              <p style={{fontSize: '0.85rem', color: '#64748b', fontWeight: 600, marginBottom: '0.5rem', letterSpacing: '0.5px'}}>⏳ Còn lại đến <span className="text-nshm" style={{fontWeight: 800}}>Ngày Hội STEM</span>:</p>
+              <p style={{fontSize: '0.85rem', color: '#64748b', fontWeight: 600, marginBottom: '0.5rem', letterSpacing: '0.5px'}}>⏳ {t('hero.countdown_label')} <span className="text-nshm" style={{fontWeight: 800}}>{t('hero.countdown_event')}</span>:</p>
               <div className="flex gap-4 flex-wrap">
-                {[{v: countdown.days, l: 'Ngày'}, {v: countdown.hours, l: 'Giờ'}, {v: countdown.mins, l: 'Phút'}, {v: countdown.secs, l: 'Giây'}].map((c, i) => (
+                {[{v: countdown.days, l: t('hero.days')}, {v: countdown.hours, l: t('hero.hours')}, {v: countdown.mins, l: t('hero.minutes')}, {v: countdown.secs, l: t('hero.seconds')}].map((c, i) => (
                   <div key={i} className="text-center" style={{background: 'rgba(255,255,255,0.9)', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '0.8rem 1.2rem', minWidth: '70px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
                     <div style={{fontSize: '1.8rem', fontWeight: 900, color: 'var(--nshm-red)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
                     <div style={{fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px'}}>{c.l}</div>
@@ -289,7 +291,7 @@ const Home = () => {
             {news.length > 0 && (
               <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--nshm-red)', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>📰 TIN MỚI</span>
+                  <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--nshm-red)', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>{t('home.news_badge')}</span>
                 </div>
                 {news.map((n, i) => (
                   <Link key={n.id} to="/tin-tuc" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
@@ -303,14 +305,14 @@ const Home = () => {
             {/* Milestone Countdowns */}
             <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
               <div className="flex items-center gap-2 mb-2">
-                <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-blue)', background: '#eff6ff', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>⏰ MỐC QUAN TRỌNG</span>
+                <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-blue)', background: '#eff6ff', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>{t('home.milestone_badge')}</span>
               </div>
               {/* Nearest milestone - live countdown */}
               {milestoneCD && (
                 <div style={{background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)', borderRadius: '10px', padding: '0.6rem 0.8rem', marginBottom: '0.5rem'}}>
                   <div style={{fontSize: '0.78rem', color: '#334155', fontWeight: 600, marginBottom: '0.3rem'}}>{milestoneCD.title}</div>
                   <div className="flex gap-2">
-                    {[{v: milestoneCD.days, l: 'ngày'}, {v: milestoneCD.hours, l: 'giờ'}, {v: milestoneCD.mins, l: 'phút'}, {v: milestoneCD.secs, l: 'giây'}].map((c, i) => (
+                    {[{v: milestoneCD.days, l: t('hero.days').toLowerCase()}, {v: milestoneCD.hours, l: t('hero.hours').toLowerCase()}, {v: milestoneCD.mins, l: t('hero.minutes').toLowerCase()}, {v: milestoneCD.secs, l: t('hero.seconds').toLowerCase()}].map((c, i) => (
                       <div key={i} style={{textAlign: 'center', background: 'white', borderRadius: '8px', padding: '0.3rem 0.5rem', minWidth: '42px', border: '1px solid #e2e8f0'}}>
                         <div style={{fontSize: '1.1rem', fontWeight: 900, color: milestoneCD.days <= 7 ? 'var(--nshm-red)' : 'var(--secondary-blue)', lineHeight: 1}}>{String(c.v).padStart(2, '0')}</div>
                         <div style={{fontSize: '0.55rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase'}}>{c.l}</div>
@@ -348,7 +350,7 @@ const Home = () => {
           {viewCount > 0 && (
             <div className="text-center mt-4" style={{fontSize: '0.8rem', color: '#94a3b8'}}>
               <span style={{background: 'rgba(255,255,255,0.9)', border: '1px solid #e2e8f0', borderRadius: '50px', padding: '0.4rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'}}>
-                👀 <span style={{fontWeight: 700, color: 'var(--primary-green)'}}>{viewCount.toLocaleString('vi-VN')}</span> lượt ghé thăm
+                👀 <span style={{fontWeight: 700, color: 'var(--primary-green)'}}>{viewCount.toLocaleString('vi-VN')}</span> {t('home.visits')}
               </span>
             </div>
           )}
@@ -359,24 +361,24 @@ const Home = () => {
       <section className="py-12 bg-white reveal">
         <div className="container" style={{maxWidth: '900px'}}>
           <div className="text-center mb-8">
-            <div className="stem-section-badge" style={{background: 'rgba(220,38,38,0.1)', color: 'var(--nshm-red)'}}>🚀 BẮT ĐẦU NHANH</div>
-            <h2 style={{fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-main)'}}>3 Bước Cho Đội Thi Mới</h2>
+            <div className="stem-section-badge" style={{background: 'rgba(220,38,38,0.1)', color: 'var(--nshm-red)'}}>{t('home.quick_start_badge')}</div>
+            <h2 style={{fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-main)'}}>{t('home.quick_start_title')}</h2>
           </div>
           <div className="grid grid-cols-3 gap-6">
             <div className="text-center" style={{padding: '1.5rem'}}>
               <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>1️⃣</div>
-              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--primary-green)'}}>Chọn Lĩnh Vực</h4>
-              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Xem 4 lĩnh vực S-T-E-M và gợi ý đề tài phù hợp bên dưới.</p>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--primary-green)'}}>{t('home.step1_title')}</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>{t('home.step1_desc')}</p>
             </div>
             <div className="text-center" style={{padding: '1.5rem'}}>
               <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>2️⃣</div>
-              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--secondary-blue)'}}>Tải Mẫu & Hướng Dẫn</h4>
-              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Tải mẫu hồ sơ, PPT và hướng dẫn trình chiếu ở các nút phía trên.</p>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--secondary-blue)'}}>{t('home.step2_title')}</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>{t('home.step2_desc')}</p>
             </div>
             <div className="text-center" style={{padding: '1.5rem'}}>
               <div style={{width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #fee2e2, #fecaca)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem'}}>3️⃣</div>
-              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--nshm-red)'}}>Đăng Ký & Nộp Bài</h4>
-              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>Đăng ký đội thi, chuẩn bị hồ sơ và nộp trước hạn Vòng Sơ Loại.</p>
+              <h4 style={{fontWeight: 700, marginBottom: '0.5rem', color: 'var(--nshm-red)'}}>{t('home.step3_title')}</h4>
+              <p className="text-muted" style={{fontSize: '0.85rem', lineHeight: 1.6}}>{t('home.step3_desc')}</p>
             </div>
           </div>
         </div>
@@ -386,8 +388,8 @@ const Home = () => {
       <section className="timeline-section py-20 bg-light">
         <div className="container">
           <div className="text-center mb-12 animate-fade-in">
-            <h2 className="section-title text-nshm">HÀNH TRÌNH CHINH PHỤC</h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Chuỗi sự kiện và lịch trình chi tiết của Ngày Hội STEM 2026.</p>
+            <h2 className="section-title text-nshm">{t('home.timeline_title')}</h2>
+            <p className="text-muted text-lg max-w-2xl mx-auto">{t('home.timeline_desc')}</p>
           </div>
 
           <div className="timeline-container animate-fade-in" style={{animationDelay: '0.2s'}}>
@@ -439,9 +441,9 @@ const Home = () => {
       <section className="domains-section py-20 relative bg-light stem-bg-pattern">
         <div className="container relative z-10">
           <div className="text-center mb-12 reveal">
-            <div className="stem-section-badge" style={{background: 'rgba(5,150,105,0.1)', color: 'var(--primary-green)'}}>🔬 LĨNH VỰC STEM</div>
-            <h2 className="section-title text-green-gradient">4 Lĩnh Vực Cốt Lõi</h2>
-            <p className="text-muted text-lg">Click trực tiếp vào từng lĩnh vực để xem gợi ý dự án chuyên sâu</p>
+            <div className="stem-section-badge" style={{background: 'rgba(5,150,105,0.1)', color: 'var(--primary-green)'}}>{t('home.fields_badge')}</div>
+            <h2 className="section-title text-green-gradient">{t('home.fields_title')}</h2>
+            <p className="text-muted text-lg">{t('home.fields_desc')}</p>
           </div>
           <div className="grid grid-cols-4 gap-6">
             <div className="domain-card card text-center hover-up" onClick={() => setActiveModal('Science')} style={{cursor: 'pointer'}}>
@@ -479,8 +481,8 @@ const Home = () => {
       <section className="rounds-section py-20 bg-white">
         <div className="container">
           <div className="text-center mb-12 reveal">
-            <div className="stem-section-badge" style={{background: 'rgba(37,99,235,0.1)', color: 'var(--secondary-blue)'}}>🏆 CẤU TRÚC CUỘC THI</div>
-            <h2 className="section-title text-nshm">CÁC VÒNG THI</h2>
+            <div className="stem-section-badge" style={{background: 'rgba(37,99,235,0.1)', color: 'var(--secondary-blue)'}}>{t('home.rounds_badge')}</div>
+            <h2 className="section-title text-nshm">{t('home.rounds_title')}</h2>
             <p className="text-muted text-lg max-w-2xl mx-auto">Cuộc thi được tổ chức tinh gọn qua 02 vòng thi với nội dung thực tiễn, đánh giá năng lực toàn diện của học sinh.</p>
           </div>
           

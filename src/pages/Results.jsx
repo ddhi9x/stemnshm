@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Trophy, Users, ArrowLeft } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
 
 const Results = () => {
+  const { t } = useI18n();
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -33,28 +34,28 @@ const Results = () => {
   return (
     <div className="container py-20" style={{maxWidth: '1000px', margin: '0 auto'}}>
       <div className="text-center mb-12 animate-fade-in">
-        <div className="stem-section-badge" style={{background: '#fef9c3', color: '#ca8a04'}}>🏆 KẾT QUẢ</div>
-        <h1 className="section-title text-green-gradient">Công Bố Kết Quả</h1>
-        <p className="text-muted text-lg max-w-2xl mx-auto">Danh sách các đội thi xuất sắc lọt vào vòng Chung Kết Ngày Hội STEM 2026.</p>
+        <div className="stem-section-badge" style={{background: '#fef9c3', color: '#ca8a04'}}>{t('results_page.badge')}</div>
+        <h1 className="section-title text-green-gradient">{t('results_page.title')}</h1>
+        <p className="text-muted text-lg max-w-2xl mx-auto">{t('results_page.desc')}</p>
       </div>
 
       {loading ? (
         <div className="text-center py-16">
           <div style={{fontSize: '3rem'}}>⏳</div>
-          <p className="text-muted mt-4">Đang tải kết quả...</p>
+          <p className="text-muted mt-4">{t('results_page.loading')}</p>
         </div>
       ) : teams.length === 0 ? (
         <div className="text-center py-16 animate-fade-in">
           <div style={{fontSize: '4rem', marginBottom: '1rem'}}>📋</div>
-          <h3 className="text-muted text-xl mb-2">Chưa có kết quả</h3>
-          <p className="text-muted mb-6">Kết quả sẽ được công bố sau khi Ban Tổ Chức hoàn tất chấm điểm vòng Sơ Loại.</p>
-          <Link to="/" className="btn btn-primary">← Về Trang Chủ</Link>
+          <h3 className="text-muted text-xl mb-2">{t('results_page.empty')}</h3>
+          <p className="text-muted mb-6">{t('results_page.empty_desc')}</p>
+          <Link to="/" className="btn btn-primary">{t('results_page.back_home')}</Link>
         </div>
       ) : (
         <>
           {/* Filter */}
           <div className="flex gap-2 mb-8 justify-center flex-wrap animate-fade-in">
-            {[['all', '🏆 Tất cả'], ['Science', '🔬 Science'], ['Technology', '💻 Technology'], ['Engineering', '⚙️ Engineering'], ['Mathematics', '📐 Mathematics']].map(([val, label]) => (
+            {[['all', t('results_page.all')], ['Science', '🔬 Science'], ['Technology', '💻 Technology'], ['Engineering', '⚙️ Engineering'], ['Mathematics', '📐 Mathematics']].map(([val, label]) => (
               <button key={val} className={`btn ${filter === val ? 'btn-nshm' : 'btn-outline'}`} style={{fontSize: '0.85rem', padding: '0.4rem 1rem'}} onClick={() => setFilter(val)}>
                 {label}
               </button>
@@ -101,15 +102,15 @@ const Results = () => {
           </div>
 
           <div className="text-center mt-8 animate-fade-in">
-            <p className="text-muted" style={{fontSize: '0.85rem'}}>Tổng cộng <span style={{fontWeight: 700, color: 'var(--primary-green)'}}>{teams.length}</span> đội thi lọt vào Chung Kết 🎉</p>
+            <p className="text-muted" style={{fontSize: '0.85rem'}}>{t('results_page.total')} <span style={{fontWeight: 700, color: 'var(--primary-green)'}}>{teams.length}</span> {t('results_page.teams_qualified')}</p>
           </div>
         </>
       )}
 
       {/* Navigation */}
       <div className="text-center mt-8">
-        <Link to="/" className="btn btn-outline" style={{marginRight: '1rem'}}>← Trang Chủ</Link>
-        <Link to="/chung-ket" className="btn btn-primary">🎉 Xem Lịch Chung Kết →</Link>
+        <Link to="/" className="btn btn-outline" style={{marginRight: '1rem'}}>{t('results_page.back_home')}</Link>
+        <Link to="/chung-ket" className="btn btn-primary">{t('results_page.view_finals')}</Link>
       </div>
     </div>
   );

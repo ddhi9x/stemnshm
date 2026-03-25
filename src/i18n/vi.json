@@ -14,26 +14,176 @@
   },
   "hero": {
     "badge": "Mùa Giải 2025–2026",
-    "title": "Ngày Hội STEM — Kiến Tạo Thế Giới Xanh",
-    "desc": "Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai.",
-    "register": "Đăng Ký Tham Gia",
-    "submit": "Nộp Bài / Sản Phẩm",
-    "countdown_label": "Còn lại đến Ngày Hội STEM:",
-    "days": "NGÀY",
-    "hours": "GIỜ",
-    "minutes": "PHÚT",
-    "seconds": "GIÂY"
+    "title_1": "Ngày Hội STEM",
+    "title_2": "Kiến Tạo Thế Giới Xanh",
+    "desc": "Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai. Hành trình kiến tạo tương lai bắt đầu từ hôm nay.",
+    "countdown_label": "Còn lại đến",
+    "countdown_event": "Ngày Hội STEM",
+    "days": "Ngày",
+    "hours": "Giờ",
+    "minutes": "Phút",
+    "seconds": "Giây"
   },
-  "sections": {
-    "quick_start": "BẮT ĐẦU NHANH",
-    "fields": "4 LĨNH VỰC",
-    "rounds": "2 VÒNG THI",
-    "awards": "GIẢI THƯỞNG",
-    "criteria": "TIÊU CHÍ",
-    "latest_news": "TIN MỚI",
-    "milestones": "MỐC QUAN TRỌNG",
-    "faq": "CÂU HỎI THƯỜNG GẶP",
-    "visits": "lượt ghé thăm"
+  "home": {
+    "news_badge": "📰 TIN MỚI",
+    "milestone_badge": "⏰ MỐC QUAN TRỌNG",
+    "days_left": "còn {n} ngày",
+    "visits": "lượt ghé thăm",
+    "quick_start_badge": "🚀 BẮT ĐẦU NHANH",
+    "quick_start_title": "3 Bước Cho Đội Thi Mới",
+    "step1_title": "Chọn Lĩnh Vực",
+    "step1_desc": "Xem 4 lĩnh vực S-T-E-M và gợi ý đề tài phù hợp bên dưới.",
+    "step2_title": "Tải Mẫu & Hướng Dẫn",
+    "step2_desc": "Tải mẫu hồ sơ, PPT và hướng dẫn trình chiếu ở các nút phía trên.",
+    "step3_title": "Đăng Ký & Nộp Bài",
+    "step3_desc": "Đăng ký đội thi, chuẩn bị hồ sơ và nộp trước hạn Vòng Sơ Loại.",
+    "timeline_title": "HÀNH TRÌNH CHINH PHỤC",
+    "timeline_desc": "Chuỗi sự kiện và lịch trình chi tiết của Ngày Hội STEM 2026.",
+    "fields_badge": "🔬 4 LĨNH VỰC STEM",
+    "fields_title": "Chọn Lĩnh Vực Của Bạn",
+    "fields_desc": "Click vào từng lĩnh vực để xem gợi ý đề tài và yêu cầu chi tiết.",
+    "ideas_title": "💡 Gợi ý đề tài",
+    "requirements_title": "📋 Yêu cầu",
+    "rounds_badge": "🏆 2 VÒNG THI",
+    "rounds_title": "Cấu Trúc Cuộc Thi",
+    "round1_title": "Vòng Sơ Loại",
+    "round1_desc": "Nộp ý tưởng qua PowerPoint, bản vẽ thiết kế kỹ thuật.",
+    "round2_title": "Vòng Chung Kết",
+    "round2_desc": "Trưng bày, vận hành mô hình thực tế tại gian hàng STEM.",
+    "awards_badge": "🎖️ GIẢI THƯỞNG",
+    "awards_title": "Cơ Cấu Giải Thưởng",
+    "awards_desc": "Hệ thống giải thưởng giá trị dành cho các đội thi xuất sắc.",
+    "criteria_badge": "📝 TIÊU CHÍ",
+    "criteria_title": "Tiêu Chí Đánh Giá",
+    "criteria_desc": "Ban Giám Khảo đánh giá dựa trên các tiêu chí sau.",
+    "scoring_title": "📊 Ma Trận Điểm",
+    "faq_badge": "❓ FAQ",
+    "faq_title": "Câu Hỏi Thường Gặp",
+    "faq_desc": "Giải đáp nhanh các thắc mắc phổ biến về cuộc thi.",
+    "view_all_faq": "Xem tất cả FAQ →",
+    "activities_badge": "🎪 HOẠT ĐỘNG NGÀY HỘI",
+    "activities_title": "5 Trạm Trải Nghiệm STEM",
+    "activities_desc": "Ngoài phần thi chính thức, ngày hội còn có 5 trạm trải nghiệm thú vị.",
+    "view_schedule": "📅 Xem Lịch Chung Kết →"
+  },
+  "domains": {
+    "Science": {
+      "title": "Science (Khoa học)",
+      "desc": "Tập trung vào khoa học sự sống, năng lượng xanh, và hóa học ứng dụng.",
+      "ideas": [
+        "Nghiên cứu chế phẩm sinh học xử lý rác thải hữu cơ hữu hiệu.",
+        "Sáng chế vật liệu mới dễ phân hủy thay thế nhựa.",
+        "Dự án chiết xuất tinh dầu, làm xà phòng từ nguyên liệu thiên nhiên.",
+        "Khám phá các dạng năng lượng tái tạo (điện gió, mặt trời)."
+      ],
+      "req": "Dự án cần thể hiện rõ nguyên lý khoa học đằng sau và có số liệu thực nghiệm chứng minh bảo vệ môi trường."
+    },
+    "Technology": {
+      "title": "Technology (Công nghệ)",
+      "desc": "Ứng dụng lập trình, IoT, và Trí tuệ nhân tạo (AI) vào giải pháp xanh.",
+      "ideas": [
+        "Lập trình hệ thống IoT giám sát chất lượng không khí, độ ẩm đất.",
+        "Xây dựng App/Website nâng cao nhận thức bảo vệ môi trường.",
+        "Thiết kế thùng rác ứng dụng AI để tự động phân loại rác thải.",
+        "Xe robot tự hành dọn rác, thu gom phế liệu trên sa bàn."
+      ],
+      "req": "Cần có sản phẩm phần mềm, hoặc mạch điện tử/vi điều khiển (Arduino, Microbit...) ứng dụng code thực tế."
+    },
+    "Engineering": {
+      "title": "Engineering (Kỹ thuật)",
+      "desc": "Hướng tới thiết kế, lắp ráp và chế tạo thành công một mô hình vật lý.",
+      "ideas": [
+        "Chế tạo mô hình máy lọc nước tuần hoàn mini.",
+        "Thiết kế hệ thống tưới tiêu tự động thông minh bằng vật liệu tái chế.",
+        "Mô hình nhà màng, nhà kính nông nghiệp tiết kiệm năng lượng.",
+        "Chế tạo hệ thống ròng rọc, máy nén rác cơ học cho trường học."
+      ],
+      "req": "Sản phẩm phải là một mô hình vật lý hoàn chỉnh, ưu tiên sử dụng vật liệu tái chế 100% để bảo vệ môi trường xanh."
+    },
+    "Mathematics": {
+      "title": "Mathematics (Toán học)",
+      "desc": "Sử dụng tư duy hình học, thống kê, tối ưu hóa thuật toán đo lường.",
+      "ideas": [
+        "Xây dựng mô hình toán học thống kê lượng rác thải báo cáo trường học.",
+        "Thiết kế hình học tối ưu cho kiến trúc xanh tiết kiệm diện tích.",
+        "Thuật toán tối ưu hóa đường đi cho robot dọn rác.",
+        "Phân tích số liệu và biểu đồ đo lường mức độ ô nhiễm không khí."
+      ],
+      "req": "Đội thi cần làm rõ cách ứng dụng toán học (công thức, đồ thị, mô hình 3D) vào bài toán thực tiễn thay vì chỉ nêu ý tưởng suông."
+    }
+  },
+  "news_page": {
+    "badge": "📰 CẬP NHẬT",
+    "title": "Tin Tức & Thông Báo",
+    "desc": "Theo dõi những thông tin mới nhất về Ngày Hội STEM 2026.",
+    "empty": "Chưa có tin tức nào",
+    "empty_desc": "Các bài viết mới sẽ được cập nhật tại đây, hãy quay lại sau nhé!",
+    "read_more": "Đọc thêm →",
+    "back_to_list": "Quay lại danh sách",
+    "not_found": "Không tìm thấy bài viết",
+    "related": "📰 Bài viết khác",
+    "no_related": "Chưa có bài viết nào khác.",
+    "quick_links": "🔗 Liên kết nhanh",
+    "schedule_link": "📅 Lịch trình cuộc thi",
+    "mentor_link": "👨‍🏫 Danh sách Mentor",
+    "faq_link": "❓ Câu hỏi thường gặp",
+    "share": "Chia sẻ",
+    "copy_link": "Copy link",
+    "copied": "Đã copy!",
+    "loading": "Đang tải bài viết..."
+  },
+  "results_page": {
+    "badge": "🏆 KẾT QUẢ",
+    "title": "Công Bố Kết Quả",
+    "desc": "Danh sách các đội thi xuất sắc lọt vào vòng Chung Kết Ngày Hội STEM 2026.",
+    "loading": "Đang tải kết quả...",
+    "empty": "Chưa có kết quả",
+    "empty_desc": "Kết quả sẽ được công bố sau khi Ban Tổ Chức hoàn tất chấm điểm vòng Sơ Loại.",
+    "all": "🏆 Tất cả",
+    "total": "Tổng cộng",
+    "teams_qualified": "đội thi lọt vào Chung Kết 🎉",
+    "back_home": "← Trang Chủ",
+    "view_finals": "🎉 Xem Lịch Chung Kết →"
+  },
+  "gallery_page": {
+    "badge": "📸 THƯ VIỆN",
+    "title": "Thư Viện Ảnh & Video",
+    "desc": "Những khoảnh khắc ấn tượng từ Ngày Hội STEM.",
+    "all": "🖼️ Tất cả",
+    "photos": "📷 Ảnh",
+    "videos": "🎬 Video",
+    "empty": "Chưa có ảnh/video",
+    "empty_desc": "Thư viện sẽ được cập nhật sau sự kiện.",
+    "loading": "Đang tải..."
+  },
+  "passport_page": {
+    "badge": "🛂 PASSPORT",
+    "title": "Passport STEM",
+    "desc": "Đóng dấu tại mỗi trạm bạn tham gia. Hoàn thành tất cả để nhận Passport Vàng!",
+    "header": "STEM PASSPORT",
+    "school": "NGÔI SAO HOÀNG MAI • 2026",
+    "progress": "Tiến độ",
+    "stations": "trạm",
+    "gold_title": "PASSPORT VÀNG!",
+    "gold_desc": "Chúc mừng bạn đã hoàn thành tất cả các trạm STEM!",
+    "hint": "💡 Nhấn vào mỗi trạm khi bạn hoàn thành. Dữ liệu được lưu trên thiết bị của bạn."
+  },
+  "faq_page": {
+    "badge": "❓ HỎI ĐÁP",
+    "title": "Câu Hỏi Thường Gặp",
+    "desc": "Giải đáp nhanh những thắc mắc phổ biến nhất về Ngày Hội STEM.",
+    "empty": "Chưa có FAQ nào",
+    "contact": "Liên hệ Ban Tổ Chức"
+  },
+  "footer": {
+    "stem_title": "Ngày Hội STEM",
+    "contact": "Liên Hệ",
+    "support": "Hỗ Trợ",
+    "rules": "Thể lệ chi tiết",
+    "faq": "Câu hỏi thường gặp",
+    "mentor": "Mentor & Hỗ trợ",
+    "schedule": "Lịch trình sự kiện",
+    "copyright": "Trường Ngôi Sao Hoàng Mai. All Rights Reserved."
   },
   "common": {
     "read_more": "Đọc thêm",
@@ -43,10 +193,27 @@
     "share": "Chia sẻ",
     "copy_link": "Copy link",
     "copied": "Đã copy!",
-    "view_all": "Xem tất cả"
+    "view_all": "Xem tất cả",
+    "back_home": "← Về Trang Chủ"
   },
-  "footer": {
-    "copyright": "Ngày Hội STEM — Trường Ngôi Sao Hoàng Mai",
-    "contact": "Liên hệ"
+  "about_page": {
+    "badge": "📚 GIỚI THIỆU",
+    "title": "Về Ngày Hội STEM",
+    "message_title": "📝 Thông Điệp",
+    "focus_title": "🎯 Trọng Tâm",
+    "target_title": "👥 Đối Tượng",
+    "format_title": "📋 Hình Thức"
+  },
+  "mentor_page": {
+    "badge": "👨‍🏫 CỐ VẤN",
+    "title": "Đội Ngũ Mentor",
+    "desc": "Các thầy cô sẽ đồng hành cùng đội thi trong suốt hành trình.",
+    "filter_all": "Tất cả",
+    "filter_hint": "Chọn lĩnh vực để lọc danh sách Mentor"
+  },
+  "schedule_page": {
+    "badge": "📅 LỊCH TRÌNH",
+    "title": "Lịch Trình Cuộc Thi",
+    "desc": "Các mốc thời gian quan trọng bạn cần lưu ý."
   }
 }

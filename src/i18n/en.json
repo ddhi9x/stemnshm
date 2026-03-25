@@ -1,52 +1,40 @@
 {
-  "nav": {
-    "home": "Home",
-    "about": "About",
-    "mentor": "Mentors",
-    "schedule": "Schedule",
-    "news": "News",
-    "finals": "Finals",
-    "faq": "FAQ",
-    "register": "Register",
-    "gallery": "Gallery",
-    "results": "Results",
-    "passport": "Passport"
+  "nav": { "home": "Home", "about": "About", "mentor": "Mentors", "schedule": "Schedule", "news": "News", "finals": "Finals", "faq": "FAQ", "register": "Register", "gallery": "Gallery", "results": "Results", "passport": "Passport" },
+  "hero": { "badge": "Season 2025–2026", "title_1": "STEM Festival", "title_2": "Building a Green World", "desc": "Ignite creativity, spread the passion for science & technology for students of Ngoi Sao Hoang Mai School. The journey to build the future starts today.", "countdown_label": "Countdown to", "countdown_event": "STEM Festival", "days": "Days", "hours": "Hours", "minutes": "Mins", "seconds": "Secs" },
+  "home": {
+    "news_badge": "📰 LATEST NEWS", "milestone_badge": "⏰ KEY MILESTONES", "days_left": "{n} days left", "visits": "visits",
+    "quick_start_badge": "🚀 QUICK START", "quick_start_title": "3 Steps for New Teams",
+    "step1_title": "Choose Field", "step1_desc": "Browse 4 STEM fields and suggested topics below.",
+    "step2_title": "Download Templates", "step2_desc": "Download application forms, PPT templates and presentation guides above.",
+    "step3_title": "Register & Submit", "step3_desc": "Register your team, prepare documents and submit before the Preliminary deadline.",
+    "timeline_title": "THE JOURNEY", "timeline_desc": "Event timeline and detailed schedule of STEM Festival 2026.",
+    "fields_badge": "🔬 4 STEM FIELDS", "fields_title": "Choose Your Field", "fields_desc": "Click on each field to see suggested topics and detailed requirements.",
+    "ideas_title": "💡 Topic Ideas", "requirements_title": "📋 Requirements",
+    "rounds_badge": "🏆 2 ROUNDS", "rounds_title": "Competition Structure",
+    "round1_title": "Preliminary Round", "round1_desc": "Submit ideas via PowerPoint, technical design drawings.",
+    "round2_title": "Grand Finals", "round2_desc": "Display and operate physical models at the STEM booth.",
+    "awards_badge": "🎖️ AWARDS", "awards_title": "Prize Structure", "awards_desc": "Valuable prizes for outstanding teams.",
+    "criteria_badge": "📝 CRITERIA", "criteria_title": "Evaluation Criteria", "criteria_desc": "The jury evaluates based on the following criteria.",
+    "scoring_title": "📊 Scoring Matrix",
+    "faq_badge": "❓ FAQ", "faq_title": "Frequently Asked Questions", "faq_desc": "Quick answers to common questions about the competition.",
+    "view_all_faq": "View all FAQ →",
+    "activities_badge": "🎪 FESTIVAL ACTIVITIES", "activities_title": "5 STEM Experience Stations", "activities_desc": "Besides the main competition, the festival features 5 exciting experience stations.",
+    "view_schedule": "📅 View Finals Schedule →"
   },
-  "hero": {
-    "badge": "Season 2025–2026",
-    "title": "STEM Festival — Building a Green World",
-    "desc": "Ignite creativity, spread the passion for science & technology for students of Ngoi Sao Hoang Mai School.",
-    "register": "Register Now",
-    "submit": "Submit Project",
-    "countdown_label": "Countdown to STEM Festival:",
-    "days": "DAYS",
-    "hours": "HOURS",
-    "minutes": "MINS",
-    "seconds": "SECS"
+  "domains": {
+    "Science": { "title": "Science", "desc": "Focus on life sciences, green energy, and applied chemistry.", "ideas": ["Bio-product research for effective organic waste treatment.", "Creating new biodegradable materials to replace plastic.", "Essential oil extraction and natural soap-making projects.", "Exploring renewable energy (wind, solar)."], "req": "Projects must clearly demonstrate underlying scientific principles with experimental data proving environmental protection." },
+    "Technology": { "title": "Technology", "desc": "Applying programming, IoT, and AI to green solutions.", "ideas": ["IoT systems for monitoring air quality and soil moisture.", "Apps/Websites to raise environmental protection awareness.", "AI-powered trash cans for automatic waste sorting.", "Self-driving robots for cleaning and waste collection."], "req": "Must include software products or electronic circuits/microcontrollers (Arduino, Microbit...) with real code applications." },
+    "Engineering": { "title": "Engineering", "desc": "Design, assemble and build a physical model.", "ideas": ["Mini water filtration system model.", "Smart automatic irrigation system from recycled materials.", "Greenhouse model for energy-efficient agriculture.", "Pulley system and mechanical waste compactor for schools."], "req": "Product must be a complete physical model, prioritizing 100% recycled materials for environmental protection." },
+    "Mathematics": { "title": "Mathematics", "desc": "Using geometry, statistics, and optimization algorithms.", "ideas": ["Mathematical model for school waste statistics reporting.", "Optimal geometry design for green architecture.", "Path optimization algorithm for waste-cleaning robots.", "Data analysis and pollution measurement charts."], "req": "Teams must clearly demonstrate mathematical application (formulas, graphs, 3D models) in practical problems." }
   },
-  "sections": {
-    "quick_start": "QUICK START",
-    "fields": "4 FIELDS",
-    "rounds": "2 ROUNDS",
-    "awards": "AWARDS",
-    "criteria": "CRITERIA",
-    "latest_news": "LATEST NEWS",
-    "milestones": "KEY MILESTONES",
-    "faq": "FAQ",
-    "visits": "visits"
-  },
-  "common": {
-    "read_more": "Read more",
-    "back": "Go back",
-    "loading": "Loading...",
-    "no_data": "No data available",
-    "share": "Share",
-    "copy_link": "Copy link",
-    "copied": "Copied!",
-    "view_all": "View all"
-  },
-  "footer": {
-    "copyright": "STEM Festival — Ngoi Sao Hoang Mai School",
-    "contact": "Contact"
-  }
+  "news_page": { "badge": "📰 UPDATES", "title": "News & Announcements", "desc": "Stay updated with the latest information about STEM Festival 2026.", "empty": "No news yet", "empty_desc": "New articles will be updated here, please come back later!", "read_more": "Read more →", "back_to_list": "Back to list", "not_found": "Article not found", "related": "📰 Other Articles", "no_related": "No other articles yet.", "quick_links": "🔗 Quick Links", "schedule_link": "📅 Competition Schedule", "mentor_link": "👨‍🏫 Mentor List", "faq_link": "❓ FAQ", "share": "Share", "copy_link": "Copy link", "copied": "Copied!", "loading": "Loading article..." },
+  "results_page": { "badge": "🏆 RESULTS", "title": "Results Announcement", "desc": "List of outstanding teams qualifying for the STEM Festival 2026 Grand Finals.", "loading": "Loading results...", "empty": "No results yet", "empty_desc": "Results will be announced after the Organizing Committee completes Preliminary round scoring.", "all": "🏆 All", "total": "Total", "teams_qualified": "teams qualified for Finals 🎉", "back_home": "← Home", "view_finals": "🎉 View Finals Schedule →" },
+  "gallery_page": { "badge": "📸 GALLERY", "title": "Photo & Video Gallery", "desc": "Impressive moments from the STEM Festival.", "all": "🖼️ All", "photos": "📷 Photos", "videos": "🎬 Videos", "empty": "No photos/videos yet", "empty_desc": "Gallery will be updated after the event.", "loading": "Loading..." },
+  "passport_page": { "badge": "🛂 PASSPORT", "title": "STEM Passport", "desc": "Stamp each station you visit. Complete all to earn the Golden Passport!", "header": "STEM PASSPORT", "school": "NGOI SAO HOANG MAI • 2026", "progress": "Progress", "stations": "stations", "gold_title": "GOLDEN PASSPORT!", "gold_desc": "Congratulations! You've completed all STEM stations!", "hint": "💡 Tap each station when completed. Data is saved on your device." },
+  "faq_page": { "badge": "❓ Q&A", "title": "Frequently Asked Questions", "desc": "Quick answers to the most common questions about the STEM Festival.", "empty": "No FAQ yet", "contact": "Contact Organizing Committee" },
+  "footer": { "stem_title": "STEM Festival", "contact": "Contact", "support": "Support", "rules": "Detailed Rules", "faq": "FAQ", "mentor": "Mentor & Support", "schedule": "Event Schedule", "copyright": "Ngoi Sao Hoang Mai School. All Rights Reserved." },
+  "common": { "read_more": "Read more", "back": "Go back", "loading": "Loading...", "no_data": "No data", "share": "Share", "copy_link": "Copy link", "copied": "Copied!", "view_all": "View all", "back_home": "← Back to Home" },
+  "about_page": { "badge": "📚 ABOUT", "title": "About STEM Festival", "message_title": "📝 Message", "focus_title": "🎯 Focus", "target_title": "👥 Audience", "format_title": "📋 Format" },
+  "mentor_page": { "badge": "👨‍🏫 MENTORS", "title": "Mentor Team", "desc": "Teachers who will accompany teams throughout the journey.", "filter_all": "All", "filter_hint": "Select a field to filter Mentors" },
+  "schedule_page": { "badge": "📅 SCHEDULE", "title": "Competition Schedule", "desc": "Important timelines you need to remember." }
 }

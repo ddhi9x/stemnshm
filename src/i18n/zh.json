@@ -1,52 +1,40 @@
 {
-  "nav": {
-    "home": "首页",
-    "about": "介绍",
-    "mentor": "导师",
-    "schedule": "日程",
-    "news": "新闻",
-    "finals": "决赛",
-    "faq": "常见问题",
-    "register": "报名参加",
-    "gallery": "图库",
-    "results": "结果",
-    "passport": "护照"
+  "nav": { "home": "首页", "about": "介绍", "mentor": "导师", "schedule": "日程", "news": "新闻", "finals": "决赛", "faq": "常见问题", "register": "报名参加", "gallery": "图库", "results": "结果", "passport": "护照" },
+  "hero": { "badge": "2025–2026赛季", "title_1": "STEM嘉年华", "title_2": "构建绿色世界", "desc": "激发创造力，传播科学技术热情，面向Ngôi Sao Hoàng Mai学校学生。构建未来的旅程从今天开始。", "countdown_label": "距", "countdown_event": "STEM嘉年华", "days": "天", "hours": "时", "minutes": "分", "seconds": "秒" },
+  "home": {
+    "news_badge": "📰 最新消息", "milestone_badge": "⏰ 重要节点", "days_left": "还有{n}天", "visits": "次访问",
+    "quick_start_badge": "🚀 快速开始", "quick_start_title": "新团队3步走",
+    "step1_title": "选择领域", "step1_desc": "浏览下方4个STEM领域和建议主题。",
+    "step2_title": "下载模板", "step2_desc": "在上方按钮下载申请表、PPT模板和演示指南。",
+    "step3_title": "报名提交", "step3_desc": "注册团队，准备材料，在初赛截止前提交。",
+    "timeline_title": "征程", "timeline_desc": "STEM嘉年华2026活动时间表和详细日程。",
+    "fields_badge": "🔬 4大STEM领域", "fields_title": "选择你的领域", "fields_desc": "点击每个领域查看建议主题和详细要求。",
+    "ideas_title": "💡 主题建议", "requirements_title": "📋 要求",
+    "rounds_badge": "🏆 2轮比赛", "rounds_title": "比赛结构",
+    "round1_title": "初赛", "round1_desc": "通过PPT提交创意和技术设计图。",
+    "round2_title": "决赛", "round2_desc": "在STEM展位展示和运行实体模型。",
+    "awards_badge": "🎖️ 奖项", "awards_title": "奖项设置", "awards_desc": "为优秀团队设立的奖项。",
+    "criteria_badge": "📝 标准", "criteria_title": "评审标准", "criteria_desc": "评委根据以下标准进行评分。",
+    "scoring_title": "📊 评分矩阵",
+    "faq_badge": "❓ 常见问题", "faq_title": "常见问题", "faq_desc": "关于比赛的常见问题快速解答。",
+    "view_all_faq": "查看所有FAQ →",
+    "activities_badge": "🎪 嘉年华活动", "activities_title": "5个STEM体验站", "activities_desc": "除主要比赛外，嘉年华还有5个精彩体验站。",
+    "view_schedule": "📅 查看决赛日程 →"
   },
-  "hero": {
-    "badge": "2025–2026赛季",
-    "title": "STEM嘉年华 — 构建绿色世界",
-    "desc": "激发创造力，传播科学技术热情，面向Ngôi Sao Hoàng Mai学校学生。",
-    "register": "立即报名",
-    "submit": "提交作品",
-    "countdown_label": "距STEM嘉年华倒计时：",
-    "days": "天",
-    "hours": "时",
-    "minutes": "分",
-    "seconds": "秒"
+  "domains": {
+    "Science": { "title": "科学", "desc": "关注生命科学、绿色能源和应用化学。", "ideas": ["生物制品处理有机废物研究。", "创造可替代塑料的新型可降解材料。", "天然原料提取精油、制作肥皂项目。", "探索可再生能源（风能、太阳能）。"], "req": "项目需清楚展示科学原理，并提供证明环境保护的实验数据。" },
+    "Technology": { "title": "技术", "desc": "将编程、物联网和人工智能应用于绿色解决方案。", "ideas": ["监测空气质量和土壤湿度的物联网系统。", "提高环保意识的应用/网站。", "AI自动分类垃圾桶。", "自动清洁和收集废物的机器人。"], "req": "需有软件产品或电子电路/微控制器（Arduino、Microbit等）的实际代码应用。" },
+    "Engineering": { "title": "工程", "desc": "设计、组装和制造物理模型。", "ideas": ["迷你水循环过滤系统模型。", "用回收材料制作的智能自动灌溉系统。", "节能农业温室模型。", "学校用滑轮系统和机械垃圾压缩机。"], "req": "产品必须是完整的物理模型，优先使用100%回收材料。" },
+    "Mathematics": { "title": "数学", "desc": "运用几何、统计和优化算法。", "ideas": ["学校废物统计报告数学模型。", "绿色建筑的最优几何设计。", "清洁机器人路径优化算法。", "污染测量数据分析和图表。"], "req": "团队需清楚展示数学应用（公式、图表、3D模型）在实际问题中的运用。" }
   },
-  "sections": {
-    "quick_start": "快速开始",
-    "fields": "4大领域",
-    "rounds": "2轮比赛",
-    "awards": "奖项",
-    "criteria": "评审标准",
-    "latest_news": "最新消息",
-    "milestones": "重要节点",
-    "faq": "常见问题",
-    "visits": "次访问"
-  },
-  "common": {
-    "read_more": "阅读更多",
-    "back": "返回",
-    "loading": "加载中...",
-    "no_data": "暂无数据",
-    "share": "分享",
-    "copy_link": "复制链接",
-    "copied": "已复制！",
-    "view_all": "查看全部"
-  },
-  "footer": {
-    "copyright": "STEM嘉年华 — Ngôi Sao Hoàng Mai学校",
-    "contact": "联系方式"
-  }
+  "news_page": { "badge": "📰 更新", "title": "新闻与公告", "desc": "关注STEM嘉年华2026的最新信息。", "empty": "暂无新闻", "empty_desc": "新文章将在此更新，请稍后回来！", "read_more": "阅读更多 →", "back_to_list": "返回列表", "not_found": "未找到文章", "related": "📰 其他文章", "no_related": "暂无其他文章。", "quick_links": "🔗 快速链接", "schedule_link": "📅 比赛日程", "mentor_link": "👨‍🏫 导师列表", "faq_link": "❓ 常见问题", "share": "分享", "copy_link": "复制链接", "copied": "已复制！", "loading": "加载文章中..." },
+  "results_page": { "badge": "🏆 结果", "title": "结果公告", "desc": "入围STEM嘉年华2026决赛的优秀团队名单。", "loading": "加载结果中...", "empty": "暂无结果", "empty_desc": "初赛评分完成后将公布结果。", "all": "🏆 全部", "total": "共计", "teams_qualified": "个团队入围决赛 🎉", "back_home": "← 首页", "view_finals": "🎉 查看决赛日程 →" },
+  "gallery_page": { "badge": "📸 图库", "title": "照片与视频库", "desc": "STEM嘉年华的精彩瞬间。", "all": "🖼️ 全部", "photos": "📷 照片", "videos": "🎬 视频", "empty": "暂无照片/视频", "empty_desc": "活动后将更新图库。", "loading": "加载中..." },
+  "passport_page": { "badge": "🛂 护照", "title": "STEM护照", "desc": "在每个参与的站点盖章。完成所有站点获得金色护照！", "header": "STEM护照", "school": "NGÔI SAO HOÀNG MAI • 2026", "progress": "进度", "stations": "个站", "gold_title": "金色护照！", "gold_desc": "恭喜你完成了所有STEM站点！", "hint": "💡 完成后点击每个站点。数据保存在您的设备上。" },
+  "faq_page": { "badge": "❓ 问答", "title": "常见问题", "desc": "关于STEM嘉年华最常见问题的快速解答。", "empty": "暂无FAQ", "contact": "联系组委会" },
+  "footer": { "stem_title": "STEM嘉年华", "contact": "联系方式", "support": "支持", "rules": "详细规则", "faq": "常见问题", "mentor": "导师支持", "schedule": "活动日程", "copyright": "Ngôi Sao Hoàng Mai学校。保留所有权利。" },
+  "common": { "read_more": "阅读更多", "back": "返回", "loading": "加载中...", "no_data": "暂无数据", "share": "分享", "copy_link": "复制链接", "copied": "已复制！", "view_all": "查看全部", "back_home": "← 返回首页" },
+  "about_page": { "badge": "📚 介绍", "title": "关于STEM嘉年华", "message_title": "📝 信息", "focus_title": "🎯 重点", "target_title": "👥 对象", "format_title": "📋 形式" },
+  "mentor_page": { "badge": "👨‍🏫 导师", "title": "导师团队", "desc": "陪伴团队走过整个旅程的老师们。", "filter_all": "全部", "filter_hint": "选择领域筛选导师" },
+  "schedule_page": { "badge": "📅 日程", "title": "比赛日程", "desc": "您需要注意的重要时间节点。" }
 }
