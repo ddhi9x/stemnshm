@@ -14,7 +14,7 @@ const AdminDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
-  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '' });
+  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '', label_register: 'Đăng Ký Tham Gia', label_submit: 'Nộp Bài / Sản Phẩm', label_hoso: 'Tải Mẫu Hồ Sơ', label_ppt: 'Mẫu Trình Bày PPT', label_guide: 'HD Trình Chiếu' });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
   const [finalSchedule, setFinalSchedule] = useState([]);
@@ -186,7 +186,9 @@ const AdminDashboard = () => {
     await supabase.from('links').update({
       register: linksData.register, submit: linksData.submit,
       template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt,
-      template_guide: linksData.template_guide
+      template_guide: linksData.template_guide,
+      label_register: linksData.label_register, label_submit: linksData.label_submit,
+      label_hoso: linksData.label_hoso, label_ppt: linksData.label_ppt, label_guide: linksData.label_guide
     }).eq('id', 1);
     alert('Đã cập nhật Link Ngày Hội!');
   };
@@ -509,19 +511,26 @@ const AdminDashboard = () => {
             </div>
             
             <div className="admin-card card glass border-l-4 border-secondary mb-6">
-              <h3 className="mb-4 text-secondary">Cập nhật Link Gửi bài / Đăng ký</h3>
+              <h3 className="mb-4 text-secondary">Cập nhật Link & Tên Nút</h3>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Link Form Đăng Ký Tham Gia</label>
-                <input type="text" placeholder="https://..." value={linksData.register} onChange={e => setLinksData({...linksData, register: e.target.value})} className="admin-input" />
+                <div className="flex gap-2 mb-2">
+                  <input type="text" placeholder="https://..." value={linksData.register} onChange={e => setLinksData({...linksData, register: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                  <input type="text" placeholder="Tên nút" value={linksData.label_register || ''} onChange={e => setLinksData({...linksData, label_register: e.target.value})} className="admin-input" style={{maxWidth: '180px', marginBottom: 0, fontWeight: 700, color: '#dc2626'}} />
+                </div>
               </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Link Nộp Sản Phẩm / Nộp Bài</label>
-                <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" />
+                <div className="flex gap-2 mb-2">
+                  <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                  <input type="text" placeholder="Tên nút" value={linksData.label_submit || ''} onChange={e => setLinksData({...linksData, label_submit: e.target.value})} className="admin-input" style={{maxWidth: '180px', marginBottom: 0, fontWeight: 700, color: '#059669'}} />
+                </div>
               </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">📄 Mẫu Hồ Sơ (file .docx)</label>
                 <div className="flex gap-2 items-center mb-2">
                   <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_hoso || ''} onChange={e => setLinksData({...linksData, template_hoso: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                  <input type="text" placeholder="Tên nút" value={linksData.label_hoso || ''} onChange={e => setLinksData({...linksData, label_hoso: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#2563eb'}} />
                 </div>
                 <div className="flex gap-2 items-center">
                   <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#059669', color: '#059669', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
@@ -544,6 +553,7 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-bold text-muted mb-2">📊 Mẫu Trình Bày PPT (file .pptx)</label>
                 <div className="flex gap-2 items-center mb-2">
                   <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_ppt || ''} onChange={e => setLinksData({...linksData, template_ppt: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                  <input type="text" placeholder="Tên nút" value={linksData.label_ppt || ''} onChange={e => setLinksData({...linksData, label_ppt: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#d97706'}} />
                 </div>
                 <div className="flex gap-2 items-center">
                   <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#2563eb', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
@@ -566,6 +576,7 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-bold text-muted mb-2">📋 Hướng Dẫn Thiết Kế Trình Chiếu</label>
                 <div className="flex gap-2 items-center mb-2">
                   <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_guide || ''} onChange={e => setLinksData({...linksData, template_guide: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                  <input type="text" placeholder="Tên nút" value={linksData.label_guide || ''} onChange={e => setLinksData({...linksData, label_guide: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#8b5cf6'}} />
                 </div>
                 <div className="flex gap-2 items-center">
                   <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#8b5cf6', color: '#8b5cf6', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>

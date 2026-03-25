@@ -157,16 +157,16 @@ const Home = () => {
               Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai. Hành trình kiến tạo tương lai bắt đầu từ hôm nay.
             </p>
             <div className="hero-cta flex gap-3 flex-wrap">
-              <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm pulse-shadow" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>Đăng Ký Tham Gia</a>
-              <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>Nộp Bài / Sản Phẩm</a>
+              <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm pulse-shadow" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>{linksData.label_register || 'Đăng Ký Tham Gia'}</a>
+              <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary" style={{padding: '0.6rem 1rem', fontSize: '0.85rem'}}>{linksData.label_submit || 'Nộp Bài / Sản Phẩm'}</a>
               <a href={linksData.template_hoso || '/Mau_Ho_So_So_Loai.docx'} download className="btn btn-outline" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)', padding: '0.6rem 1rem', fontSize: '0.85rem'}}>
-                <Download size={16} /> Tải Mẫu Hồ Sơ
+                <Download size={16} /> {linksData.label_hoso || 'Tải Mẫu Hồ Sơ'}
               </a>
               <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline" style={{borderColor: '#d97706', color: '#d97706', padding: '0.6rem 1rem', fontSize: '0.85rem'}}>
-                <Download size={16} /> Mẫu Trình Bày PPT
+                <Download size={16} /> {linksData.label_ppt || 'Mẫu Trình Bày PPT'}
               </a>
               <a href={linksData.template_guide || '#'} download={!!linksData.template_guide} className="btn btn-outline" style={{borderColor: '#8b5cf6', color: '#8b5cf6', padding: '0.6rem 1rem', fontSize: '0.85rem'}} onClick={e => { if (!linksData.template_guide) { e.preventDefault(); alert('File hướng dẫn chưa được cập nhật. Vui lòng quay lại sau!'); }}}>
-                <Download size={16} /> HD Trình Chiếu
+                <Download size={16} /> {linksData.label_guide || 'HD Trình Chiếu'}
               </a>
             </div>
 
