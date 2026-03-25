@@ -263,7 +263,7 @@ const Home = () => {
 
         {/* News + Milestone Bar */}
         <div className="container animate-fade-in" style={{animationDelay: '0.4s', marginTop: '1.5rem'}}>
-          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+          <div className="grid grid-cols-2 gap-4">
             {/* News Ticker */}
             {news.length > 0 && (
               <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
