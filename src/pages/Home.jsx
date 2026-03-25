@@ -79,6 +79,7 @@ const Home = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [criteriaList, setCriteriaList] = useState([]);
   const [scoringList, setScoringList] = useState([]);
+  const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,6 +109,19 @@ const Home = () => {
     };
 
     fetchData();
+
+    // Increment view count
+    const incrementViews = async () => {
+      try {
+        const { data } = await supabase.rpc('increment_view_count');
+        if (data) setViewCount(data);
+      } catch (e) {
+        // Fallback: read from settings
+        const { data } = await supabase.from('settings').select('view_count').single();
+        if (data) setViewCount(data.view_count || 0);
+      }
+    };
+    incrementViews();
   }, []);
 
   useEffect(() => {
@@ -261,7 +275,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* News + Milestone Bar */}
+        {/* News + Milestone + Views Bar */}
         <div className="container animate-fade-in" style={{animationDelay: '0.4s', marginTop: '1.5rem'}}>
           <div className="grid grid-cols-2 gap-4">
             {/* News Ticker */}
@@ -323,6 +337,14 @@ const Home = () => {
               })()}
             </div>
           </div>
+          {/* View Counter */}
+          {viewCount > 0 && (
+            <div className="text-center mt-4" style={{fontSize: '0.8rem', color: '#94a3b8'}}>
+              <span style={{background: 'rgba(255,255,255,0.9)', border: '1px solid #e2e8f0', borderRadius: '50px', padding: '0.4rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'}}>
+                👀 <span style={{fontWeight: 700, color: 'var(--primary-green)'}}>{viewCount.toLocaleString('vi-VN')}</span> lượt ghé thăm
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
