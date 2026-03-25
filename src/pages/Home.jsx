@@ -165,6 +165,11 @@ const Home = () => {
               <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline btn-lg" style={{borderColor: '#d97706', color: '#d97706'}}>
                 <Download size={18} /> Mẫu Trình Bày PPT
               </a>
+              {linksData.template_guide && (
+                <a href={linksData.template_guide} download className="btn btn-outline btn-lg" style={{borderColor: '#8b5cf6', color: '#8b5cf6'}}>
+                  <Download size={18} /> Hướng Dẫn Trình Chiếu
+                </a>
+              )}
             </div>
 
             {/* Countdown Timer */}

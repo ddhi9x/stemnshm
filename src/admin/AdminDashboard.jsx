@@ -14,7 +14,7 @@ const AdminDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
-  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '' });
+  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '' });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
   const [finalSchedule, setFinalSchedule] = useState([]);
@@ -185,7 +185,8 @@ const AdminDashboard = () => {
   const handleSaveLinks = async () => {
     await supabase.from('links').update({
       register: linksData.register, submit: linksData.submit,
-      template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt
+      template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt,
+      template_guide: linksData.template_guide
     }).eq('id', 1);
     alert('Đã cập nhật Link Ngày Hội!');
   };
@@ -559,6 +560,28 @@ const AdminDashboard = () => {
                     }} />
                   </label>
                   {linksData.template_ppt && <span className="text-xs text-muted" style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px'}}>📊 {linksData.template_ppt.split('/').pop()}</span>}
+                </div>
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-muted mb-2">📋 Hướng Dẫn Thiết Kế Trình Chiếu</label>
+                <div className="flex gap-2 items-center mb-2">
+                  <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_guide || ''} onChange={e => setLinksData({...linksData, template_guide: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
+                </div>
+                <div className="flex gap-2 items-center">
+                  <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#8b5cf6', color: '#8b5cf6', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
+                    📎 Upload File Mới
+                    <input type="file" accept=".pdf,.docx,.doc,.pptx,.ppt" style={{display: 'none'}} onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      const fileName = `guide_${Date.now()}_${file.name}`;
+                      const { data, error } = await supabase.storage.from('templates').upload(fileName, file, { upsert: true });
+                      if (error) { alert('Lỗi upload: ' + error.message); return; }
+                      const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fileName);
+                      setLinksData({...linksData, template_guide: urlData.publicUrl});
+                      alert('✅ Đã upload: ' + file.name);
+                    }} />
+                  </label>
+                  {linksData.template_guide && <span className="text-xs text-muted" style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px'}}>📋 {linksData.template_guide.split('/').pop()}</span>}
                 </div>
               </div>
               <button className="btn btn-nshm w-full" onClick={handleSaveLinks}>Lưu Cập Nhật Link Đồng Bộ</button>
