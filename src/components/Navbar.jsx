@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { supabase } from '../supabaseClient';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [registerLink, setRegisterLink] = useState('');
+
+  useEffect(() => {
+    const fetchLink = async () => {
+      const { data } = await supabase.from('links').select('register').single();
+      if (data) setRegisterLink(data.register);
+    };
+    fetchLink();
+  }, []);
 
   return (
     <nav className="navbar glass">
@@ -25,9 +35,11 @@ const Navbar = () => {
           <Link to="/tin-tuc" className="nav-link">Tin Tức</Link>
           <Link to="/chung-ket" className="nav-link">Chung Kết</Link>
           <Link to="/faq" className="nav-link">FAQ</Link>
-          <a href="https://hoangmaistarschool.edu.vn/" target="_blank" rel="noreferrer" className="btn btn-nshm" style={{padding: '0.5rem 1.2rem', fontSize: '0.8rem', marginLeft: '0.8rem', borderRadius: '10px'}}>
-            Đăng Ký Tham Gia
-          </a>
+          {registerLink && (
+            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{padding: '0.5rem 1.2rem', fontSize: '0.8rem', marginLeft: '0.8rem', borderRadius: '10px'}}>
+              Đăng Ký Tham Gia
+            </a>
+          )}
           <Link to="/admin" className="text-muted" style={{fontSize: '0.75rem', marginLeft: '0.5rem', opacity: 0.4}} title="Admin CMS">
              🔒
           </Link>
@@ -42,9 +54,11 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="mobile-menu animate-fade-in">
-          <a href="https://hoangmaistarschool.edu.vn/" target="_blank" rel="noreferrer" className="btn btn-nshm" style={{width: '100%', marginBottom: '0.8rem', padding: '0.8rem', fontSize: '0.95rem', textAlign: 'center'}} onClick={() => setIsOpen(false)}>
-            Đăng Ký Tham Gia
-          </a>
+          {registerLink && (
+            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{width: '100%', marginBottom: '0.8rem', padding: '0.8rem', fontSize: '0.95rem', textAlign: 'center'}} onClick={() => setIsOpen(false)}>
+              Đăng Ký Tham Gia
+            </a>
+          )}
           <Link to="/" className="nav-link" onClick={() => setIsOpen(false)}>Trang Chủ</Link>
           <Link to="/gioi-thieu" className="nav-link" onClick={() => setIsOpen(false)}>Giới Thiệu</Link>
           <Link to="/mentor" className="nav-link" onClick={() => setIsOpen(false)}>Mentor</Link>
