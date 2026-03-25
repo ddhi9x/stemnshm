@@ -102,6 +102,9 @@ const Home = () => {
 
       const { data: scData } = await supabase.from('scoring').select('*').order('sort_order', { ascending: true });
       if (scData) setScoringList(scData);
+
+      const { data: newsData } = await supabase.from('news').select('id,title,created_at').order('created_at', { ascending: false }).limit(3);
+      if (newsData) setNews(newsData);
     };
 
     fetchData();
@@ -205,6 +208,23 @@ const Home = () => {
                 ))}
               </div>
             </div>
+
+            {/* Latest News Ticker */}
+            {news.length > 0 && (
+              <div className="mt-6 animate-fade-in" style={{animationDelay: '0.4s'}}>
+                <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--nshm-red)', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>📰 TIN MỚI</span>
+                  </div>
+                  {news.map((n, i) => (
+                    <Link key={n.id} to="/tin-tuc" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
+                      <span style={{fontSize: '0.82rem', color: '#334155', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1}}>{n.title}</span>
+                      <span style={{fontSize: '0.7rem', color: '#94a3b8', whiteSpace: 'nowrap', flexShrink: 0}}>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="hero-image-wrapper animate-fade-in" style={{animationDelay: '0.2s'}}>
