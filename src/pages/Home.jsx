@@ -135,6 +135,18 @@ const Home = () => {
     return () => clearInterval(id);
   }, [settings.event_date]);
 
+  // Parse Vietnamese timeline dates: "30.03.2026", "09-10.04.2026", "06/04/2026"
+  const parseTimelineDate = (dateStr) => {
+    if (!dateStr) return null;
+    // Range: "09-10.04.2026" → use last day (10)
+    let m = dateStr.match(/(\d{1,2})-(\d{1,2})[./](\d{1,2})[./](\d{4})/);
+    if (m) return new Date(+m[4], +m[3] - 1, +m[2]);
+    // Single: "30.03.2026" or "06/04/2026"
+    m = dateStr.match(/(\d{1,2})[./](\d{1,2})[./](\d{4})/);
+    if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+    return null;
+  };
+
   // Milestone countdown - nearest future milestone from timeline
   const [milestoneCD, setMilestoneCD] = useState(null);
   useEffect(() => {
@@ -142,13 +154,12 @@ const Home = () => {
     const now = new Date();
     const future = timeline
       .filter(t => {
-        const match = t.date && t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (!match) return false;
-        return new Date(match[3], match[2] - 1, match[1]) > now;
+        const d = parseTimelineDate(t.date);
+        return d && d > now;
       })
       .map(t => {
-        const match = t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        return { ...t, target: new Date(match[3], match[2] - 1, match[1], 23, 59, 59).getTime() };
+        const d = parseTimelineDate(t.date);
+        return { ...t, target: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59).getTime() };
       });
     if (!future.length) return;
     const nearest = future[0];
@@ -292,13 +303,11 @@ const Home = () => {
                 const now = new Date();
                 const milestones = timeline
                   .filter(t => {
-                    const match = t.date && t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-                    if (!match) return false;
-                    return new Date(match[3], match[2] - 1, match[1]) > now;
+                    const d = parseTimelineDate(t.date);
+                    return d && d > now;
                   })
                   .map(t => {
-                    const match = t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-                    const d = new Date(match[3], match[2] - 1, match[1]);
+                    const d = parseTimelineDate(t.date);
                     return { ...t, daysLeft: Math.ceil((d - now) / 86400000) };
                   })
                   .slice(1, 3); // skip first (shown above), show next 2
