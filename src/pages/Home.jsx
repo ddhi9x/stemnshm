@@ -142,8 +142,23 @@ const Home = () => {
   }, []);
   const [openFaq, setOpenFaq] = useState(null);
 
+  // Scroll Reveal Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="home-container">
+      {/* STEM Floating Particles */}
+      <div className="stem-particles" aria-hidden="true"></div>
       {/* Dynamic Hero Section - IOSTEM Style */}
       <section className="hero-section">
         <div className="container hero-grid gap-8 items-center">
@@ -242,10 +257,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 4 Domains Section - Float Cards */}
-      <section className="domains-section py-20 relative bg-light">
+      {/* 4 Domains Section */}
+      <section className="domains-section py-20 relative bg-light stem-bg-pattern">
         <div className="container relative z-10">
-          <div className="text-center mb-12 animate-fade-in">
+          <div className="text-center mb-12 reveal">
+            <div className="stem-section-badge" style={{background: 'rgba(5,150,105,0.1)', color: 'var(--primary-green)'}}>🔬 LĨNH VỰC STEM</div>
             <h2 className="section-title text-green-gradient">4 Lĩnh Vực Cốt Lõi</h2>
             <p className="text-muted text-lg">Click trực tiếp vào từng lĩnh vực để xem gợi ý dự án chuyên sâu</p>
           </div>
@@ -278,11 +294,14 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="stem-divider">⛗️ S • T • E • M ⛗️</div>
+
       {/* Rounds Section */}
       <section className="rounds-section py-20 bg-white">
         <div className="container">
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-block bg-blue-100 text-secondary px-4 py-1 rounded-full font-bold text-sm mb-4">🏆 CẤU TRÚC CUỘC THI</div>
+          <div className="text-center mb-12 reveal">
+            <div className="stem-section-badge" style={{background: 'rgba(37,99,235,0.1)', color: 'var(--secondary-blue)'}}>🏆 CẤU TRÚC CUỘC THI</div>
             <h2 className="section-title text-nshm">CÁC VÒNG THI</h2>
             <p className="text-muted text-lg max-w-2xl mx-auto">Cuộc thi được tổ chức tinh gọn qua 02 vòng thi với nội dung thực tiễn, đánh giá năng lực toàn diện của học sinh.</p>
           </div>
@@ -554,8 +573,8 @@ const Home = () => {
       {/* FAQ Section */}
       <section className="py-20 bg-light">
         <div className="container" style={{maxWidth: '800px'}}>
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-block bg-purple-100 text-purple-600 px-4 py-1 rounded-full font-bold text-sm mb-4">❓ HỎI ĐÁP</div>
+          <div className="text-center mb-12 reveal">
+            <div className="stem-section-badge" style={{background: 'rgba(139,92,246,0.1)', color: '#8b5cf6'}}>❓ HỎI ĐÁP</div>
             <h2 className="section-title text-green-gradient">Câu Hỏi Thường Gặp</h2>
           </div>
           <div className="flex flex-col gap-4 animate-fade-in" style={{animationDelay: '0.1s'}}>
