@@ -193,6 +193,7 @@ const AdminDashboard = () => {
   const handleSaveSettings = async () => {
     await supabase.from('settings').update({
       tagline: settingsData.tagline, email: settingsData.email, hotline: settingsData.hotline,
+      event_date: settingsData.event_date || '',
       stat1_num: settingsData.stat1_num, stat1_label: settingsData.stat1_label,
       stat2_num: settingsData.stat2_num, stat2_label: settingsData.stat2_label,
       stat3_num: settingsData.stat3_num, stat3_label: settingsData.stat3_label,
@@ -542,7 +543,11 @@ const AdminDashboard = () => {
             </div>
 
             <div className="admin-card card glass border-l-4 border-primary">
-              <h3 className="mb-4 text-primary">Cài Đặt Footer (Chân trang)</h3>
+              <h3 className="mb-4 text-primary">Cài Đặt Footer & Sự Kiện</h3>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">📅 Ngày sự kiện (Countdown trang chủ)</label>
+                <input type="date" value={settingsData.event_date || ''} onChange={e => setSettingsData({...settingsData, event_date: e.target.value})} className="admin-input" />
+              </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Slogan / Thông điệp Ngày Hội</label>
                 <input type="text" value={settingsData.tagline} onChange={e => setSettingsData({...settingsData, tagline: e.target.value})} className="admin-input" />
@@ -555,7 +560,7 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-bold text-muted mb-2">Hotline hỗ trợ</label>
                 <input type="text" value={settingsData.hotline} onChange={e => setSettingsData({...settingsData, hotline: e.target.value})} className="admin-input" />
               </div>
-              <button className="btn btn-primary w-full" onClick={handleSaveSettings}>Lưu Cập Nhật Footer</button>
+              <button className="btn btn-primary w-full" onClick={handleSaveSettings}>Lưu Cập Nhật Footer & Sự Kiện</button>
             </div>
           </div>
         )}
@@ -629,11 +634,55 @@ const AdminDashboard = () => {
         {activeTab === 'timeline' && (
           <div className="fade-in">
             <h2 className="text-secondary mb-6">Chỉnh Sửa Hành Trình Ngày Hội</h2>
+
+            {/* Form thêm mốc mới */}
+            <div className="admin-card card glass border-l-4 border-primary mb-6">
+              <h3 className="mb-4 text-green-gradient">Thêm Mốc Hành Trình Mới</h3>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Thời gian / Ngày</label>
+                  <input type="text" placeholder="VD: 01/04/2026" className="admin-input" id="new-tl-date" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted mb-1">Tiêu đề Mốc</label>
+                  <input type="text" placeholder="VD: Hạn nộp hồ sơ" className="admin-input" id="new-tl-title" />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-xs font-bold text-muted mb-1">Thông tin / Sự kiện chính</label>
+                <textarea className="admin-input" rows="2" placeholder="Mô tả..." id="new-tl-desc"></textarea>
+              </div>
+              <button className="btn btn-primary" onClick={async () => {
+                const date = document.getElementById('new-tl-date').value;
+                const title = document.getElementById('new-tl-title').value;
+                const desc = document.getElementById('new-tl-desc').value;
+                if (!date || !title) return;
+                const { data, error } = await supabase.from('timeline').insert({ date, title, desc }).select();
+                if (error) { alert('Lỗi: ' + error.message); return; }
+                if (data?.[0]) {
+                  setTimeline([...timeline, data[0]]);
+                  document.getElementById('new-tl-date').value = '';
+                  document.getElementById('new-tl-title').value = '';
+                  document.getElementById('new-tl-desc').value = '';
+                  alert('Đã thêm mốc hành trình!');
+                }
+              }}>+ Thêm Mốc</button>
+            </div>
+
             <div className="admin-card card glass border-l-4 border-primary">
+              <h3 className="mb-4 text-green-gradient">Danh Sách Mốc Hiện Có ({timeline.length})</h3>
               <div className="flex flex-col gap-6">
                 {timeline && timeline.map(tt => (
                   <div key={tt.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <h4 className="mb-3 text-secondary">Trạm {tt.id}</h4>
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="m-0 text-secondary">Mốc #{tt.id}</h4>
+                      <button className="btn btn-outline" style={{padding: '0.3rem 0.8rem', borderColor: '#ef4444', color: '#ef4444', fontSize: '0.8rem'}} onClick={async () => {
+                        if (window.confirm('Xóa mốc này?')) {
+                          await supabase.from('timeline').delete().eq('id', tt.id);
+                          setTimeline(timeline.filter(t => t.id !== tt.id));
+                        }
+                      }}>Xóa</button>
+                    </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div>
                         <label className="block text-xs font-bold text-muted mb-1">Thời gian</label>

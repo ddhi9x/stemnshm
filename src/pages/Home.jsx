@@ -112,10 +112,11 @@ const Home = () => {
     else document.body.style.overflow = 'auto';
   }, [activeModal]);
 
-  // Countdown to 22/04/2026
+  // Countdown - dynamic from settings.event_date
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
   useEffect(() => {
-    const target = new Date('2026-04-22T08:00:00+07:00').getTime();
+    const eventDate = settings.event_date || '2026-04-22';
+    const target = new Date(eventDate + 'T08:00:00+07:00').getTime();
     const tick = () => {
       const now = Date.now();
       const diff = Math.max(0, target - now);
@@ -129,7 +130,7 @@ const Home = () => {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [settings.event_date]);
 
   const [faqList, setFaqList] = useState([]);
   useEffect(() => {
@@ -566,6 +567,11 @@ const Home = () => {
                 )}
               </div>
             ))}
+          </div>
+          <div className="text-center mt-8 animate-fade-in">
+            <Link to="/faq" className="btn btn-outline" style={{borderColor: 'var(--primary-green)', color: 'var(--primary-green)', fontWeight: 700}}>
+              Xem tất cả câu hỏi →
+            </Link>
           </div>
         </div>
       </section>
