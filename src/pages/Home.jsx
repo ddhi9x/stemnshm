@@ -209,28 +209,68 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Latest News Ticker */}
-            {news.length > 0 && (
-              <div className="mt-6 animate-fade-in" style={{animationDelay: '0.4s'}}>
-                <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--nshm-red)', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>📰 TIN MỚI</span>
-                  </div>
-                  {news.map((n, i) => (
-                    <Link key={n.id} to="/tin-tuc" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
-                      <span style={{fontSize: '0.82rem', color: '#334155', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1}}>{n.title}</span>
-                      <span style={{fontSize: '0.7rem', color: '#94a3b8', whiteSpace: 'nowrap', flexShrink: 0}}>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
           
           <div className="hero-image-wrapper animate-fade-in" style={{animationDelay: '0.2s'}}>
             <div className="hero-orb orb-1"></div>
             <div className="hero-orb orb-2"></div>
             <img src="/hero.png" alt="STEM Green Tech" className="hero-image float-animation" />
+          </div>
+        </div>
+
+        {/* News + Milestone Bar */}
+        <div className="container animate-fade-in" style={{animationDelay: '0.4s', marginTop: '1.5rem'}}>
+          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+            {/* News Ticker */}
+            {news.length > 0 && (
+              <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--nshm-red)', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>📰 TIN MỚI</span>
+                </div>
+                {news.map((n, i) => (
+                  <Link key={n.id} to="/tin-tuc" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
+                    <span style={{fontSize: '0.82rem', color: '#334155', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1}}>{n.title}</span>
+                    <span style={{fontSize: '0.7rem', color: '#94a3b8', whiteSpace: 'nowrap', flexShrink: 0}}>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Milestone Countdowns */}
+            <div style={{background: 'rgba(255,255,255,0.95)', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '0.8rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
+              <div className="flex items-center gap-2 mb-2">
+                <span style={{fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-blue)', background: '#eff6ff', padding: '0.2rem 0.6rem', borderRadius: '6px'}}>⏰ MỐC QUAN TRỌNG</span>
+              </div>
+              {(() => {
+                const now = new Date();
+                // Parse dates from timeline, filter future ones
+                const milestones = timeline
+                  .filter(t => {
+                    const match = t.date && t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+                    if (!match) return false;
+                    const d = new Date(match[3], match[2] - 1, match[1]);
+                    return d > now;
+                  })
+                  .map(t => {
+                    const match = t.date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+                    const d = new Date(match[3], match[2] - 1, match[1]);
+                    const daysLeft = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+                    return { ...t, targetDate: d, daysLeft };
+                  })
+                  .slice(0, 3);
+
+                return milestones.length > 0 ? milestones.map((m, i) => (
+                  <div key={m.id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.35rem 0', borderTop: i > 0 ? '1px solid #f1f5f9' : 'none', gap: '0.5rem'}}>
+                    <span style={{fontSize: '0.82rem', color: '#334155', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1}}>{m.title}</span>
+                    <span style={{fontSize: '0.7rem', fontWeight: 700, color: m.daysLeft <= 7 ? 'var(--nshm-red)' : 'var(--primary-green)', background: m.daysLeft <= 7 ? '#fef2f2' : '#ecfdf5', padding: '0.2rem 0.5rem', borderRadius: '6px', whiteSpace: 'nowrap'}}>
+                      còn {m.daysLeft} ngày
+                    </span>
+                  </div>
+                )) : (
+                  <p style={{fontSize: '0.82rem', color: '#94a3b8', margin: 0}}>Chưa có mốc nào sắp tới</p>
+                );
+              })()}
+            </div>
           </div>
         </div>
       </section>
