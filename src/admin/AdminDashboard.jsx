@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 import AvatarCropper from './AvatarCropper';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import * as XLSX from 'xlsx';
 import './Admin.css';
 
 const AdminDashboard = () => {
@@ -32,6 +33,10 @@ const AdminDashboard = () => {
   const [editingMentorId, setEditingMentorId] = useState(null);
   const [rawImage, setRawImage] = useState(null);
   const [newAward, setNewAward] = useState({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
+  const [teams, setTeams] = useState([]);
+  const [newTeam, setNewTeam] = useState({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' });
+  const [editingTeamId, setEditingTeamId] = useState(null);
+  const [teamFilter, setTeamFilter] = useState('all');
 
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_auth');
@@ -71,6 +76,9 @@ const AdminDashboard = () => {
 
         const { data: scData } = await supabase.from('scoring').select('*').order('sort_order', { ascending: true });
         if (scData) setScoring(scData);
+
+        const { data: teamsData } = await supabase.from('teams').select('*').order('created_at', { ascending: false });
+        if (teamsData) setTeams(teamsData);
       }
       fetchAdminData();
     }
@@ -247,6 +255,47 @@ const AdminDashboard = () => {
     alert('Đã cập nhật Lịch Trình Ngày Hội!');
   };
 
+  // === Teams handlers ===
+  const handleSaveTeam = async () => {
+    if (!newTeam.team_name) return;
+    if (editingTeamId) {
+      const { data, error } = await supabase.from('teams').update(newTeam).eq('id', editingTeamId).select();
+      if (!error && data?.length) {
+        setTeams(teams.map(t => t.id === editingTeamId ? data[0] : t));
+        setNewTeam({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' });
+        setEditingTeamId(null);
+        alert('Đã cập nhật đội thi!');
+      }
+    } else {
+      const { data, error } = await supabase.from('teams').insert(newTeam).select();
+      if (!error && data?.length) {
+        setTeams([data[0], ...teams]);
+        setNewTeam({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' });
+        alert('Đã thêm đội thi!');
+      }
+    }
+  };
+
+  const handleDeleteTeam = async (id) => {
+    if (window.confirm('Xóa đội thi này?')) {
+      await supabase.from('teams').delete().eq('id', id);
+      setTeams(teams.filter(t => t.id !== id));
+    }
+  };
+
+  const handleTeamStatus = async (id, status) => {
+    await supabase.from('teams').update({ status }).eq('id', id);
+    setTeams(teams.map(t => t.id === id ? { ...t, status } : t));
+  };
+
+  // === Export Excel ===
+  const exportToExcel = (data, filename) => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    XLSX.writeFile(wb, `${filename}.xlsx`);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container py-20 flex justify-center items-center" style={{minHeight: '60vh'}}>
@@ -279,6 +328,7 @@ const AdminDashboard = () => {
           <li className={activeTab === 'final' ? 'active' : ''} onClick={() => setActiveTab('final')}>Chung Kết</li>
           <li className={activeTab === 'faq' ? 'active' : ''} onClick={() => setActiveTab('faq')}>FAQ</li>
           <li className={activeTab === 'criteria' ? 'active' : ''} onClick={() => setActiveTab('criteria')}>Tiêu Chuẩn & Điểm</li>
+          <li className={activeTab === 'teams' ? 'active' : ''} onClick={() => setActiveTab('teams')}>🏆 Đội Thi <span style={{background: '#ef4444', color: 'white', borderRadius: '10px', padding: '0 6px', fontSize: '0.7rem', marginLeft: '4px'}}>{teams.length}</span></li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -991,6 +1041,92 @@ const AdminDashboard = () => {
               }
               alert('Đã lưu Tiêu Chuẩn & Ma Trận Điểm!');
             }}>💾 Lưu Tất Cả Tiêu Chuẩn & Điểm</button>
+           </div>
+        )}
+
+        {activeTab === 'teams' && (
+          <div className="fade-in">
+            <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+              <h2 className="text-secondary">🏆 Quản lý Đội Thi</h2>
+              <div className="flex gap-2">
+                <button className="btn btn-outline" style={{fontSize: '0.8rem', padding: '0.4rem 0.8rem'}} onClick={() => exportToExcel(teams.map(t => ({
+                  'Tên đội': t.team_name, 'Lĩnh vực': t.field, 'Đội trưởng': t.leader,
+                  'Thành viên': t.members, 'Lớp': t.class, 'Trạng thái': t.status === 'approved' ? 'Đã duyệt' : t.status === 'rejected' ? 'Loại' : 'Chờ duyệt',
+                  'Ghi chú': t.notes, 'Ngày đăng ký': new Date(t.created_at).toLocaleDateString('vi-VN')
+                })), 'doi-thi-stem')}>📥 Export Đội Thi</button>
+                <button className="btn btn-outline" style={{fontSize: '0.8rem', padding: '0.4rem 0.8rem'}} onClick={() => exportToExcel(mentors.map(m => ({
+                  'Tên': m.name, 'Lĩnh vực': m.field, 'Tiểu sử': m.bio, 'Slogan': m.slogan
+                })), 'mentors-stem')}>📥 Export Mentors</button>
+              </div>
+            </div>
+
+            {/* Add/Edit Form */}
+            <div className="admin-card card glass border-l-4 border-secondary mb-6">
+              <h3 className="mb-4 text-green-gradient">{editingTeamId ? '✏️ Sửa đội thi' : '➕ Thêm đội thi mới'}</h3>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem'}}>
+                <input type="text" placeholder="Tên đội *" value={newTeam.team_name} onChange={e => setNewTeam({...newTeam, team_name: e.target.value})} className="admin-input" />
+                <select value={newTeam.field} onChange={e => setNewTeam({...newTeam, field: e.target.value})} className="admin-input">
+                  <option value="Science">🔬 Science</option>
+                  <option value="Technology">💻 Technology</option>
+                  <option value="Engineering">⚙️ Engineering</option>
+                  <option value="Mathematics">📐 Mathematics</option>
+                </select>
+                <input type="text" placeholder="Đội trưởng" value={newTeam.leader} onChange={e => setNewTeam({...newTeam, leader: e.target.value})} className="admin-input" />
+                <input type="text" placeholder="Lớp" value={newTeam.class} onChange={e => setNewTeam({...newTeam, class: e.target.value})} className="admin-input" />
+              </div>
+              <textarea placeholder="Thành viên (mỗi người 1 dòng)..." value={newTeam.members} onChange={e => setNewTeam({...newTeam, members: e.target.value})} className="admin-input mt-2" rows="2"></textarea>
+              <textarea placeholder="Ghi chú..." value={newTeam.notes} onChange={e => setNewTeam({...newTeam, notes: e.target.value})} className="admin-input mt-2" rows="1"></textarea>
+              <div className="flex gap-2 mt-3">
+                <button className="btn btn-nshm" onClick={handleSaveTeam}>{editingTeamId ? '💾 Cập nhật' : '➕ Thêm đội'}</button>
+                {editingTeamId && <button className="btn btn-outline" onClick={() => { setEditingTeamId(null); setNewTeam({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' }); }}>Hủy</button>}
+              </div>
+            </div>
+
+            {/* Filter */}
+            <div className="flex gap-2 mb-4 flex-wrap">
+              {[['all', 'Tất cả'], ['pending', '⏳ Chờ duyệt'], ['approved', '✅ Đã duyệt'], ['rejected', '❌ Loại']].map(([val, label]) => (
+                <button key={val} className={`btn ${teamFilter === val ? 'btn-nshm' : 'btn-outline'}`} style={{fontSize: '0.8rem', padding: '0.3rem 0.8rem'}} onClick={() => setTeamFilter(val)}>
+                  {label} {val === 'all' ? `(${teams.length})` : `(${teams.filter(t => t.status === val).length})`}
+                </button>
+              ))}
+            </div>
+
+            {/* Team List */}
+            <div className="flex flex-col gap-3">
+              {teams.filter(t => teamFilter === 'all' || t.status === teamFilter).map(team => (
+                <div key={team.id} className="admin-card card glass" style={{borderLeft: `4px solid ${team.status === 'approved' ? '#22c55e' : team.status === 'rejected' ? '#ef4444' : '#f59e0b'}`}}>
+                  <div className="flex justify-between items-start gap-4 flex-wrap">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="m-0" style={{fontSize: '1.05rem', fontWeight: 700}}>{team.team_name}</h4>
+                        <span style={{fontSize: '0.7rem', fontWeight: 600, padding: '0.15rem 0.5rem', borderRadius: '6px',
+                          background: team.status === 'approved' ? '#dcfce7' : team.status === 'rejected' ? '#fef2f2' : '#fef9c3',
+                          color: team.status === 'approved' ? '#16a34a' : team.status === 'rejected' ? '#dc2626' : '#ca8a04'
+                        }}>
+                          {team.status === 'approved' ? '✅ Đã duyệt' : team.status === 'rejected' ? '❌ Loại' : '⏳ Chờ duyệt'}
+                        </span>
+                      </div>
+                      <div className="text-muted" style={{fontSize: '0.82rem'}}>
+                        <span style={{background: '#eff6ff', padding: '0.1rem 0.4rem', borderRadius: '4px', fontWeight: 600, color: 'var(--secondary-blue)'}}>{team.field}</span>
+                        {team.leader && <span className="ml-3">👤 {team.leader}</span>}
+                        {team.class && <span className="ml-3">🏫 {team.class}</span>}
+                      </div>
+                      {team.members && <p className="text-muted mt-1 m-0" style={{fontSize: '0.78rem', whiteSpace: 'pre-line'}}>👥 {team.members}</p>}
+                      {team.notes && <p className="text-muted mt-1 m-0" style={{fontSize: '0.78rem', fontStyle: 'italic'}}>📝 {team.notes}</p>}
+                    </div>
+                    <div className="flex gap-1 flex-wrap" style={{flexShrink: 0}}>
+                      {team.status !== 'approved' && <button className="btn btn-outline" style={{fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderColor: '#22c55e', color: '#22c55e'}} onClick={() => handleTeamStatus(team.id, 'approved')}>✅ Duyệt</button>}
+                      {team.status !== 'rejected' && <button className="btn btn-outline" style={{fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderColor: '#ef4444', color: '#ef4444'}} onClick={() => handleTeamStatus(team.id, 'rejected')}>❌ Loại</button>}
+                      <button className="btn btn-outline" style={{fontSize: '0.7rem', padding: '0.2rem 0.5rem'}} onClick={() => { setEditingTeamId(team.id); setNewTeam({ team_name: team.team_name, field: team.field, members: team.members || '', leader: team.leader || '', class: team.class || '', notes: team.notes || '' }); }}>✏️</button>
+                      <button className="btn btn-outline" style={{fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderColor: '#ef4444', color: '#ef4444'}} onClick={() => handleDeleteTeam(team.id)}>🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {teams.filter(t => teamFilter === 'all' || t.status === teamFilter).length === 0 && (
+                <p className="text-muted text-center py-8">Chưa có đội thi nào {teamFilter !== 'all' ? 'với trạng thái này' : ''}.</p>
+              )}
+            </div>
           </div>
         )}
       </div>
