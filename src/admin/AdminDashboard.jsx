@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import AvatarCropper from './AvatarCropper';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import './Admin.css';
 
 const AdminDashboard = () => {
@@ -24,7 +26,8 @@ const AdminDashboard = () => {
   const [newCriteria, setNewCriteria] = useState({ title: '', description: '', icon: '🔬' });
   const [newScoring, setNewScoring] = useState({ title: '', points: '', percent: '' });
 
-  const [newArticle, setNewArticle] = useState({ title: '', summary: '', date: '' });
+  const [newArticle, setNewArticle] = useState({ title: '', summary: '', content: '', date: '', image: '' });
+  const [editingNewsId, setEditingNewsId] = useState(null);
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '', slogan: '' });
   const [editingMentorId, setEditingMentorId] = useState(null);
   const [rawImage, setRawImage] = useState(null);
@@ -91,14 +94,30 @@ const AdminDashboard = () => {
   // --- Handlers for Data ---
   const handleSaveNews = async () => {
     if(!newArticle.title) return;
-    const { data, error } = await supabase.from('news').insert(newArticle).select();
-    if (error) {
-      console.error('Error adding news:', error);
-      alert('Lỗi khi thêm tin tức!');
-    } else if (data && data.length > 0) {
-      setNews([data[0], ...news]);
-      setNewArticle({ title: '', summary: '', date: '' });
-      alert('Đã thêm tin tức!');
+    if (editingNewsId) {
+      // Update existing
+      const { error } = await supabase.from('news').update({
+        title: newArticle.title, summary: newArticle.summary,
+        content: newArticle.content, date: newArticle.date, image: newArticle.image
+      }).eq('id', editingNewsId);
+      if (error) { alert('Lỗi khi cập nhật!'); }
+      else {
+        setNews(news.map(n => n.id === editingNewsId ? {...n, ...newArticle} : n));
+        setNewArticle({ title: '', summary: '', content: '', date: '', image: '' });
+        setEditingNewsId(null);
+        alert('Đã cập nhật bài viết!');
+      }
+    } else {
+      // Insert new
+      const { data, error } = await supabase.from('news').insert(newArticle).select();
+      if (error) {
+        console.error('Error adding news:', error);
+        alert('Lỗi khi thêm tin tức!');
+      } else if (data && data.length > 0) {
+        setNews([data[0], ...news]);
+        setNewArticle({ title: '', summary: '', content: '', date: '', image: '' });
+        alert('Đã thêm tin tức!');
+      }
     }
   };
 
@@ -263,24 +282,59 @@ const AdminDashboard = () => {
       <div className="admin-content">
         {activeTab === 'news' && (
           <div className="fade-in">
-             ... {/* Using same UI for news */}
             <h2 className="text-secondary mb-6">Quản lý Tin Tức</h2>
             <div className="admin-card card glass border-l-4 border-secondary">
-              <h3 className="mb-4 text-green-gradient">Thêm bài viết mới</h3>
+              <h3 className="mb-4 text-green-gradient">{editingNewsId ? '✏️ Sửa bài viết' : 'Thêm bài viết mới'}</h3>
               <input type="text" placeholder="Tiêu đề" value={newArticle.title} onChange={e => setNewArticle({...newArticle, title: e.target.value})} className="admin-input" />
               <input type="date" value={newArticle.date} onChange={e => setNewArticle({...newArticle, date: e.target.value})} className="admin-input" />
-              <textarea placeholder="Nội dung tóm tắt..." value={newArticle.summary} onChange={e => setNewArticle({...newArticle, summary: e.target.value})} className="admin-input" rows="4"></textarea>
-              <button className="btn btn-primary" onClick={handleSaveNews}>Đăng Tin</button>
+              <input type="text" placeholder="Link ảnh đại diện (URL hình ảnh, có thể để trống)" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} className="admin-input" />
+              <textarea placeholder="Tóm tắt ngắn (hiện ở trang chủ và danh sách tin)..." value={newArticle.summary} onChange={e => setNewArticle({...newArticle, summary: e.target.value})} className="admin-input" rows="2"></textarea>
+              <label className="block text-sm font-bold text-muted mb-2">📝 Nội dung bài viết (Rich Text - chèn ảnh, bảng, heading...)</label>
+              <div style={{background: 'white', borderRadius: '12px', marginBottom: '1rem'}}>
+                <ReactQuill
+                  theme="snow"
+                  value={newArticle.content || ''}
+                  onChange={val => setNewArticle({...newArticle, content: val})}
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, 3, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ color: [] }, { background: [] }],
+                      [{ list: 'ordered' }, { list: 'bullet' }],
+                      [{ align: [] }],
+                      ['link', 'image'],
+                      ['blockquote', 'code-block'],
+                      ['clean']
+                    ]
+                  }}
+                  style={{minHeight: '200px'}}
+                />
+              </div>
+              <div className="flex gap-3">
+                <button className="btn btn-primary flex-1" onClick={handleSaveNews}>{editingNewsId ? 'Cập Nhật' : 'Đăng Tin'}</button>
+                {editingNewsId && <button className="btn btn-outline" style={{borderColor: '#94a3b8', color: '#64748b'}} onClick={() => { setEditingNewsId(null); setNewArticle({ title: '', summary: '', content: '', date: '', image: '' }); }}>Hủy Sửa</button>}
+              </div>
             </div>
 
             <div className="admin-list mt-8">
+              <h3 className="mb-4 text-muted">📰 Danh sách bài viết ({news.length})</h3>
               {news.map(n => (
-                <div key={n.id} className="card mb-4 flex justify-between items-center p-4">
-                  <div>
-                    <h4 className="m-0 text-nshm">{n.title}</h4>
-                    <p className="text-muted m-0 text-sm mt-1">{n.date}</p>
+                <div key={n.id} className="card mb-4 p-4" style={{borderLeft: editingNewsId === n.id ? '4px solid var(--secondary-blue)' : '4px solid #e2e8f0'}}>
+                  <div className="flex justify-between items-start gap-4">
+                    <div style={{flex: 1}}>
+                      <h4 className="m-0 text-nshm">{n.title}</h4>
+                      <p className="text-muted m-0 text-sm mt-1">{n.date}</p>
+                      {n.summary && <p className="text-muted m-0 text-sm mt-1" style={{opacity: 0.7}}>{n.summary?.substring(0, 100)}...</p>}
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)'}} onClick={() => {
+                        setEditingNewsId(n.id);
+                        setNewArticle({ title: n.title, summary: n.summary || '', content: n.content || '', date: n.date || '', image: n.image || '' });
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                      }}>✏ Sửa</button>
+                      <button className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#ef4444', color: '#ef4444'}} onClick={() => handleDeleteNews(n.id)}>Xóa</button>
+                    </div>
                   </div>
-                  <button className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#ef4444', color: '#ef4444'}} onClick={() => handleDeleteNews(n.id)}>Xóa</button>
                 </div>
               ))}
             </div>

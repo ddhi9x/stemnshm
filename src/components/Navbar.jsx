@@ -21,6 +21,7 @@ const Navbar = () => {
           <Link to="/" className="nav-link">Trang Chủ</Link>
           <Link to="/gioi-thieu" className="nav-link">Giới Thiệu</Link>
           <Link to="/mentor" className="nav-link">Mentor</Link>
+          <Link to="/lich-trinh" className="nav-link">Lịch Trình</Link>
           <Link to="/tin-tuc" className="nav-link">Tin Tức</Link>
           <Link to="/chung-ket" className="nav-link">Chung Kết</Link>
           {/* Admin Login Button - very small */}
@@ -41,6 +42,7 @@ const Navbar = () => {
           <Link to="/" className="nav-link" onClick={() => setIsOpen(false)}>Trang Chủ</Link>
           <Link to="/gioi-thieu" className="nav-link" onClick={() => setIsOpen(false)}>Giới Thiệu</Link>
           <Link to="/mentor" className="nav-link" onClick={() => setIsOpen(false)}>Mentor</Link>
+          <Link to="/lich-trinh" className="nav-link" onClick={() => setIsOpen(false)}>Lịch Trình</Link>
           <Link to="/tin-tuc" className="nav-link" onClick={() => setIsOpen(false)}>Tin Tức</Link>
           <Link to="/chung-ket" className="nav-link" onClick={() => setIsOpen(false)}>Chung Kết</Link>
           <Link to="/admin" className="nav-link" onClick={() => setIsOpen(false)}>Admin</Link>
