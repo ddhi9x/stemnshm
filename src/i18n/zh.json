@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "首页",
+    "about": "介绍",
+    "mentor": "导师",
+    "schedule": "日程",
+    "news": "新闻",
+    "finals": "决赛",
+    "faq": "常见问题",
+    "register": "报名参加",
+    "gallery": "图库",
+    "results": "结果",
+    "passport": "护照"
+  },
+  "hero": {
+    "badge": "2025–2026赛季",
+    "title": "STEM嘉年华 — 构建绿色世界",
+    "desc": "激发创造力，传播科学技术热情，面向Ngôi Sao Hoàng Mai学校学生。",
+    "register": "立即报名",
+    "submit": "提交作品",
+    "countdown_label": "距STEM嘉年华倒计时：",
+    "days": "天",
+    "hours": "时",
+    "minutes": "分",
+    "seconds": "秒"
+  },
+  "sections": {
+    "quick_start": "快速开始",
+    "fields": "4大领域",
+    "rounds": "2轮比赛",
+    "awards": "奖项",
+    "criteria": "评审标准",
+    "latest_news": "最新消息",
+    "milestones": "重要节点",
+    "faq": "常见问题",
+    "visits": "次访问"
+  },
+  "common": {
+    "read_more": "阅读更多",
+    "back": "返回",
+    "loading": "加载中...",
+    "no_data": "暂无数据",
+    "share": "分享",
+    "copy_link": "复制链接",
+    "copied": "已复制！",
+    "view_all": "查看全部"
+  },
+  "footer": {
+    "copyright": "STEM嘉年华 — Ngôi Sao Hoàng Mai学校",
+    "contact": "联系方式"
+  }
+}

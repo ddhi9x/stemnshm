@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Trang Chủ",
+    "about": "Giới Thiệu",
+    "mentor": "Mentor",
+    "schedule": "Lịch Trình",
+    "news": "Tin Tức",
+    "finals": "Chung Kết",
+    "faq": "FAQ",
+    "register": "Đăng Ký Tham Gia",
+    "gallery": "Thư Viện",
+    "results": "Kết Quả",
+    "passport": "Passport"
+  },
+  "hero": {
+    "badge": "Mùa Giải 2025–2026",
+    "title": "Ngày Hội STEM — Kiến Tạo Thế Giới Xanh",
+    "desc": "Khơi nguồn sáng tạo, lan tỏa đam mê khoa học - công nghệ dành cho học sinh trường Ngôi Sao Hoàng Mai.",
+    "register": "Đăng Ký Tham Gia",
+    "submit": "Nộp Bài / Sản Phẩm",
+    "countdown_label": "Còn lại đến Ngày Hội STEM:",
+    "days": "NGÀY",
+    "hours": "GIỜ",
+    "minutes": "PHÚT",
+    "seconds": "GIÂY"
+  },
+  "sections": {
+    "quick_start": "BẮT ĐẦU NHANH",
+    "fields": "4 LĨNH VỰC",
+    "rounds": "2 VÒNG THI",
+    "awards": "GIẢI THƯỞNG",
+    "criteria": "TIÊU CHÍ",
+    "latest_news": "TIN MỚI",
+    "milestones": "MỐC QUAN TRỌNG",
+    "faq": "CÂU HỎI THƯỜNG GẶP",
+    "visits": "lượt ghé thăm"
+  },
+  "common": {
+    "read_more": "Đọc thêm",
+    "back": "Quay lại",
+    "loading": "Đang tải...",
+    "no_data": "Chưa có dữ liệu",
+    "share": "Chia sẻ",
+    "copy_link": "Copy link",
+    "copied": "Đã copy!",
+    "view_all": "Xem tất cả"
+  },
+  "footer": {
+    "copyright": "Ngày Hội STEM — Trường Ngôi Sao Hoàng Mai",
+    "contact": "Liên hệ"
+  }
+}

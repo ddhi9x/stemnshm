@@ -15,6 +15,7 @@ import Passport from './pages/Passport';
 import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import NotFound from './pages/NotFound';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <Chatbot />
       </div>
     </Router>
   );

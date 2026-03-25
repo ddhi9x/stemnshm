@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "mentor": "Mentors",
+    "schedule": "Schedule",
+    "news": "News",
+    "finals": "Finals",
+    "faq": "FAQ",
+    "register": "Register",
+    "gallery": "Gallery",
+    "results": "Results",
+    "passport": "Passport"
+  },
+  "hero": {
+    "badge": "Season 2025–2026",
+    "title": "STEM Festival — Building a Green World",
+    "desc": "Ignite creativity, spread the passion for science & technology for students of Ngoi Sao Hoang Mai School.",
+    "register": "Register Now",
+    "submit": "Submit Project",
+    "countdown_label": "Countdown to STEM Festival:",
+    "days": "DAYS",
+    "hours": "HOURS",
+    "minutes": "MINS",
+    "seconds": "SECS"
+  },
+  "sections": {
+    "quick_start": "QUICK START",
+    "fields": "4 FIELDS",
+    "rounds": "2 ROUNDS",
+    "awards": "AWARDS",
+    "criteria": "CRITERIA",
+    "latest_news": "LATEST NEWS",
+    "milestones": "KEY MILESTONES",
+    "faq": "FAQ",
+    "visits": "visits"
+  },
+  "common": {
+    "read_more": "Read more",
+    "back": "Go back",
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "share": "Share",
+    "copy_link": "Copy link",
+    "copied": "Copied!",
+    "view_all": "View all"
+  },
+  "footer": {
+    "copyright": "STEM Festival — Ngoi Sao Hoang Mai School",
+    "contact": "Contact"
+  }
+}
