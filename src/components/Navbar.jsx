@@ -13,8 +13,13 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchLink = async () => {
-      const { data } = await supabase.from('links').select('register').single();
-      if (data) setRegisterLink(data.register);
+      try {
+        const { data } = await supabase.from('links').select('register').single();
+        if (data && data.register) setRegisterLink(data.register);
+        else setRegisterLink('#');
+      } catch (e) {
+        setRegisterLink('#');
+      }
     };
     fetchLink();
   }, []);
@@ -59,7 +64,17 @@ const Navbar = () => {
             {showLangMenu && (
               <div style={{position: 'absolute', top: '100%', right: 0, marginTop: '0.3rem', background: 'white', borderRadius: '10px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', border: '1px solid #e2e8f0', overflow: 'hidden', zIndex: 100, minWidth: '140px'}}>
                 {langOptions.map(opt => (
-                  <button key={opt.code} onClick={() => { switchLang(opt.code); setShowLangMenu(false); }} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.8rem', width: '100%', border: 'none', background: lang === opt.code ? '#f0fdf4' : 'white', cursor: 'pointer', fontSize: '0.82rem', fontWeight: lang === opt.code ? 700 : 400}}>
+                  <button key={opt.code} onClick={() => { 
+                    switchLang(opt.code); 
+                    setShowLangMenu(false);
+                    // Handle Google Translate
+                    const googCode = opt.code === 'zh' ? 'zh-CN' : opt.code;
+                    const select = document.querySelector('.goog-te-combo');
+                    if (select) {
+                      select.value = googCode;
+                      select.dispatchEvent(new Event('change'));
+                    }
+                  }} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.8rem', width: '100%', border: 'none', background: lang === opt.code ? '#f0fdf4' : 'white', cursor: 'pointer', fontSize: '0.82rem', fontWeight: lang === opt.code ? 700 : 400}}>
                     <span>{opt.flag}</span>
                     <span>{opt.label}</span>
                     {lang === opt.code && <span style={{marginLeft: 'auto', color: '#22c55e'}}>✓</span>}
@@ -83,7 +98,14 @@ const Navbar = () => {
             {showLangMenu && (
               <div style={{position: 'absolute', top: '100%', right: 0, marginTop: '0.3rem', background: 'white', borderRadius: '10px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', border: '1px solid #e2e8f0', overflow: 'hidden', zIndex: 100, minWidth: '130px'}}>
                 {langOptions.map(opt => (
-                  <button key={opt.code} onClick={() => { switchLang(opt.code); setShowLangMenu(false); }} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.8rem', width: '100%', border: 'none', background: lang === opt.code ? '#f0fdf4' : 'white', cursor: 'pointer', fontSize: '0.82rem'}}>
+                  <button key={opt.code} onClick={() => { 
+                    switchLang(opt.code); 
+                    setShowLangMenu(false); 
+                    // Handle Google Translate
+                    const googCode = opt.code === 'zh' ? 'zh-CN' : opt.code;
+                    const select = document.querySelector('.goog-te-combo');
+                    if (select) { select.value = googCode; select.dispatchEvent(new Event('change')); }
+                  }} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.8rem', width: '100%', border: 'none', background: lang === opt.code ? '#f0fdf4' : 'white', cursor: 'pointer', fontSize: '0.82rem'}}>
                     <span>{opt.flag}</span> <span>{opt.label}</span>
                   </button>
                 ))}
