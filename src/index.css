@@ -379,6 +379,9 @@ a {
   .hero-grid { grid-template-columns: 1fr !important; }
   .hero-content { text-align: center; }
   .hero-cta { justify-content: center; }
+  /* News detail sidebar responsive */
+  .news-sidebar { position: static !important; }
+  .news-content img { max-width: 100%; height: auto; }
 }
 
 /* ═══════ Animations ═══════ */

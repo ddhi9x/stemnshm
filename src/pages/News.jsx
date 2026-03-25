@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Clock, ChevronLeft } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 const News = () => {
   const [news, setNews] = useState([]);
-  const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
     const fetchNews = async () => {
-      const { data } = await supabase.from('news').select('*').order('date', { ascending: false });
+      const { data } = await supabase.from('news').select('*').order('created_at', { ascending: false });
       if (data) setNews(data);
     };
     fetchNews();
@@ -21,44 +21,6 @@ const News = () => {
       return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch { return dateStr; }
   };
-
-  // Article detail view
-  if (selectedArticle) {
-    return (
-      <div className="container py-20" style={{maxWidth: '900px', margin: '0 auto'}}>
-        <button
-          className="btn btn-outline mb-6 flex items-center gap-2"
-          style={{borderColor: '#94a3b8', color: '#64748b'}}
-          onClick={() => setSelectedArticle(null)}
-        >
-          <ChevronLeft size={18} /> Quay lại danh sách
-        </button>
-        <article className="card glass animate-fade-in" style={{padding: '2.5rem'}}>
-          {selectedArticle.image && (
-            <img
-              src={selectedArticle.image}
-              alt={selectedArticle.title}
-              style={{width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '16px', marginBottom: '2rem'}}
-            />
-          )}
-          <h1 className="text-nshm mb-3" style={{fontSize: '2rem', lineHeight: 1.3}}>{selectedArticle.title}</h1>
-          <div className="flex items-center gap-2 mb-6 pb-4" style={{borderBottom: '1px solid #f1f5f9'}}>
-            <Clock size={14} className="text-muted" />
-            <span className="text-muted text-sm font-medium">{formatDate(selectedArticle.date)}</span>
-          </div>
-          {selectedArticle.content ? (
-            <div
-              className="news-content"
-              dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
-              style={{lineHeight: 1.9, fontSize: '1.05rem', color: '#334155'}}
-            />
-          ) : (
-            <p className="text-muted leading-relaxed" style={{lineHeight: 1.8, fontSize: '1.05rem'}}>{selectedArticle.summary}</p>
-          )}
-        </article>
-      </div>
-    );
-  }
 
   return (
     <div className="container py-20" style={{maxWidth: '900px', margin: '0 auto'}}>
@@ -77,16 +39,16 @@ const News = () => {
       ) : (
         <div className="flex flex-col gap-6">
           {news.map((article, idx) => (
-            <div
+            <Link
               key={article.id}
+              to={`/tin-tuc/${article.id}`}
               className="card glass hover-up block-shadow animate-fade-in"
               style={{
                 animationDelay: `${idx * 0.08}s`,
                 borderLeft: '5px solid var(--primary-green)',
                 padding: '2rem',
-                cursor: 'pointer',
+                textDecoration: 'none',
               }}
-              onClick={() => setSelectedArticle(article)}
             >
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
@@ -106,10 +68,10 @@ const News = () => {
               </div>
               <div className="flex items-center gap-2 mt-4 pt-4" style={{borderTop: '1px solid #f1f5f9'}}>
                 <Clock size={14} className="text-muted" />
-                <span className="text-muted text-sm font-medium">{formatDate(article.date)}</span>
-                {article.content && <span className="text-sm" style={{marginLeft: 'auto', color: 'var(--secondary-blue)', fontWeight: 600}}>Đọc thêm →</span>}
+                <span className="text-muted text-sm font-medium">{formatDate(article.date || article.created_at)}</span>
+                <span className="text-sm" style={{marginLeft: 'auto', color: 'var(--secondary-blue)', fontWeight: 600}}>Đọc thêm →</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -7,6 +7,7 @@ import About from './pages/About';
 import Mentors from './pages/Mentors';
 import Schedule from './pages/Schedule';
 import News from './pages/News';
+import NewsDetail from './pages/NewsDetail';
 import FinalEvent from './pages/FinalEvent';
 import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/mentor" element={<Mentors />} />
             <Route path="/lich-trinh" element={<Schedule />} />
             <Route path="/tin-tuc" element={<News />} />
+            <Route path="/tin-tuc/:id" element={<NewsDetail />} />
             <Route path="/chung-ket" element={<FinalEvent />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
