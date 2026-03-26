@@ -66,7 +66,7 @@ const Navbar = () => {
             )}
           </div>
           {registerLink && (
-            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{padding: '0.5rem 1.2rem', fontSize: '0.8rem', marginLeft: '0.8rem', borderRadius: '10px'}}>
+            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{padding: '0.5rem 1.2rem', fontSize: '0.8rem', marginLeft: '0.8rem', borderRadius: '10px'}} onClick={() => supabase.rpc('increment_click', { btn: 'clicks_register' })}>
               {t('nav.register')}
             </a>
           )}
@@ -136,7 +136,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="mobile-menu animate-fade-in">
           {registerLink && (
-            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{width: '100%', marginBottom: '0.8rem', padding: '0.8rem', fontSize: '0.95rem', textAlign: 'center'}} onClick={() => setIsOpen(false)}>
+            <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{width: '100%', marginBottom: '0.8rem', padding: '0.8rem', fontSize: '0.95rem', textAlign: 'center'}} onClick={() => { supabase.rpc('increment_click', { btn: 'clicks_register' }); setIsOpen(false); }}>
               {t('nav.register')}
             </a>
           )}
