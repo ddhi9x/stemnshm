@@ -627,75 +627,60 @@ const AdminDashboard = () => {
                   <input type="text" placeholder="Tên nút" value={linksData.label_submit || ''} onChange={e => setLinksData({...linksData, label_submit: e.target.value})} className="admin-input" style={{maxWidth: '180px', marginBottom: 0, fontWeight: 700, color: '#059669'}} />
                 </div>
               </div>
-              <div className="mb-5">
-                <label className="block text-sm font-bold text-muted mb-2">📄 Mẫu Hồ Sơ (file .docx)</label>
-                <div className="flex gap-2 items-center mb-2">
-                  <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_hoso || ''} onChange={e => setLinksData({...linksData, template_hoso: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
-                  <input type="text" placeholder="Tên nút" value={linksData.label_hoso || ''} onChange={e => setLinksData({...linksData, label_hoso: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#2563eb'}} />
-                </div>
-                <div className="flex gap-2 items-center">
-                  <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#059669', color: '#059669', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
-                    📎 Upload File Mới
-                    <input type="file" accept=".docx,.doc,.pdf,.xlsx" style={{display: 'none'}} onChange={async (e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      const fileName = `hoso_${Date.now()}_${file.name}`;
-                      const { data, error } = await supabase.storage.from('templates').upload(fileName, file, { upsert: true });
-                      if (error) { alert('Lỗi upload: ' + error.message + '\n\nHãy tạo bucket "templates" trong Supabase Storage (public).'); return; }
-                      const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fileName);
-                      setLinksData({...linksData, template_hoso: urlData.publicUrl});
-                      alert('✅ Đã upload: ' + file.name);
-                    }} />
-                  </label>
-                  {linksData.template_hoso && <span className="text-xs text-muted" style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px'}}>📄 {linksData.template_hoso.split('/').pop()}</span>}
-                </div>
-              </div>
-              <div className="mb-6">
-                <label className="block text-sm font-bold text-muted mb-2">📊 Mẫu Trình Bày PPT (file .pptx)</label>
-                <div className="flex gap-2 items-center mb-2">
-                  <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_ppt || ''} onChange={e => setLinksData({...linksData, template_ppt: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
-                  <input type="text" placeholder="Tên nút" value={linksData.label_ppt || ''} onChange={e => setLinksData({...linksData, label_ppt: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#d97706'}} />
-                </div>
-                <div className="flex gap-2 items-center">
-                  <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#2563eb', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
-                    📎 Upload File Mới
-                    <input type="file" accept=".pptx,.ppt,.pdf" style={{display: 'none'}} onChange={async (e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      const fileName = `ppt_${Date.now()}_${file.name}`;
-                      const { data, error } = await supabase.storage.from('templates').upload(fileName, file, { upsert: true });
-                      if (error) { alert('Lỗi upload: ' + error.message + '\n\nHãy tạo bucket "templates" trong Supabase Storage (public).'); return; }
-                      const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fileName);
-                      setLinksData({...linksData, template_ppt: urlData.publicUrl});
-                      alert('✅ Đã upload: ' + file.name);
-                    }} />
-                  </label>
-                  {linksData.template_ppt && <span className="text-xs text-muted" style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px'}}>📊 {linksData.template_ppt.split('/').pop()}</span>}
-                </div>
-              </div>
-              <div className="mb-6">
-                <label className="block text-sm font-bold text-muted mb-2">📋 Hướng Dẫn Thiết Kế Trình Chiếu</label>
-                <div className="flex gap-2 items-center mb-2">
-                  <input type="text" placeholder="URL file hoặc upload bên dưới" value={linksData.template_guide || ''} onChange={e => setLinksData({...linksData, template_guide: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
-                  <input type="text" placeholder="Tên nút" value={linksData.label_guide || ''} onChange={e => setLinksData({...linksData, label_guide: e.target.value})} className="admin-input" style={{maxWidth: '160px', marginBottom: 0, fontWeight: 700, color: '#8b5cf6'}} />
-                </div>
-                <div className="flex gap-2 items-center">
-                  <label className="btn btn-outline" style={{padding: '0.4rem 1rem', borderColor: '#8b5cf6', color: '#8b5cf6', cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
-                    📎 Upload File Mới
-                    <input type="file" accept=".pdf,.docx,.doc,.pptx,.ppt" style={{display: 'none'}} onChange={async (e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      const fileName = `guide_${Date.now()}_${file.name}`;
-                      const { data, error } = await supabase.storage.from('templates').upload(fileName, file, { upsert: true });
-                      if (error) { alert('Lỗi upload: ' + error.message); return; }
-                      const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fileName);
-                      setLinksData({...linksData, template_guide: urlData.publicUrl});
-                      alert('✅ Đã upload: ' + file.name);
-                    }} />
-                  </label>
-                  {linksData.template_guide && <span className="text-xs text-muted" style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px'}}>📋 {linksData.template_guide.split('/').pop()}</span>}
-                </div>
-              </div>
+              {/* === File Template Cards === */}
+              {[
+                { key: 'template_hoso', labelKey: 'label_hoso', icon: '📄', title: 'Mẫu Hồ Sơ', accept: '.docx,.doc,.pdf,.xlsx', prefix: 'hoso', color: '#2563eb' },
+                { key: 'template_ppt', labelKey: 'label_ppt', icon: '📊', title: 'Mẫu Trình Bày PPT', accept: '.pptx,.ppt,.pdf', prefix: 'ppt', color: '#d97706' },
+                { key: 'template_guide', labelKey: 'label_guide', icon: '📋', title: 'HD Trình Chiếu', accept: '.pdf,.docx,.doc,.pptx,.ppt', prefix: 'guide', color: '#8b5cf6' },
+              ].map(tmpl => {
+                const fileUrl = linksData[tmpl.key];
+                const fileName = fileUrl ? decodeURIComponent(fileUrl.split('/').pop()) : null;
+                const hasFile = !!fileUrl;
+                return (
+                  <div key={tmpl.key} className="mb-5" style={{border: `1px solid ${hasFile ? '#bbf7d0' : '#e2e8f0'}`, borderRadius: '12px', padding: '1rem', background: hasFile ? '#f0fdf4' : '#fafafa'}}>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-bold" style={{color: tmpl.color}}>{tmpl.icon} {tmpl.title}</label>
+                      <span style={{fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '6px', fontWeight: 700, background: hasFile ? '#dcfce7' : '#fef3c7', color: hasFile ? '#166534' : '#92400e'}}>
+                        {hasFile ? '✅ Đã có file' : '⏳ Chưa có file'}
+                      </span>
+                    </div>
+                    
+                    {/* Current File Display */}
+                    {hasFile && (
+                      <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.8rem', background: 'white', border: '1px solid #d1fae5', borderRadius: '8px', marginBottom: '0.6rem'}}>
+                        <span style={{fontSize: '1.2rem'}}>{tmpl.icon}</span>
+                        <a href={fileUrl} target="_blank" rel="noreferrer" style={{flex: 1, fontSize: '0.78rem', color: '#0369a1', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'underline'}}>
+                          {fileName}
+                        </a>
+                        <button onClick={() => { if (confirm('Xóa file "' + (fileName || '') + '"? URL sẽ bị xóa trắng.')) setLinksData({...linksData, [tmpl.key]: ''}); }} style={{background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '6px', padding: '0.25rem 0.5rem', cursor: 'pointer', fontSize: '0.72rem', color: '#dc2626', fontWeight: 700, whiteSpace: 'nowrap'}}>
+                          🗑️ Xóa
+                        </button>
+                      </div>
+                    )}
+
+                    {/* URL + Label inputs */}
+                    <div className="flex gap-2 items-center mb-2">
+                      <input type="text" placeholder={hasFile ? fileUrl : 'Dán URL hoặc upload file bên dưới (có thể để trống)'} value={linksData[tmpl.key] || ''} onChange={e => setLinksData({...linksData, [tmpl.key]: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0, fontSize: '0.8rem'}} />
+                      <input type="text" placeholder="Tên nút" value={linksData[tmpl.labelKey] || ''} onChange={e => setLinksData({...linksData, [tmpl.labelKey]: e.target.value})} className="admin-input" style={{maxWidth: '140px', marginBottom: 0, fontWeight: 700, color: tmpl.color, fontSize: '0.8rem'}} />
+                    </div>
+
+                    {/* Upload */}
+                    <label className="btn btn-outline" style={{padding: '0.35rem 0.8rem', borderColor: '#059669', color: '#059669', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap'}}>
+                      📎 Upload File Mới
+                      <input type="file" accept={tmpl.accept} style={{display: 'none'}} onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const fName = `${tmpl.prefix}_${Date.now()}_${file.name}`;
+                        const { error } = await supabase.storage.from('templates').upload(fName, file, { upsert: true });
+                        if (error) { alert('Lỗi upload: ' + error.message + '\n\nHãy tạo bucket "templates" trong Supabase Storage (public).'); return; }
+                        const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fName);
+                        setLinksData({...linksData, [tmpl.key]: urlData.publicUrl});
+                        alert('✅ Đã upload: ' + file.name);
+                      }} />
+                    </label>
+                  </div>
+                );
+              })}
               <button className="btn btn-nshm w-full" onClick={handleSaveLinks}>Lưu Cập Nhật Link Đồng Bộ</button>
             </div>
 
