@@ -200,16 +200,17 @@ const AdminDashboard = () => {
   };
 
   const handleSaveLinks = async () => {
-    await supabase.from('links').update({
+    const { error } = await supabase.from('links').update({
       register: linksData.register, submit: linksData.submit,
       template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt,
       template_guide: linksData.template_guide,
       label_register: linksData.label_register, label_submit: linksData.label_submit,
       label_hoso: linksData.label_hoso, label_ppt: linksData.label_ppt, label_guide: linksData.label_guide,
-      show_register: linksData.show_register, show_submit: linksData.show_submit,
-      show_hoso: linksData.show_hoso, show_ppt: linksData.show_ppt, show_guide: linksData.show_guide
-    }).eq('id', 1);
-    alert('Đã cập nhật Link Ngày Hội!');
+      show_register: linksData.show_register ?? true, show_submit: linksData.show_submit ?? true,
+      show_hoso: linksData.show_hoso ?? true, show_ppt: linksData.show_ppt ?? true, show_guide: linksData.show_guide ?? true
+    }).eq('id', linksData.id || 1);
+    if (error) alert('Lỗi lưu: ' + error.message);
+    else alert('✅ Đã cập nhật Link & Ẩn/Hiện nút!');
   };
 
   const handleSaveSettings = async () => {
