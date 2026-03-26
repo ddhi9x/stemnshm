@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
-  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '', label_register: 'Đăng Ký Tham Gia', label_submit: 'Nộp Bài / Sản Phẩm', label_hoso: 'Tải Mẫu Hồ Sơ', label_ppt: 'Mẫu Trình Bày PPT', label_guide: 'HD Trình Chiếu' });
+  const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '', label_register: 'Đăng Ký Tham Gia', label_submit: 'Nộp Bài / Sản Phẩm', label_hoso: 'Tải Mẫu Hồ Sơ', label_ppt: 'Mẫu Trình Bày PPT', label_guide: 'HD Trình Chiếu', show_register: true, show_submit: true, show_hoso: true, show_ppt: true, show_guide: true });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
   const [timeline, setTimeline] = useState([]);
   const [finalSchedule, setFinalSchedule] = useState([]);
@@ -205,7 +205,9 @@ const AdminDashboard = () => {
       template_hoso: linksData.template_hoso, template_ppt: linksData.template_ppt,
       template_guide: linksData.template_guide,
       label_register: linksData.label_register, label_submit: linksData.label_submit,
-      label_hoso: linksData.label_hoso, label_ppt: linksData.label_ppt, label_guide: linksData.label_guide
+      label_hoso: linksData.label_hoso, label_ppt: linksData.label_ppt, label_guide: linksData.label_guide,
+      show_register: linksData.show_register, show_submit: linksData.show_submit,
+      show_hoso: linksData.show_hoso, show_ppt: linksData.show_ppt, show_guide: linksData.show_guide
     }).eq('id', 1);
     alert('Đã cập nhật Link Ngày Hội!');
   };
@@ -592,6 +594,24 @@ const AdminDashboard = () => {
             
             <div className="admin-card card glass border-l-4 border-secondary mb-6">
               <h3 className="mb-4 text-secondary">Cập nhật Link & Tên Nút</h3>
+              {/* Visibility Toggles */}
+              <div style={{background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', marginBottom: '1.2rem'}}>
+                <label className="block text-sm font-bold text-gray-700 mb-3">🔘 Ẩn/Hiện các nút trên Trang Chủ</label>
+                <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.8rem'}}>
+                  {[
+                    { key: 'show_register', label: 'Đăng Ký', color: '#dc2626' },
+                    { key: 'show_submit', label: 'Nộp Bài', color: '#059669' },
+                    { key: 'show_hoso', label: 'Mẫu Hồ Sơ', color: '#2563eb' },
+                    { key: 'show_ppt', label: 'Mẫu PPT', color: '#d97706' },
+                    { key: 'show_guide', label: 'HD Trình Chiếu', color: '#8b5cf6' },
+                  ].map(btn => (
+                    <label key={btn.key} style={{display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', padding: '0.3rem 0.6rem', borderRadius: '8px', border: `2px solid ${linksData[btn.key] !== false ? btn.color : '#cbd5e1'}`, background: linksData[btn.key] !== false ? `${btn.color}10` : '#f1f5f9', transition: 'all 0.2s'}}>
+                      <input type="checkbox" checked={linksData[btn.key] !== false} onChange={e => setLinksData({...linksData, [btn.key]: e.target.checked})} style={{accentColor: btn.color}} />
+                      <span style={{fontSize: '0.8rem', fontWeight: 700, color: linksData[btn.key] !== false ? btn.color : '#94a3b8'}}>{btn.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">Link Form Đăng Ký Tham Gia</label>
                 <div className="flex gap-2 mb-2">

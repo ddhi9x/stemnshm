@@ -246,24 +246,34 @@ const Home = () => {
             </p>
             {/* Primary CTA - 2 nút chính */}
             <div className="hero-cta flex gap-4 flex-wrap mb-4">
+              {linksData.show_register !== false && (
               <a href={linksData.register} target="_blank" rel="noreferrer" className="btn btn-nshm btn-lg pulse-shadow" style={{padding: '0.9rem 2rem', fontSize: '1rem', minWidth: '180px'}}>
                 {linksData.label_register || 'Đăng Ký Tham Gia'}
               </a>
+              )}
+              {linksData.show_submit !== false && (
               <a href={linksData.submit} target="_blank" rel="noreferrer" className="btn btn-primary btn-lg" style={{padding: '0.9rem 2rem', fontSize: '1rem', minWidth: '180px'}}>
                 {linksData.label_submit || 'Nộp Bài / Sản Phẩm'}
               </a>
+              )}
             </div>
             {/* Secondary CTA - Tài liệu */}
             <div className="flex gap-3 flex-wrap">
+              {linksData.show_hoso !== false && (
               <a href={linksData.template_hoso || '/Mau_Ho_So_So_Loai.docx'} download className="btn btn-outline" style={{borderColor: 'var(--secondary-blue)', color: 'var(--secondary-blue)', padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
                 <Download size={14} /> {linksData.label_hoso || 'Mẫu Hồ Sơ'}
               </a>
+              )}
+              {linksData.show_ppt !== false && (
               <a href={linksData.template_ppt || '/STEM_Pitch_Blueprints.pptx'} download className="btn btn-outline" style={{borderColor: '#d97706', color: '#d97706', padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
                 <Download size={14} /> {linksData.label_ppt || 'Mẫu PPT'}
               </a>
+              )}
+              {linksData.show_guide !== false && (
               <a href={linksData.template_guide || '#'} download={!!linksData.template_guide} className="btn btn-outline" style={{borderColor: '#8b5cf6', color: '#8b5cf6', padding: '0.5rem 1rem', fontSize: '0.8rem'}} onClick={e => { if (!linksData.template_guide) { e.preventDefault(); alert('File hướng dẫn chưa được cập nhật.'); }}}>
                 <Download size={14} /> {linksData.label_guide || 'HD Trình Chiếu'}
               </a>
+              )}
             </div>
 
             {/* Countdown Timer */}
