@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useI18n } from '../i18n/I18nContext';
-import { Clock, ChevronLeft, Share2, Facebook, Copy, CheckCircle2 } from 'lucide-react';
+import { Clock, ChevronLeft, Share2, Facebook, Copy, CheckCircle2, Eye } from 'lucide-react';
 
 const NewsDetail = () => {
   const { t } = useI18n();
@@ -19,6 +19,14 @@ const NewsDetail = () => {
       if (data) {
         setArticle(data);
         document.title = `${data.title} — STEM NSHM`;
+        // Increment view count (once per session per article)
+        const viewedKey = `news_viewed_${id}`;
+        if (!sessionStorage.getItem(viewedKey)) {
+          sessionStorage.setItem(viewedKey, '1');
+          const newViews = (data.views || 0) + 1;
+          await supabase.from('news').update({ views: newViews }).eq('id', id);
+          setArticle(prev => prev ? { ...prev, views: newViews } : prev);
+        }
       }
       const { data: relData } = await supabase
         .from('news').select('id,title,date,image,summary')
@@ -105,6 +113,15 @@ const NewsDetail = () => {
             ) : (
               <p className="text-muted leading-relaxed" style={{lineHeight: 1.8, fontSize: '1.05rem'}}>{article.summary}</p>
             )}
+
+            {/* View Count Footer */}
+            <div style={{marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#94a3b8', fontSize: '0.82rem'}}>
+                <Eye size={15} />
+                <span>{article.views || 0} lượt xem</span>
+              </div>
+              <span style={{fontSize: '0.75rem', color: '#cbd5e1'}}>{formatDate(article.date || article.created_at)}</span>
+            </div>
           </article>
         </div>
 

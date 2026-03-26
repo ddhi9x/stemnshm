@@ -1222,6 +1222,26 @@ const AdminDashboard = () => {
               ))}
             </div>
 
+            {/* Click Stats */}
+            <div className="admin-card card glass border-l-4 border-primary mb-6">
+              <h3 className="mb-4 text-primary">🖱️ Thống Kê Lượt Click Nút</h3>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.8rem'}}>
+                {[
+                  { label: 'Đăng Ký', value: linksData.clicks_register || 0, icon: '📝', color: '#dc2626' },
+                  { label: 'Nộp Bài', value: linksData.clicks_submit || 0, icon: '📤', color: '#059669' },
+                  { label: 'Mẫu Hồ Sơ', value: linksData.clicks_hoso || 0, icon: '📄', color: '#2563eb' },
+                  { label: 'Mẫu PPT', value: linksData.clicks_ppt || 0, icon: '📊', color: '#d97706' },
+                  { label: 'HD Trình Chiếu', value: linksData.clicks_guide || 0, icon: '📋', color: '#8b5cf6' },
+                ].map((s, i) => (
+                  <div key={i} style={{textAlign: 'center', padding: '0.8rem', border: `2px solid ${s.color}20`, borderRadius: '12px', background: `${s.color}08`}}>
+                    <div style={{fontSize: '1.3rem'}}>{s.icon}</div>
+                    <div style={{fontSize: '1.5rem', fontWeight: 900, color: s.color}}>{s.value.toLocaleString()}</div>
+                    <div style={{fontSize: '0.72rem', color: '#64748b', fontWeight: 600}}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Field Distribution */}
             <div className="admin-card card glass">
               <h3 className="mb-4 text-green-gradient">📊 Phân bố Đội Thi theo Lĩnh Vực</h3>

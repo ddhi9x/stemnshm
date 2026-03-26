@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Clock } from 'lucide-react';
+import { Clock, Eye } from 'lucide-react';
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -69,6 +69,7 @@ const News = () => {
               <div className="flex items-center gap-2 mt-4 pt-4" style={{borderTop: '1px solid #f1f5f9'}}>
                 <Clock size={14} className="text-muted" />
                 <span className="text-muted text-sm font-medium">{formatDate(article.date || article.created_at)}</span>
+                <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#94a3b8', fontSize: '0.82rem', marginLeft: '0.5rem'}}><Eye size={13} /> {article.views || 0}</span>
                 <span className="text-sm" style={{marginLeft: 'auto', color: 'var(--secondary-blue)', fontWeight: 600}}>Đọc thêm →</span>
               </div>
             </Link>
