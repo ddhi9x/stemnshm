@@ -53,15 +53,15 @@ const Navbar = () => {
           <Link to="/faq" className="nav-link">{t('nav.faq')}</Link>
           
           {/* Explore Dropdown */}
-          <div className="nav-item-dropdown" style={{position: 'relative'}} onMouseEnter={() => setShowExplore(true)} onMouseLeave={() => setShowExplore(false)}>
-            <div className="nav-link cursor-pointer" style={{display: 'flex', alignItems: 'center', gap: '0.2rem'}}>
+          <div className="nav-item-dropdown" style={{position: 'relative'}}>
+            <div className="nav-link cursor-pointer" style={{display: 'flex', alignItems: 'center', gap: '0.2rem'}} onClick={() => setShowExplore(!showExplore)}>
               Khám Phá <ChevronDown size={14} style={{transition: 'transform 0.2s', transform: showExplore ? 'rotate(180deg)' : 'rotate(0)'}}/>
             </div>
             {showExplore && (
               <div style={{position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '0.5rem', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', minWidth: '190px', overflow: 'hidden', zIndex: 50}}>
-                <Link to="/thu-vien" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>📸 {t('nav.gallery') || 'Thư Viện Ảnh'}</Link>
-                <Link to="/ket-qua" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>🏆 {t('nav.results') || 'Đội Thi & Kết Quả'}</Link>
-                <Link to="/passport" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors" style={{textDecoration: 'none'}}>🛂 {t('nav.passport') || 'Passport STEM'}</Link>
+                <Link to="/thu-vien" onClick={() => setShowExplore(false)} className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>📸 {t('nav.gallery') || 'Thư Viện Ảnh'}</Link>
+                <Link to="/ket-qua" onClick={() => setShowExplore(false)} className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>🏆 {t('nav.results') || 'Đội Thi & Kết Quả'}</Link>
+                <Link to="/passport" onClick={() => setShowExplore(false)} className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors" style={{textDecoration: 'none'}}>🛂 {t('nav.passport') || 'Passport STEM'}</Link>
               </div>
             )}
           </div>
