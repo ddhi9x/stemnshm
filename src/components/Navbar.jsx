@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { useI18n } from '../i18n/I18nContext';
 import './Navbar.css';
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [registerLink, setRegisterLink] = useState('');
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showExplore, setShowExplore] = useState(false);
   const { lang, switchLang, t } = useI18n();
 
   useEffect(() => {
@@ -49,8 +50,21 @@ const Navbar = () => {
           <Link to="/mentor" className="nav-link">{t('nav.mentor')}</Link>
           <Link to="/lich-trinh" className="nav-link">{t('nav.schedule')}</Link>
           <Link to="/tin-tuc" className="nav-link">{t('nav.news')}</Link>
-          <Link to="/chung-ket" className="nav-link">{t('nav.finals')}</Link>
           <Link to="/faq" className="nav-link">{t('nav.faq')}</Link>
+          
+          {/* Explore Dropdown */}
+          <div className="nav-item-dropdown" style={{position: 'relative'}} onMouseEnter={() => setShowExplore(true)} onMouseLeave={() => setShowExplore(false)}>
+            <div className="nav-link cursor-pointer" style={{display: 'flex', alignItems: 'center', gap: '0.2rem'}}>
+              Khám Phá <ChevronDown size={14} style={{transition: 'transform 0.2s', transform: showExplore ? 'rotate(180deg)' : 'rotate(0)'}}/>
+            </div>
+            {showExplore && (
+              <div style={{position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '0.5rem', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', minWidth: '190px', overflow: 'hidden', zIndex: 50}}>
+                <Link to="/thu-vien" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>📸 {t('nav.gallery') || 'Thư Viện Ảnh'}</Link>
+                <Link to="/ket-qua" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors border-b border-gray-100" style={{textDecoration: 'none'}}>🏆 {t('nav.results') || 'Đội Thi & Kết Quả'}</Link>
+                <Link to="/passport" className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors" style={{textDecoration: 'none'}}>🛂 {t('nav.passport') || 'Passport STEM'}</Link>
+              </div>
+            )}
+          </div>
           {registerLink && (
             <a href={registerLink} target="_blank" rel="noreferrer" className="btn btn-nshm" style={{padding: '0.5rem 1.2rem', fontSize: '0.8rem', marginLeft: '0.8rem', borderRadius: '10px'}}>
               {t('nav.register')}
@@ -131,7 +145,9 @@ const Navbar = () => {
           <Link to="/mentor" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.mentor')}</Link>
           <Link to="/lich-trinh" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.schedule')}</Link>
           <Link to="/tin-tuc" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.news')}</Link>
-          <Link to="/chung-ket" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.finals')}</Link>
+          <Link to="/thu-vien" className="nav-link" onClick={() => setIsOpen(false)}>📸 {t('nav.gallery') || 'Thư Viện'}</Link>
+          <Link to="/ket-qua" className="nav-link" onClick={() => setIsOpen(false)}>🏆 {t('nav.results') || 'Kết Quả'}</Link>
+          <Link to="/passport" className="nav-link" onClick={() => setIsOpen(false)}>🛂 {t('nav.passport') || 'Passport'}</Link>
           <Link to="/faq" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.faq')}</Link>
         </div>
       )}
