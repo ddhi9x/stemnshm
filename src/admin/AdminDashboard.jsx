@@ -614,24 +614,29 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <div className="mb-5">
-                <label className="block text-sm font-bold text-muted mb-2">Link Form Đăng Ký Tham Gia</label>
+                <div className="flex justify-between items-end mb-2">
+                  <label className="block text-sm font-bold text-muted">Link Form Đăng Ký Tham Gia</label>
+                  <span style={{fontSize: '0.75rem', fontWeight: 600, color: '#dc2626', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '12px'}}>🖱️ {linksData.clicks_register || 0} lượt bấm</span>
+                </div>
                 <div className="flex gap-2 mb-2">
                   <input type="text" placeholder="https://..." value={linksData.register} onChange={e => setLinksData({...linksData, register: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
                   <input type="text" placeholder="Tên nút" value={linksData.label_register || ''} onChange={e => setLinksData({...linksData, label_register: e.target.value})} className="admin-input" style={{maxWidth: '180px', marginBottom: 0, fontWeight: 700, color: '#dc2626'}} />
                 </div>
               </div>
               <div className="mb-5">
-                <label className="block text-sm font-bold text-muted mb-2">Link Nộp Sản Phẩm / Nộp Bài</label>
+                <div className="flex justify-between items-end mb-2">
+                  <label className="block text-sm font-bold text-muted">Link Nộp Sản Phẩm / Nộp Bài</label>
+                  <span style={{fontSize: '0.75rem', fontWeight: 600, color: '#059669', background: '#ecfdf5', padding: '0.2rem 0.6rem', borderRadius: '12px'}}>🖱️ {linksData.clicks_submit || 0} lượt bấm</span>
+                </div>
                 <div className="flex gap-2 mb-2">
                   <input type="text" placeholder="https://..." value={linksData.submit} onChange={e => setLinksData({...linksData, submit: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
                   <input type="text" placeholder="Tên nút" value={linksData.label_submit || ''} onChange={e => setLinksData({...linksData, label_submit: e.target.value})} className="admin-input" style={{maxWidth: '180px', marginBottom: 0, fontWeight: 700, color: '#059669'}} />
                 </div>
               </div>
-              {/* === File Template Cards === */}
               {[
-                { key: 'template_hoso', labelKey: 'label_hoso', icon: '📄', title: 'Mẫu Hồ Sơ', accept: '.docx,.doc,.pdf,.xlsx', prefix: 'hoso', color: '#2563eb' },
-                { key: 'template_ppt', labelKey: 'label_ppt', icon: '📊', title: 'Mẫu Trình Bày PPT', accept: '.pptx,.ppt,.pdf', prefix: 'ppt', color: '#d97706' },
-                { key: 'template_guide', labelKey: 'label_guide', icon: '📋', title: 'HD Trình Chiếu', accept: '.pdf,.docx,.doc,.pptx,.ppt', prefix: 'guide', color: '#8b5cf6' },
+                { key: 'template_hoso', clicksKey: 'clicks_hoso', labelKey: 'label_hoso', icon: '📄', title: 'Mẫu Hồ Sơ', accept: '.docx,.doc,.pdf,.xlsx', prefix: 'hoso', color: '#2563eb' },
+                { key: 'template_ppt', clicksKey: 'clicks_ppt', labelKey: 'label_ppt', icon: '📊', title: 'Mẫu Trình Bày PPT', accept: '.pptx,.ppt,.pdf', prefix: 'ppt', color: '#d97706' },
+                { key: 'template_guide', clicksKey: 'clicks_guide', labelKey: 'label_guide', icon: '📋', title: 'HD Trình Chiếu', accept: '.pdf,.docx,.doc,.pptx,.ppt', prefix: 'guide', color: '#8b5cf6' },
               ].map(tmpl => {
                 const fileUrl = linksData[tmpl.key];
                 const fileName = fileUrl ? decodeURIComponent(fileUrl.split('/').pop()) : null;
@@ -639,7 +644,12 @@ const AdminDashboard = () => {
                 return (
                   <div key={tmpl.key} className="mb-5" style={{border: `1px solid ${hasFile ? '#bbf7d0' : '#e2e8f0'}`, borderRadius: '12px', padding: '1rem', background: hasFile ? '#f0fdf4' : '#fafafa'}}>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="block text-sm font-bold" style={{color: tmpl.color}}>{tmpl.icon} {tmpl.title}</label>
+                      <div className="flex items-center gap-3">
+                        <label className="block text-sm font-bold m-0" style={{color: tmpl.color}}>{tmpl.icon} {tmpl.title}</label>
+                        <span style={{fontSize: '0.7rem', fontWeight: 600, color: tmpl.color, background: `${tmpl.color}15`, padding: '0.15rem 0.5rem', borderRadius: '12px'}}>
+                          🖱️ {linksData[tmpl.clicksKey] || 0} lượt tải
+                        </span>
+                      </div>
                       <span style={{fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '6px', fontWeight: 700, background: hasFile ? '#dcfce7' : '#fef3c7', color: hasFile ? '#166534' : '#92400e'}}>
                         {hasFile ? '✅ Đã có file' : '⏳ Chưa có file'}
                       </span>
