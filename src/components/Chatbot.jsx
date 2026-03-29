@@ -27,6 +27,16 @@ const Chatbot = () => {
   const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
   const messagesEnd = useRef(null);
 
+  // Re-fetch API key every time chatbot opens
+  useEffect(() => {
+    if (isOpen) {
+      supabase.from('settings').select('gemini_key,gemini_model').single().then(({ data }) => {
+        if (data?.gemini_key) setGeminiKey(data.gemini_key);
+        if (data?.gemini_model) setGeminiModel(data.gemini_model);
+      });
+    }
+  }, [isOpen]);
+
   // Fetch all event data and build context for AI
   useEffect(() => {
     const buildContext = async () => {
