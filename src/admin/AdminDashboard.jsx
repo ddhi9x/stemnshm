@@ -741,11 +741,14 @@ const AdminDashboard = () => {
               </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">🧠 Model AI</label>
-                <select value={settingsData.gemini_model || 'gemini-2.5-flash'} onChange={e => setSettingsData({...settingsData, gemini_model: e.target.value})} className="admin-input">
-                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyên dùng)</option>
-                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                  <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Nhanh, nhẹ)</option>
-                </select>
+                <input type="text" list="gemini-models" placeholder="gemini-2.5-flash" value={settingsData.gemini_model || 'gemini-2.5-flash'} onChange={e => setSettingsData({...settingsData, gemini_model: e.target.value})} className="admin-input" style={{fontFamily: 'monospace'}} />
+                <datalist id="gemini-models">
+                  <option value="gemini-2.5-flash" />
+                  <option value="gemini-2.5-pro" />
+                  <option value="gemini-2.0-flash" />
+                  <option value="gemini-2.0-flash-lite" />
+                </datalist>
+                <p style={{fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.3rem'}}>Nhập tên model Gemini. Xem danh sách tại <a href="https://ai.google.dev/gemini-api/docs/models" target="_blank" rel="noreferrer" style={{color: '#8b5cf6'}}>ai.google.dev/models</a></p>
               </div>
               <div style={{background: settingsData.gemini_key ? '#f0fdf4' : '#fef3c7', border: `1px solid ${settingsData.gemini_key ? '#bbf7d0' : '#fde68a'}`, borderRadius: '10px', padding: '0.6rem 0.8rem', fontSize: '0.78rem', color: settingsData.gemini_key ? '#166534' : '#92400e'}}>
                 {settingsData.gemini_key ? '✅ API Key đã được cấu hình — Chatbot AI đang hoạt động!' : '⚠️ Chưa có API Key — Chatbot sẽ không trả lời được.'}
