@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
   const [awards, setAwards] = useState([]);
   const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '', label_register: 'Đăng Ký Tham Gia', label_submit: 'Nộp Bài / Sản Phẩm', label_hoso: 'Tải Mẫu Hồ Sơ', label_ppt: 'Mẫu Trình Bày PPT', label_guide: 'HD Trình Chiếu', show_register: true, show_submit: true, show_hoso: true, show_ppt: true, show_guide: true });
-  const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '' });
+  const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '', gemini_key: '', gemini_model: 'gemini-2.5-flash' });
   const [timeline, setTimeline] = useState([]);
   const [finalSchedule, setFinalSchedule] = useState([]);
   const [newScheduleItem, setNewScheduleItem] = useState({ time: '', title: '', desc: '' });
@@ -221,6 +221,8 @@ const AdminDashboard = () => {
       stat2_num: settingsData.stat2_num, stat2_label: settingsData.stat2_label,
       stat3_num: settingsData.stat3_num, stat3_label: settingsData.stat3_label,
       stat4_num: settingsData.stat4_num, stat4_label: settingsData.stat4_label,
+      gemini_key: settingsData.gemini_key || '',
+      gemini_model: settingsData.gemini_model || 'gemini-2.5-flash',
     }).eq('id', 1);
     alert('Đã cập nhật Cài Đặt!');
   };
@@ -727,6 +729,28 @@ const AdminDashboard = () => {
                 <input type="text" value={settingsData.hotline} onChange={e => setSettingsData({...settingsData, hotline: e.target.value})} className="admin-input" />
               </div>
               <button className="btn btn-primary w-full" onClick={handleSaveSettings}>Lưu Cập Nhật Footer & Sự Kiện</button>
+            </div>
+
+            {/* Chatbot AI Config */}
+            <div className="admin-card card glass border-l-4 mt-6" style={{borderColor: '#8b5cf6'}}>
+              <h3 className="mb-4" style={{color: '#8b5cf6'}}>🤖 Cấu Hình Chatbot AI</h3>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">🔑 Gemini API Key</label>
+                <input type="password" placeholder="AIzaSy..." value={settingsData.gemini_key || ''} onChange={e => setSettingsData({...settingsData, gemini_key: e.target.value})} className="admin-input" style={{fontFamily: 'monospace'}} />
+                <p style={{fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.3rem'}}>Lấy key miễn phí tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{color: '#8b5cf6'}}>aistudio.google.com/apikey</a></p>
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-2">🧠 Model AI</label>
+                <select value={settingsData.gemini_model || 'gemini-2.5-flash'} onChange={e => setSettingsData({...settingsData, gemini_model: e.target.value})} className="admin-input">
+                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyên dùng)</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                  <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Nhanh, nhẹ)</option>
+                </select>
+              </div>
+              <div style={{background: settingsData.gemini_key ? '#f0fdf4' : '#fef3c7', border: `1px solid ${settingsData.gemini_key ? '#bbf7d0' : '#fde68a'}`, borderRadius: '10px', padding: '0.6rem 0.8rem', fontSize: '0.78rem', color: settingsData.gemini_key ? '#166534' : '#92400e'}}>
+                {settingsData.gemini_key ? '✅ API Key đã được cấu hình — Chatbot AI đang hoạt động!' : '⚠️ Chưa có API Key — Chatbot sẽ không trả lời được.'}
+              </div>
+              <button className="btn w-full mt-4" style={{background: '#8b5cf6', color: 'white'}} onClick={handleSaveSettings}>Lưu Cấu Hình AI</button>
             </div>
           </div>
         )}

@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { MessageCircle, X, Send, Sparkles, RotateCcw } from 'lucide-react';
 
-const GEMINI_API_KEY = 'AIzaSyA6yrI5vdjC2uSSjSapnPfJiFa47YGHsUs';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 const quickQuestions = [
   '🗓️ Deadline nộp bài?',
@@ -24,12 +23,14 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [eventContext, setEventContext] = useState('');
+  const [geminiKey, setGeminiKey] = useState('');
+  const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
   const messagesEnd = useRef(null);
 
   // Fetch all event data and build context for AI
   useEffect(() => {
     const buildContext = async () => {
-      const [faq, tl, ab, aw, mentorRes, newsRes, roundsRes] = await Promise.all([
+      const [faq, tl, ab, aw, mentorRes, newsRes, roundsRes, settingsRes] = await Promise.all([
         supabase.from('faq').select('*'),
         supabase.from('timeline').select('*').order('id'),
         supabase.from('about').select('*').single(),
@@ -37,7 +38,11 @@ const Chatbot = () => {
         supabase.from('mentors').select('name,subject,bio'),
         supabase.from('news').select('title,summary,date').order('created_at', { ascending: false }).limit(5),
         supabase.from('rounds').select('*').order('id'),
+        supabase.from('settings').select('gemini_key,gemini_model').single(),
       ]);
+
+      if (settingsRes.data?.gemini_key) setGeminiKey(settingsRes.data.gemini_key);
+      if (settingsRes.data?.gemini_model) setGeminiModel(settingsRes.data.gemini_model);
 
       let ctx = `=== THÔNG TIN NGÀY HỘI STEM — TRƯỜNG NGÔI SAO HOÀNG MAI ===\n`;
       ctx += `Chủ đề: "Ngày Hội STEM — Kiến Tạo Thế Giới Xanh" (Mùa giải 2025-2026)\n`;
@@ -114,6 +119,12 @@ const Chatbot = () => {
   }, [messages]);
 
   const callGemini = async (userMessage, chatHistory) => {
+    if (!geminiKey) {
+      return '⚠️ Chatbot AI chưa được kích hoạt. Vui lòng liên hệ thầy cô để biết thêm thông tin! 😊';
+    }
+
+    const GEMINI_URL = `${GEMINI_BASE_URL}/${geminiModel}:generateContent?key=${geminiKey}`;
+
     const systemPrompt = `Bạn là "Trợ lý AI STEM NSHM" — chatbot thông minh của Ngày Hội STEM trường Ngôi Sao Hoàng Mai.
 
 VAI TRÒ:
