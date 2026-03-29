@@ -184,6 +184,7 @@ ${eventContext}`;
     });
 
     try {
+      console.log('🤖 Calling Gemini:', GEMINI_URL.replace(geminiKey, '***'));
       const response = await fetch(GEMINI_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -199,6 +200,7 @@ ${eventContext}`;
       });
 
       const data = await response.json();
+      console.log('🤖 Gemini response status:', response.status, data);
       
       if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
         return data.candidates[0].content.parts[0].text;
@@ -206,13 +208,13 @@ ${eventContext}`;
       
       if (data.error) {
         console.error('Gemini API error:', data.error);
-        return '⚠️ Mình gặp lỗi kết nối. Bạn thử lại sau nhé!';
+        return `⚠️ Lỗi API: ${data.error.message || 'Không xác định'}. Kiểm tra API key và model name trong Admin.`;
       }
       
       return '🤔 Mình chưa hiểu câu hỏi này. Bạn thử hỏi lại hoặc xem FAQ nhé!';
     } catch (error) {
       console.error('Gemini fetch error:', error);
-      return '⚠️ Không kết nối được AI. Kiểm tra mạng và thử lại nhé!';
+      return `⚠️ Không kết nối được AI (${error.message}). Kiểm tra mạng và thử lại nhé!`;
     }
   };
 
