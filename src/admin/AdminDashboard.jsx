@@ -615,9 +615,15 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               </div>
+              <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '0.5rem'}}>
+                <button onClick={async () => { const { data } = await supabase.from('links').select('clicks_register,clicks_submit,clicks_hoso,clicks_ppt,clicks_guide').single(); if (data) setLinksData(prev => ({...prev, ...data})); alert('✅ Đã cập nhật số liệu mới nhất!'); }} style={{fontSize: '0.72rem', padding: '0.3rem 0.7rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', cursor: 'pointer', color: '#64748b'}}>
+                  🔄 Làm mới thống kê
+                </button>
+              </div>
               <div className="mb-5">
                 <div className="flex justify-between items-end mb-2">
                   <label className="block text-sm font-bold text-muted">Link Form Đăng Ký Tham Gia</label>
+                  <span style={{fontSize: '0.75rem', fontWeight: 600, color: '#dc2626', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '12px'}}>🖱️ {linksData.clicks_register || 0} lượt bấm</span>
                   <span style={{fontSize: '0.75rem', fontWeight: 600, color: '#dc2626', background: '#fef2f2', padding: '0.2rem 0.6rem', borderRadius: '12px'}}>🖱️ {linksData.clicks_register || 0} lượt bấm</span>
                 </div>
                 <div className="flex gap-2 mb-2">
