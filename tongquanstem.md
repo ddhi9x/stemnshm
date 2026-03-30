@@ -4,15 +4,33 @@
 *   **Tên sự kiện:** Ngày Hội STEM — Kiến Tạo Thế Giới Xanh (Mùa giải 2025-2026)
 *   **Đơn vị tổ chức:** Trường Liên cấp Tiểu học - THCS - THPT Ngôi Sao Hoàng Mai (Hà Nội)
 *   **Ngày diễn ra (Dự kiến):** 22/04/2026
-*   **Mục tiêu:** Tạo sân chơi khoa học, công nghệ, kỹ thuật và toán học cho học sinh, với trọng tâm là các giải pháp bảo vệ môi trường, năng lượng tái tạo và phát triển bền vững.
-*   **Đối tượng tham gia:** Học sinh trường Ngôi Sao Hoàng Mai.
+*   **Đối tượng tham gia:** Học sinh khối THCS trường Ngôi Sao Hoàng Mai.
+
+### Mục Tiêu
+- Khơi dậy hứng thú học tập và niềm đam mê Khoa học tự nhiên của học sinh khối THCS.
+- Nâng cao năng lực tự học, tự nghiên cứu, tìm tòi, khám phá với các môn Khoa học tự nhiên, Toán, Tin học.
+- Tạo sân chơi để học sinh được sáng tạo, chế tạo các mô hình STEM, khoa học, được đánh giá và công nhận.
+- Phát triển năng lực giải quyết vấn đề và sáng tạo, hợp tác, kỹ năng thuyết trình, báo cáo và ứng dụng công nghệ thông tin.
+- Phát hiện và định hướng học tập, tạo động lực cho những học sinh có năng khiếu và đam mê học Khoa học.
 
 ## 2. Các Lĩnh Vực Thi Đấu (S.T.E.M)
-Cuộc thi được chia thành 4 lĩnh vực cốt lõi để học sinh tự do sáng tạo định hướng "Thế Giới Xanh":
-1.  **Science (Khoa học):** Khoa học sự sống, khoa học môi trường, hóa học ứng dụng, nghiên cứu năng lượng tái tạo, vật liệu phân hủy sinh học, chế phẩm sinh học.
-2.  **Technology (Công nghệ):** Ứng dụng lập trình, phần mềm, ứng dụng di động (App), Trí tuệ nhân tạo (AI), Internet vạn vật (IoT) vào các giải pháp xanh (ví dụ: thùng rác thông minh, app theo dõi khí hậu).
-3.  **Engineering (Kỹ thuật):** Thiết kế, chế tạo máy móc, mô hình tự động hóa, robot, giải pháp kỹ thuật bảo vệ môi trường (ví dụ: robot dọn rác, máy lọc nước mini).
-4.  **Mathematics (Toán học):** Mô hình hóa toán học, thống kê, vẽ biểu đồ, phân tích dữ liệu, thuật toán tối ưu hóa nhằm giải quyết vấn đề môi trường.
+Chủ đề: **"STEM kiến tạo thế giới xanh"** — 4 lĩnh vực dự thi:
+1.  **Science (Khoa học):** Thí nghiệm khoa học; thiết kế mô hình, hệ thống về khoa học.
+2.  **Technology (Công nghệ):** Ứng dụng lập trình; ứng dụng phần mềm.
+3.  **Engineering (Kỹ thuật):** Xây dựng mô hình, giải pháp thiết kế sáng tạo.
+4.  **Mathematics (Toán học):** Ứng dụng toán học trong thực tế.
+
+### Một Số Chủ Đề Dự Thi Gợi Ý
+- Hệ sinh thái thu nhỏ kết hợp tự động hóa
+- Đa dạng sinh học và bảo vệ hệ sinh thái
+- Sản phẩm hữu cơ chiết xuất từ thiên nhiên
+- Giám sát và bảo vệ rừng
+- Kiến trúc mô phỏng
+- Năng lượng sạch - bền vững
+- Vật liệu bền vững và kinh tế tuần hoàn
+- Khí hậu và đô thị thông minh
+- Quy hoạch đô thị xanh tương lai
+- Thiết kế công trình xanh
 
 ## 3. Hoạt Động Khác & Trải Nghiệm
 *   **Passport STEM (Gamification):** Học sinh được phát 1 cuốn hộ chiếu (Passport). Tham gia trải nghiệm tại các trạm để thu thập con dấu (Stamp). Vượt qua 8 trạm (5 trạm trải nghiệm + 3 trạm dự thi) sẽ đạt điều kiện tham gia vòng Quay Số May Mắn.
