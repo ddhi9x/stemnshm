@@ -15,6 +15,12 @@ const About = () => {
 
   if (!aboutData) return <div className="container py-20">Loading...</div>;
 
+  // Parse bullet items from text (one per line)
+  const parseItems = (text) => {
+    if (!text) return [];
+    return text.split('\n').map(s => s.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+  };
+
   return (
     <div className="container py-20 animate-fade-in" style={{maxWidth: '800px', margin: '0 auto'}}>
       <div className="text-center mb-12">
@@ -32,7 +38,7 @@ const About = () => {
           <strong className="text-nshm">Trọng tâm:</strong> {aboutData.focus}
         </p>
         <p>
-          <strong className="text-nshm">Mục tiêu:</strong> Khám phá đam mê, thúc đẩy tinh thần sáng tạo, và định hướng học sinh áp dụng kiến thức đa phân môn để giải quyết vấn đề xã hội.
+          <strong className="text-nshm">Mục tiêu:</strong> {aboutData.objective || 'Khám phá đam mê, thúc đẩy tinh thần sáng tạo, và định hướng học sinh áp dụng kiến thức đa phân môn để giải quyết vấn đề xã hội.'}
         </p>
       </div>
 
@@ -43,10 +49,10 @@ const About = () => {
           <li><strong className="text-nshm">Hình thức:</strong> {aboutData.format}</li>
           <li><strong className="text-nshm">4 Lĩnh vực chính:</strong>
             <ul className="pl-6 text-muted" style={{listStyleType: 'circle'}}>
-              <li>Science (Khoa học sự sống, hóa học xanh)</li>
-              <li>Technology (Phần mềm, AI, IoT)</li>
-              <li>Engineering (Chế tạo mô hình kỹ thuật)</li>
-              <li>Mathematics (Mô hình toán học ứng dụng)</li>
+              <li><strong>Science:</strong> {aboutData.stem_s || 'Thí nghiệm khoa học; thiết kế mô hình, hệ thống về khoa học'}</li>
+              <li><strong>Technology:</strong> {aboutData.stem_t || 'Ứng dụng lập trình; ứng dụng phần mềm'}</li>
+              <li><strong>Engineering:</strong> {aboutData.stem_e || 'Xây dựng mô hình, giải pháp thiết kế sáng tạo'}</li>
+              <li><strong>Mathematics:</strong> {aboutData.stem_m || 'Ứng dụng toán học trong thực tế'}</li>
             </ul>
           </li>
         </ul>
@@ -56,21 +62,21 @@ const About = () => {
         <h2 className="mb-4 text-green-gradient">3. Cấu trúc 2 vòng thi</h2>
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white p-5 rounded-xl block-shadow border-l-4 border-primary">
-            <h3 className="text-lg mb-2 text-primary">Vòng Sơ Loại</h3>
-            <p className="text-sm text-muted font-bold mb-3">Hồ sơ ý tưởng & Slideshow</p>
+            <h3 className="text-lg mb-2 text-primary">{aboutData.round1_title || 'Vòng Sơ Loại'}</h3>
+            <p className="text-sm text-muted font-bold mb-3">{aboutData.round1_desc || 'Hồ sơ ý tưởng & Slideshow'}</p>
             <ul className="text-sm pl-4 text-muted">
-              <li>Mô tả ý tưởng, tính khả thi</li>
-              <li>Vẽ sơ đồ thiết kế nháp</li>
-              <li>Chọn Mentor bảo trợ kỹ thuật</li>
+              {parseItems(aboutData.round1_items || 'Mô tả ý tưởng, tính khả thi\nVẽ sơ đồ thiết kế nháp\nChọn Mentor bảo trợ kỹ thuật').map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
             </ul>
           </div>
           <div className="bg-white p-5 rounded-xl block-shadow border-l-4 border-secondary">
-            <h3 className="text-lg mb-2 text-secondary">Vòng Chung Kết</h3>
-            <p className="text-sm text-muted font-bold mb-3">STEM Day Exhibition</p>
+            <h3 className="text-lg mb-2 text-secondary">{aboutData.round2_title || 'Vòng Chung Kết'}</h3>
+            <p className="text-sm text-muted font-bold mb-3">{aboutData.round2_desc || 'STEM Day Exhibition'}</p>
             <ul className="text-sm pl-4 text-muted">
-              <li>Hoàn thiện Sản phẩm/Mô hình thật</li>
-              <li>Chuẩn bị Poster triển lãm</li>
-              <li>Thuyết trình & demo biểu diễn</li>
+              {parseItems(aboutData.round2_items || 'Hoàn thiện Sản phẩm/Mô hình thật\nChuẩn bị Poster triển lãm\nThuyết trình & demo biểu diễn').map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>

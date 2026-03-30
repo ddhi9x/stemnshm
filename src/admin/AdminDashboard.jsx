@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('news');
   const [news, setNews] = useState([]);
   const [mentors, setMentors] = useState([]);
-  const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '' });
+  const [aboutData, setAboutData] = useState({ message: '', focus: '', target: '', format: '', objective: '', stem_s: '', stem_t: '', stem_e: '', stem_m: '', round1_title: '', round1_desc: '', round1_items: '', round2_title: '', round2_desc: '', round2_items: '' });
   const [awards, setAwards] = useState([]);
   const [linksData, setLinksData] = useState({ register: '', submit: '', template_hoso: '', template_ppt: '', template_guide: '', label_register: 'Đăng Ký Tham Gia', label_submit: 'Nộp Bài / Sản Phẩm', label_hoso: 'Tải Mẫu Hồ Sơ', label_ppt: 'Mẫu Trình Bày PPT', label_guide: 'HD Trình Chiếu', show_register: true, show_submit: true, show_hoso: true, show_ppt: true, show_guide: true });
   const [settingsData, setSettingsData] = useState({ tagline: '', email: '', hotline: '', gemini_key: '', gemini_model: 'gemini-2.5-flash' });
@@ -592,6 +592,49 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-bold text-nshm mb-2">Hình thức thi</label>
                 <input type="text" value={aboutData.format} onChange={e => setAboutData({...aboutData, format: e.target.value})} className="admin-input" />
               </div>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-nshm mb-2">🎯 Mục tiêu</label>
+                <textarea value={aboutData.objective || ''} onChange={e => setAboutData({...aboutData, objective: e.target.value})} className="admin-input" rows="3" placeholder="Khám phá đam mê, thúc đẩy sáng tạo..."></textarea>
+              </div>
+
+              <h3 className="mb-3 text-primary" style={{marginTop: '1.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem'}}>🔬 4 Lĩnh Vực STEM</h3>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-muted mb-1">Science (Khoa học)</label>
+                <input type="text" value={aboutData.stem_s || ''} onChange={e => setAboutData({...aboutData, stem_s: e.target.value})} className="admin-input" placeholder="Thí nghiệm khoa học; thiết kế mô hình..." />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-muted mb-1">Technology (Công nghệ)</label>
+                <input type="text" value={aboutData.stem_t || ''} onChange={e => setAboutData({...aboutData, stem_t: e.target.value})} className="admin-input" placeholder="Ứng dụng lập trình; phần mềm..." />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-muted mb-1">Engineering (Kỹ thuật)</label>
+                <input type="text" value={aboutData.stem_e || ''} onChange={e => setAboutData({...aboutData, stem_e: e.target.value})} className="admin-input" placeholder="Xây dựng mô hình, giải pháp thiết kế..." />
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-muted mb-1">Mathematics (Toán học)</label>
+                <input type="text" value={aboutData.stem_m || ''} onChange={e => setAboutData({...aboutData, stem_m: e.target.value})} className="admin-input" placeholder="Ứng dụng toán học thực tế..." />
+              </div>
+
+              <h3 className="mb-3 text-primary" style={{marginTop: '1.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem'}}>🏆 Cấu trúc Vòng Thi</h3>
+              <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                  <label className="block text-sm font-bold text-muted mb-1">Tên Vòng 1</label>
+                  <input type="text" value={aboutData.round1_title || ''} onChange={e => setAboutData({...aboutData, round1_title: e.target.value})} className="admin-input" placeholder="Vòng Sơ Loại" />
+                  <label className="block text-sm font-bold text-muted mb-1 mt-2">Mô tả ngắn</label>
+                  <input type="text" value={aboutData.round1_desc || ''} onChange={e => setAboutData({...aboutData, round1_desc: e.target.value})} className="admin-input" placeholder="Hồ sơ ý tưởng & Slideshow" />
+                  <label className="block text-sm font-bold text-muted mb-1 mt-2">Các bước (mỗi dòng 1 bước)</label>
+                  <textarea value={aboutData.round1_items || ''} onChange={e => setAboutData({...aboutData, round1_items: e.target.value})} className="admin-input" rows="3" placeholder="Mô tả ý tưởng&#10;Vẽ sơ đồ thiết kế&#10;Chọn Mentor"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-muted mb-1">Tên Vòng 2</label>
+                  <input type="text" value={aboutData.round2_title || ''} onChange={e => setAboutData({...aboutData, round2_title: e.target.value})} className="admin-input" placeholder="Vòng Chung Kết" />
+                  <label className="block text-sm font-bold text-muted mb-1 mt-2">Mô tả ngắn</label>
+                  <input type="text" value={aboutData.round2_desc || ''} onChange={e => setAboutData({...aboutData, round2_desc: e.target.value})} className="admin-input" placeholder="STEM Day Exhibition" />
+                  <label className="block text-sm font-bold text-muted mb-1 mt-2">Các bước (mỗi dòng 1 bước)</label>
+                  <textarea value={aboutData.round2_items || ''} onChange={e => setAboutData({...aboutData, round2_items: e.target.value})} className="admin-input" rows="3" placeholder="Hoàn thiện sản phẩm&#10;Poster triển lãm&#10;Thuyết trình"></textarea>
+                </div>
+              </div>
+
               <button className="btn btn-primary btn-lg w-full" onClick={handleSaveAbout}>Lưu Thay Đổi Trang Giới Thiệu</button>
             </div>
             
