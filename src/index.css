@@ -534,7 +534,7 @@ section {
 .news-content a { color: #2563eb; text-decoration: underline; }
 .news-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; }
 .news-content th, .news-content td { border: 1px solid #e2e8f0; padding: 0.6rem 0.8rem; text-align: left; }
-.news-content th { background: #f1f5f9; font-weight: 700; }
+.news-content th { background: #059669; color: white; font-weight: 700; }
 .news-content pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; }
 
 /* ═══════ Quill Editor Admin ═══════ */
