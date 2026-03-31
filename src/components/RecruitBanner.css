@@ -1,0 +1,456 @@
+/* ═══════════════════════════════════════════
+   RECRUIT BANNER – Sticky Floating Ad Banner
+   ═══════════════════════════════════════════ */
+
+.recruit-banner {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  width: 250px;
+  z-index: 999;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0.85rem 0.85rem 0.7rem;
+
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  box-shadow:
+    0 20px 60px rgba(5, 150, 105, 0.18),
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  /* Default state (hidden) */
+  opacity: 0;
+  transform: translateX(120%);
+}
+
+/* ── Entrance ── */
+.recruit-banner--open {
+  animation: bannerSlideIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Exit ── */
+.recruit-banner--closing {
+  animation: bannerSlideOut 0.35s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes bannerSlideIn {
+  from { opacity: 0; transform: translateX(120%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bannerSlideOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(120%); }
+}
+
+/* ── Expanded state ── */
+.recruit-banner--expanded {
+  width: 270px;
+}
+
+/* ── Top accent bar ── */
+.recruit-banner__accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #059669, #10b981, #3b82f6, #059669);
+  background-size: 200% 100%;
+  animation: accentShift 3s linear infinite;
+}
+
+@keyframes accentShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ── Header row ── */
+.recruit-banner__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+/* ── Live badge ── */
+.recruit-banner__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px 2px 6px;
+  border-radius: 100px;
+}
+
+.recruit-banner__badge-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ── Close button ── */
+.recruit-banner__close {
+  background: rgba(100, 116, 139, 0.1);
+  border: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: #64748b;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.recruit-banner__close:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+/* ── Icon row ── */
+.recruit-banner__icon-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.recruit-banner__main-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  animation: bannerFloat 4s ease-in-out infinite;
+}
+
+@keyframes bannerFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+.recruit-banner__title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  margin: 0;
+  font-family: 'Lexend', sans-serif;
+}
+
+.recruit-banner__subtitle {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #059669;
+  margin: 0;
+  letter-spacing: 0.5px;
+  font-family: 'Lexend', sans-serif;
+}
+
+/* ── Body ── */
+.recruit-banner__body {
+  margin-bottom: 0.35rem;
+}
+
+.recruit-banner__teaser {
+  font-size: 0.7rem;
+  color: #475569;
+  line-height: 1.55;
+  font-family: 'Lexend', sans-serif;
+  margin: 0;
+}
+
+.recruit-banner__detail {
+  font-size: 0.7rem;
+  color: #475569;
+  line-height: 1.6;
+  font-family: 'Lexend', sans-serif;
+}
+
+.recruit-banner__detail p {
+  margin-bottom: 0.5rem;
+}
+
+.recruit-banner__detail ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.recruit-banner__detail li {
+  font-size: 0.68rem;
+  color: #334155;
+  padding: 0.2rem 0;
+}
+
+/* ── Toggle ── */
+.recruit-banner__toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-family: 'Lexend', sans-serif;
+  color: #059669;
+  padding: 0;
+  display: block;
+  margin-bottom: 0.45rem;
+  transition: opacity 0.2s;
+}
+
+.recruit-banner__toggle:hover {
+  opacity: 0.75;
+}
+
+/* ── CTA button ── */
+.recruit-banner__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.45rem 0.8rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Lexend', sans-serif;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  animation: ctaPulse 2.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.recruit-banner__cta::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: rotate(45deg) translateX(-100%);
+  transition: transform 0.55s;
+}
+
+.recruit-banner__cta:hover::before {
+  transform: rotate(45deg) translateX(100%);
+}
+
+.recruit-banner__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.45);
+  animation: none;
+}
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35); }
+  50%       { box-shadow: 0 4px 24px rgba(5, 150, 105, 0.6); }
+}
+
+/* ── Secondary news link ── */
+.recruit-banner__news-link {
+  display: block;
+  text-align: center;
+  margin-top: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: 'Lexend', sans-serif;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.2px;
+}
+
+.recruit-banner__news-link:hover {
+  color: #059669;
+  text-decoration: underline;
+}
+
+/* ── Decorative floating particles ── */
+.recruit-banner__particles {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.recruit-banner__particles span {
+  position: absolute;
+  font-size: 1.1rem;
+  opacity: 0.05;
+  animation: particleFloat 8s ease-in-out infinite;
+}
+
+.recruit-banner__particles span:nth-child(1) {
+  bottom: 16%; right: 8%;
+  animation-delay: 0s;
+}
+.recruit-banner__particles span:nth-child(2) {
+  top: 30%; left: 5%;
+  animation-delay: -3s;
+}
+.recruit-banner__particles span:nth-child(3) {
+  bottom: 8%; left: 15%;
+  animation-delay: -6s;
+}
+
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-12px) rotate(25deg); }
+}
+
+/* ═══════════════════════════════════════════
+   FAB – Minimized floating icon button
+   ═══════════════════════════════════════════ */
+
+.recruit-fab {
+  position: fixed;
+  top: 85px;
+  right: 18px;
+  z-index: 999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 8px 32px rgba(5, 150, 105, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fabPopIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.recruit-fab:hover {
+  transform: scale(1.12);
+  box-shadow:
+    0 12px 40px rgba(5, 150, 105, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(16, 185, 129, 0.7);
+}
+
+.recruit-fab:active {
+  transform: scale(0.95);
+}
+
+@keyframes fabPopIn {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.recruit-fab__icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  animation: bannerFloat 3s ease-in-out infinite;
+}
+
+/* Pulsing ring around FAB */
+.recruit-fab__pulse {
+  position: absolute;
+  top: -4px; left: -4px;
+  right: -4px; bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(5, 150, 105, 0.4);
+  animation: fabRing 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes fabRing {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE – Tablet & Mobile
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .recruit-banner {
+    top: auto;
+    bottom: 80px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+  }
+
+  .recruit-banner--expanded {
+    width: auto;
+  }
+
+  .recruit-fab {
+    top: auto;
+    bottom: 80px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .recruit-fab__icon {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recruit-banner {
+    bottom: 75px;
+    right: 8px;
+    left: 8px;
+    padding: 0.75rem 0.75rem 0.6rem;
+    border-radius: 14px;
+  }
+
+  .recruit-banner__title {
+    font-size: 0.8rem;
+  }
+
+  .recruit-banner__teaser {
+    font-size: 0.66rem;
+  }
+
+  .recruit-banner__cta {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .recruit-fab {
+    bottom: 75px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .recruit-fab__icon {
+    font-size: 1rem;
+  }
+}

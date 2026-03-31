@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import AvatarCropper from './AvatarCropper';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import * as XLSX from 'xlsx';
 import './Admin.css';
+
+// Register table tags so Quill doesn't strip them
+const Block = Quill.import('blots/block');
+class TableCell extends Block { static blotName = 'tableCell'; static tagName = 'TD'; }
+class TableHeader extends Block { static blotName = 'tableHeader'; static tagName = 'TH'; }
+class TableRow extends Block { static blotName = 'tableRow'; static tagName = 'TR'; }
+const Container = Quill.import('blots/container');
+class TableBody extends Container { static blotName = 'tableBody'; static tagName = 'TBODY'; }
+class TableHead extends Container { static blotName = 'tableHead'; static tagName = 'THEAD'; }
+class Table extends Container { static blotName = 'table'; static tagName = 'TABLE'; }
+Quill.register(TableCell); Quill.register(TableHeader); Quill.register(TableRow);
+Quill.register(TableBody); Quill.register(TableHead); Quill.register(Table);
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,6 +41,7 @@ const AdminDashboard = () => {
 
   const [newArticle, setNewArticle] = useState({ title: '', summary: '', content: '', date: '', image: '' });
   const [editingNewsId, setEditingNewsId] = useState(null);
+  const [htmlMode, setHtmlMode] = useState(false);
   const [newMentor, setNewMentor] = useState({ name: '', field: '', bio: '', image: '', slogan: '' });
   const [editingMentorId, setEditingMentorId] = useState(null);
   const [rawImage, setRawImage] = useState(null);
@@ -223,6 +236,7 @@ const AdminDashboard = () => {
       stat4_num: settingsData.stat4_num, stat4_label: settingsData.stat4_label,
       gemini_key: settingsData.gemini_key || '',
       gemini_model: settingsData.gemini_model || 'gemini-2.5-flash',
+      show_recruit_banner: settingsData.show_recruit_banner !== false,
     }).eq('id', 1);
     alert('Đã cập nhật Cài Đặt!');
   };
@@ -378,27 +392,47 @@ const AdminDashboard = () => {
               <input type="date" value={newArticle.date} onChange={e => setNewArticle({...newArticle, date: e.target.value})} className="admin-input" />
               <input type="text" placeholder="Link ảnh đại diện (URL hình ảnh, có thể để trống)" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} className="admin-input" />
               <textarea placeholder="Tóm tắt ngắn (hiện ở trang chủ và danh sách tin)..." value={newArticle.summary} onChange={e => setNewArticle({...newArticle, summary: e.target.value})} className="admin-input" rows="2"></textarea>
-              <label className="block text-sm font-bold text-muted mb-2">📝 Nội dung bài viết (Rich Text - chèn ảnh, bảng, heading...)</label>
-              <div style={{background: 'white', borderRadius: '12px', marginBottom: '1rem'}}>
-                <ReactQuill
-                  theme="snow"
-                  value={newArticle.content || ''}
-                  onChange={val => setNewArticle({...newArticle, content: val})}
-                  modules={{
-                    toolbar: [
-                      [{ header: [1, 2, 3, false] }],
-                      ['bold', 'italic', 'underline', 'strike'],
-                      [{ color: [] }, { background: [] }],
-                      [{ list: 'ordered' }, { list: 'bullet' }],
-                      [{ align: [] }],
-                      ['link', 'image'],
-                      ['blockquote', 'code-block'],
-                      ['clean']
-                    ]
-                  }}
-                  style={{minHeight: '200px'}}
-                />
+              <label className="block text-sm font-bold text-muted mb-2">📝 Nội dung bài viết</label>
+              <div style={{display: 'flex', gap: '0.5rem', marginBottom: '0.5rem'}}>
+                <button
+                  type="button"
+                  onClick={() => setHtmlMode(true)}
+                  style={{padding: '0.35rem 0.8rem', borderRadius: '8px', border: '2px solid', borderColor: htmlMode ? '#2563eb' : '#cbd5e1', background: htmlMode ? '#eff6ff' : 'white', color: htmlMode ? '#2563eb' : '#64748b', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s'}}
+                >{'<>'} Mã HTML</button>
+                <button
+                  type="button"
+                  onClick={() => setHtmlMode(false)}
+                  style={{padding: '0.35rem 0.8rem', borderRadius: '8px', border: '2px solid', borderColor: !htmlMode ? '#059669' : '#cbd5e1', background: !htmlMode ? '#f0fdf4' : 'white', color: !htmlMode ? '#059669' : '#64748b', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s'}}
+                >👁 Xem trước</button>
               </div>
+              {htmlMode ? (
+                <div>
+                  <textarea
+                    className="admin-input"
+                    rows="16"
+                    value={newArticle.content || ''}
+                    onChange={e => setNewArticle({...newArticle, content: e.target.value})}
+                    placeholder="Paste mã HTML ở đây... (table, div, style đều được giữ nguyên)"
+                    style={{fontFamily: 'Consolas, monospace', fontSize: '0.82rem', lineHeight: '1.5', background: '#1e293b', color: '#e2e8f0', borderRadius: '10px', padding: '0.8rem'}}
+                  />
+                  <p style={{fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.4rem'}}>💡 <strong>Mẹo:</strong> Paste HTML có bảng, heading, danh sách ở đây. Bấm <strong>"👁 Xem trước"</strong> để xem giao diện thực tế.</p>
+                </div>
+              ) : (
+                <div>
+                  {newArticle.content ? (
+                    <div
+                      className="news-content"
+                      style={{background: 'white', border: '2px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', minHeight: '200px', maxHeight: '500px', overflowY: 'auto'}}
+                      dangerouslySetInnerHTML={{__html: newArticle.content}}
+                    />
+                  ) : (
+                    <div style={{background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '12px', padding: '2rem', textAlign: 'center', color: '#94a3b8', minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                      <span>Chưa có nội dung. Chuyển sang <strong>{'<>'} Mã HTML</strong> để nhập nội dung.</span>
+                    </div>
+                  )}
+                  <p style={{fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.4rem'}}>👆 Đây là giao diện thực tế khi học sinh xem bài viết. Chuyển sang <strong>{'<>'} Mã HTML</strong> để chỉnh sửa.</p>
+                </div>
+              )}
               <div className="flex gap-3">
                 <button className="btn btn-primary flex-1" onClick={handleSaveNews}>{editingNewsId ? 'Cập Nhật' : 'Đăng Tin'}</button>
                 {editingNewsId && <button className="btn btn-outline" style={{borderColor: '#94a3b8', color: '#64748b'}} onClick={() => { setEditingNewsId(null); setNewArticle({ title: '', summary: '', content: '', date: '', image: '' }); }}>Hủy Sửa</button>}
@@ -731,7 +765,12 @@ const AdminDashboard = () => {
                       <input type="file" accept={tmpl.accept} style={{display: 'none'}} onChange={async (e) => {
                         const file = e.target.files[0];
                         if (!file) return;
-                        const fName = `${tmpl.prefix}_${Date.now()}_${file.name}`;
+                        const safeName = file.name
+                          .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove diacritics
+                          .replace(/đ/g, 'd').replace(/Đ/g, 'D')           // handle đ
+                          .replace(/\s+/g, '_')                              // spaces → underscores
+                          .replace(/[^a-zA-Z0-9_.\-]/g, '');                 // remove special chars
+                        const fName = `${tmpl.prefix}_${Date.now()}_${safeName}`;
                         const { error } = await supabase.storage.from('templates').upload(fName, file, { upsert: true });
                         if (error) { alert('Lỗi upload: ' + error.message + '\n\nHãy tạo bucket "templates" trong Supabase Storage (public).'); return; }
                         const { data: urlData } = supabase.storage.from('templates').getPublicUrl(fName);
@@ -803,6 +842,24 @@ const AdminDashboard = () => {
                 {settingsData.gemini_key ? '✅ API Key đã được cấu hình — Chatbot AI đang hoạt động!' : '⚠️ Chưa có API Key — Chatbot sẽ không trả lời được.'}
               </div>
               <button className="btn w-full mt-4" style={{background: '#8b5cf6', color: 'white'}} onClick={handleSaveSettings}>Lưu Cấu Hình AI</button>
+            </div>
+
+            {/* Recruit Banner Toggle */}
+            <div className="admin-card card glass border-l-4 mt-6" style={{borderColor: '#10b981'}}>
+              <h3 className="mb-4" style={{color: '#059669'}}>📢 Banner Tuyển Thành Viên</h3>
+              <p style={{fontSize: '0.82rem', color: '#64748b', marginBottom: '1rem'}}>Bật/tắt popup tuyển thành viên Ban tổ chức hiển thị trên góc phải website.</p>
+              <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1rem', background: settingsData.show_recruit_banner !== false ? '#f0fdf4' : '#f1f5f9', border: `2px solid ${settingsData.show_recruit_banner !== false ? '#22c55e' : '#cbd5e1'}`, borderRadius: '12px', transition: 'all 0.2s'}}>
+                <label style={{position: 'relative', display: 'inline-block', width: '44px', height: '24px', flexShrink: 0}}>
+                  <input type="checkbox" checked={settingsData.show_recruit_banner !== false} onChange={e => setSettingsData({...settingsData, show_recruit_banner: e.target.checked})} style={{opacity: 0, width: 0, height: 0}} />
+                  <span style={{position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, background: settingsData.show_recruit_banner !== false ? '#22c55e' : '#cbd5e1', borderRadius: '24px', transition: 'all 0.3s'}}>
+                    <span style={{position: 'absolute', content: '', width: '18px', height: '18px', left: settingsData.show_recruit_banner !== false ? '22px' : '3px', top: '3px', background: 'white', borderRadius: '50%', transition: 'all 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'}} />
+                  </span>
+                </label>
+                <span style={{fontSize: '0.85rem', fontWeight: 700, color: settingsData.show_recruit_banner !== false ? '#059669' : '#94a3b8'}}>
+                  {settingsData.show_recruit_banner !== false ? '🟢 Đang bật — Banner hiển thị trên website' : '⚪ Đã tắt — Banner ẩn hoàn toàn'}
+                </span>
+              </div>
+              <button className="btn w-full mt-4" style={{background: '#059669', color: 'white'}} onClick={handleSaveSettings}>Lưu Cài Đặt Banner</button>
             </div>
           </div>
         )}
@@ -912,37 +969,98 @@ const AdminDashboard = () => {
             </div>
 
             <div className="admin-card card glass border-l-4 border-primary">
-              <h3 className="mb-4 text-green-gradient">Danh Sách Mốc Hiện Có ({timeline.length})</h3>
-              <div className="flex flex-col gap-6">
-                {timeline && timeline.map(tt => (
-                  <div key={tt.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="m-0 text-green-gradient">Danh Sách Mốc Hiện Có ({timeline.length})</h3>
+                <button className="btn btn-nshm" style={{padding: '0.4rem 1rem', fontSize: '0.82rem'}} onClick={handleSaveTimeline}>
+                  💾 Lưu Tất Cả
+                </button>
+              </div>
+              <div className="flex flex-col gap-4">
+                {timeline && timeline.map((tt, idx) => (
+                  <div key={tt.id} style={{
+                    background: 'white',
+                    border: '2px solid #e2e8f0',
+                    borderLeft: '4px solid #059669',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    position: 'relative',
+                    transition: 'box-shadow 0.2s',
+                  }}>
+                    {/* Header row */}
                     <div className="flex justify-between items-center mb-3">
-                      <h4 className="m-0 text-secondary">Mốc #{tt.id}</h4>
-                      <button className="btn btn-outline" style={{padding: '0.3rem 0.8rem', borderColor: '#ef4444', color: '#ef4444', fontSize: '0.8rem'}} onClick={async () => {
-                        if (window.confirm('Xóa mốc này?')) {
-                          await supabase.from('timeline').delete().eq('id', tt.id);
-                          setTimeline(timeline.filter(t => t.id !== tt.id));
-                        }
-                      }}>Xóa</button>
+                      <div className="flex items-center gap-2">
+                        <span style={{background: '#059669', color: 'white', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 900, flexShrink: 0}}>{idx + 1}</span>
+                        <span style={{fontSize: '0.8rem', fontWeight: 700, color: '#059669'}}>{tt.title || 'Mốc chưa có tiêu đề'}</span>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        {/* Sort up/down */}
+                        <button
+                          disabled={idx === 0}
+                          title="Di chuyển lên"
+                          style={{background: idx === 0 ? '#e2e8f0' : '#059669', color: 'white', border: 'none', borderRadius: '6px', width: '26px', height: '26px', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                          onClick={() => {
+                            const arr = [...timeline];
+                            [arr[idx], arr[idx - 1]] = [arr[idx - 1], arr[idx]];
+                            setTimeline([...arr]);
+                          }}
+                        >▲</button>
+                        <button
+                          disabled={idx === timeline.length - 1}
+                          title="Di chuyển xuống"
+                          style={{background: idx === timeline.length - 1 ? '#e2e8f0' : '#059669', color: 'white', border: 'none', borderRadius: '6px', width: '26px', height: '26px', cursor: idx === timeline.length - 1 ? 'default' : 'pointer', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                          onClick={() => {
+                            const arr = [...timeline];
+                            [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+                            setTimeline([...arr]);
+                          }}
+                        >▼</button>
+                        {/* Save individual */}
+                        <button
+                          title="Lưu mốc này"
+                          style={{background: '#2563eb', color: 'white', border: 'none', borderRadius: '6px', padding: '0.25rem 0.6rem', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700}}
+                          onClick={async () => {
+                            const { error } = await supabase.from('timeline').update({ date: tt.date, title: tt.title, desc: tt.desc }).eq('id', tt.id);
+                            if (error) alert('Lỗi: ' + error.message);
+                            else alert('✅ Đã lưu mốc: ' + tt.title);
+                          }}
+                        >💾 Lưu</button>
+                        {/* Delete */}
+                        <button
+                          title="Xóa mốc này"
+                          style={{background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', padding: '0.25rem 0.6rem', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700}}
+                          onClick={async () => {
+                            if (window.confirm(`Xóa mốc "${tt.title}"?`)) {
+                              await supabase.from('timeline').delete().eq('id', tt.id);
+                              setTimeline(timeline.filter(t => t.id !== tt.id));
+                            }
+                          }}
+                        >🗑 Xóa</button>
+                      </div>
                     </div>
+
+                    {/* Fields */}
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div>
-                        <label className="block text-xs font-bold text-muted mb-1">Thời gian</label>
-                        <input type="text" className="admin-input" value={tt.date} onChange={(e) => handleTimelineChange(tt.id, 'date', e.target.value)} />
+                        <label className="block text-xs font-bold text-muted mb-1">📅 Thời gian</label>
+                        <input type="text" className="admin-input" value={tt.date} onChange={(e) => handleTimelineChange(tt.id, 'date', e.target.value)} placeholder="VD: 01/04/2026" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-muted mb-1">Tiêu đề Mốc</label>
-                        <input type="text" className="admin-input" value={tt.title} onChange={(e) => handleTimelineChange(tt.id, 'title', e.target.value)} />
+                        <label className="block text-xs font-bold text-muted mb-1">🏷️ Tiêu đề Mốc</label>
+                        <input type="text" className="admin-input" value={tt.title} onChange={(e) => handleTimelineChange(tt.id, 'title', e.target.value)} placeholder="VD: Hạn nộp hồ sơ" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-muted mb-1">Thông tin / Sự kiện chính</label>
-                      <textarea className="admin-input" rows="2" value={tt.desc} onChange={(e) => handleTimelineChange(tt.id, 'desc', e.target.value)} />
+                      <label className="block text-xs font-bold text-muted mb-1">📝 Thông tin / Sự kiện chính</label>
+                      <textarea className="admin-input" rows="2" value={tt.desc || ''} onChange={(e) => handleTimelineChange(tt.id, 'desc', e.target.value)} placeholder="Mô tả..." />
                     </div>
                   </div>
                 ))}
               </div>
-              <button className="btn btn-nshm mt-6 w-full" onClick={handleSaveTimeline}>Lưu Hành Trình Ngày Hội</button>
+              {timeline.length > 1 && (
+                <p style={{fontSize: '0.72rem', color: '#94a3b8', textAlign: 'center', marginTop: '0.75rem'}}>
+                  💡 Sau khi sắp xếp lại thứ tự bằng ▲▼, nhấn <strong>Lưu Tất Cả</strong> để cập nhật.
+                </p>
+              )}
             </div>
           </div>
         )}

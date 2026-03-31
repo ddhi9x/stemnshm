@@ -16,6 +16,7 @@ import FAQ from './pages/FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import NotFound from './pages/NotFound';
 import Chatbot from './components/Chatbot';
+import RecruitBanner from './components/RecruitBanner';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         </main>
         <Footer />
         <Chatbot />
+        <RecruitBanner />
       </div>
     </Router>
   );
