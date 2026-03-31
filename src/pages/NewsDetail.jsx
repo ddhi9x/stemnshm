@@ -58,6 +58,115 @@ const NewsDetail = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
   };
 
+  // Auto-inject table filter functionality after content renders
+  const contentRef = React.useRef(null);
+  useEffect(() => {
+    if (!article?.content) return;
+    const timer = setTimeout(() => {
+      if (!contentRef.current) return;
+      const tables = contentRef.current.querySelectorAll('table');
+      if (tables.length === 0) return;
+
+    tables.forEach((table) => {
+      if (table.previousElementSibling?.classList?.contains('table-filter-bar')) return;
+
+      let rows = Array.from(table.querySelectorAll('tbody tr'));
+      // Fallback: if no tbody, get all rows except first (header)
+      if (rows.length === 0) {
+        const allRows = Array.from(table.querySelectorAll('tr'));
+        rows = allRows.slice(1); // skip header row
+      }
+      if (rows.length === 0) return;
+
+      const headers = Array.from(table.querySelectorAll('thead th'));
+      // Fallback: if no thead, check first row for th
+      const fallbackHeaders = headers.length > 0 ? headers : Array.from(table.querySelectorAll('tr:first-child th'));
+      let mentorColIdx = -1;
+      let idColIdx = -1;
+      fallbackHeaders.forEach((th, i) => {
+        const txt = th.textContent.toLowerCase();
+        if (txt.includes('mentor')) mentorColIdx = i;
+        if (txt.includes('id')) idColIdx = i;
+      });
+
+      const mentors = new Set();
+      if (mentorColIdx >= 0) {
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          if (cells[mentorColIdx]) mentors.add(cells[mentorColIdx].textContent.trim());
+        });
+      }
+
+      const filterBar = document.createElement('div');
+      filterBar.className = 'table-filter-bar';
+      filterBar.style.cssText = 'display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-bottom:0.8rem;padding:0.8rem 1rem;background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;';
+
+      const searchWrap = document.createElement('div');
+      searchWrap.style.cssText = 'flex:1;min-width:160px;';
+      searchWrap.innerHTML = '<label style="display:block;font-size:0.7rem;font-weight:700;color:#059669;margin-bottom:2px;">\uD83D\uDD0D Tìm ID đội</label><input type="text" placeholder="Nhập ID đội (VD: 109)" style="width:100%;padding:0.4rem 0.7rem;border:2px solid #d1d5db;border-radius:8px;font-size:0.85rem;outline:none;transition:border 0.2s;" />';
+      filterBar.appendChild(searchWrap);
+
+      if (mentors.size > 0) {
+        const selectWrap = document.createElement('div');
+        selectWrap.style.cssText = 'flex:1;min-width:200px;';
+        let optionsHtml = '<option value="">Tất cả Mentor</option>';
+        Array.from(mentors).sort().forEach(m => {
+          optionsHtml += '<option value="' + m + '">' + m + '</option>';
+        });
+        selectWrap.innerHTML = '<label style="display:block;font-size:0.7rem;font-weight:700;color:#059669;margin-bottom:2px;">\uD83D\uDC64 Lọc theo Mentor</label><select style="width:100%;padding:0.4rem 0.7rem;border:2px solid #d1d5db;border-radius:8px;font-size:0.85rem;outline:none;background:white;cursor:pointer;">' + optionsHtml + '</select>';
+        filterBar.appendChild(selectWrap);
+      }
+
+      const countEl = document.createElement('div');
+      countEl.style.cssText = 'font-size:0.75rem;color:#64748b;width:100%;margin-top:0.2rem;';
+      countEl.textContent = '\uD83D\uDCCB Hiển thị ' + rows.length + '/' + rows.length + ' dòng';
+      filterBar.appendChild(countEl);
+
+      table.parentNode.insertBefore(filterBar, table);
+
+      const searchInput = filterBar.querySelector('input');
+      const mentorSelect = filterBar.querySelector('select');
+
+      const doFilter = () => {
+        const searchVal = (searchInput?.value || '').trim().toLowerCase();
+        const mentorVal = mentorSelect?.value || '';
+        let shown = 0;
+
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          let showByMentor = true;
+          let showBySearch = true;
+
+          if (mentorVal && mentorColIdx >= 0 && cells[mentorColIdx]) {
+            showByMentor = cells[mentorColIdx].textContent.trim() === mentorVal;
+          }
+
+          if (searchVal && idColIdx >= 0 && cells[idColIdx]) {
+            const ids = cells[idColIdx].textContent.split(',').map(s => s.trim().toLowerCase());
+            showBySearch = ids.some(id => id.includes(searchVal));
+          } else if (searchVal) {
+            showBySearch = row.textContent.toLowerCase().includes(searchVal);
+          }
+
+          const show = showByMentor && showBySearch;
+          row.style.display = show ? '' : 'none';
+          if (show) shown++;
+        });
+
+        countEl.textContent = '\uD83D\uDCCB Hiển thị ' + shown + '/' + rows.length + ' dòng';
+        countEl.style.color = shown < rows.length ? '#059669' : '#64748b';
+        countEl.style.fontWeight = shown < rows.length ? '700' : '400';
+      };
+
+      searchInput?.addEventListener('input', doFilter);
+      mentorSelect?.addEventListener('change', doFilter);
+      searchInput?.addEventListener('focus', () => { searchInput.style.borderColor = '#059669'; });
+      searchInput?.addEventListener('blur', () => { searchInput.style.borderColor = '#d1d5db'; });
+    });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [article]);
+
   if (loading) {
     return (
       <div className="container py-20 text-center">
@@ -109,7 +218,7 @@ const NewsDetail = () => {
             </div>
 
             {article.content ? (
-              <div className="news-content" dangerouslySetInnerHTML={{ __html: article.content }} style={{lineHeight: 1.9, fontSize: '1.05rem', color: '#334155'}} />
+              <div ref={contentRef} className="news-content" dangerouslySetInnerHTML={{ __html: article.content }} style={{lineHeight: 1.9, fontSize: '1.05rem', color: '#334155'}} />
             ) : (
               <p className="text-muted leading-relaxed" style={{lineHeight: 1.8, fontSize: '1.05rem'}}>{article.summary}</p>
             )}
