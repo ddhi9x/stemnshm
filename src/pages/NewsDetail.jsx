@@ -62,7 +62,8 @@ const NewsDetail = () => {
   const contentRef = React.useRef(null);
   useEffect(() => {
     if (!article?.content) return;
-    const timer = setTimeout(() => {
+
+    const injectFilters = () => {
       if (!contentRef.current) return;
       const tables = contentRef.current.querySelectorAll('table');
       if (tables.length === 0) return;
@@ -163,8 +164,12 @@ const NewsDetail = () => {
       searchInput?.addEventListener('focus', () => { searchInput.style.borderColor = '#059669'; });
       searchInput?.addEventListener('blur', () => { searchInput.style.borderColor = '#d1d5db'; });
     });
-    }, 100);
-    return () => clearTimeout(timer);
+    };
+
+    // Try inject after short delay, retry once after longer delay
+    const t1 = setTimeout(injectFilters, 300);
+    const t2 = setTimeout(injectFilters, 1500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [article]);
 
   if (loading) {
