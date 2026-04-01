@@ -422,15 +422,18 @@ const AdminDashboard = () => {
                   {newArticle.content ? (
                     <div
                       className="news-content"
-                      style={{background: 'white', border: '2px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', minHeight: '200px', maxHeight: '500px', overflowY: 'auto'}}
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{background: 'white', border: '2px solid #bbf7d0', borderRadius: '12px', padding: '1.5rem', minHeight: '200px', maxHeight: '500px', overflowY: 'auto', outline: 'none', cursor: 'text'}}
                       dangerouslySetInnerHTML={{__html: newArticle.content}}
+                      onBlur={e => setNewArticle(prev => ({...prev, content: e.currentTarget.innerHTML}))}
                     />
                   ) : (
                     <div style={{background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '12px', padding: '2rem', textAlign: 'center', color: '#94a3b8', minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                       <span>Chưa có nội dung. Chuyển sang <strong>{'<>'} Mã HTML</strong> để nhập nội dung.</span>
                     </div>
                   )}
-                  <p style={{fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.4rem'}}>👆 Đây là giao diện thực tế khi học sinh xem bài viết. Chuyển sang <strong>{'<>'} Mã HTML</strong> để chỉnh sửa.</p>
+                  <p style={{fontSize: '0.72rem', color: '#059669', marginTop: '0.4rem'}}>✏️ <strong>Click vào nội dung để sửa trực tiếp.</strong> Thay đổi sẽ tự lưu khi bạn click ra ngoài.</p>
                 </div>
               )}
               <div className="flex gap-3">
