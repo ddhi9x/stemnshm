@@ -540,8 +540,9 @@ section {
 /* News bottom bar responsive */
 @media (max-width: 640px) {
   .news-bottom-bar { grid-template-columns: 1fr !important; }
-  .news-content table { font-size: 0.82rem; }
-  .news-content th, .news-content td { padding: 0.4rem 0.5rem; }
+  .table-scroll-wrap { margin: 0.5rem -0.5rem; padding: 0 0.5rem; }
+  .news-content table { min-width: 520px; width: max-content; font-size: 0.82rem; }
+  .news-content th, .news-content td { padding: 0.4rem 0.5rem; white-space: nowrap; }
   .table-filter-bar { flex-direction: column; }
   .table-filter-bar > div { min-width: 100% !important; }
 }

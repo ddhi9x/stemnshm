@@ -69,7 +69,15 @@ const NewsDetail = () => {
       if (tables.length === 0) return;
 
     tables.forEach((table) => {
+      if (table.parentElement?.classList?.contains('table-scroll-wrap')) return;
       if (table.previousElementSibling?.classList?.contains('table-filter-bar')) return;
+
+      // Wrap table in scrollable container
+      const wrapper = document.createElement('div');
+      wrapper.className = 'table-scroll-wrap';
+      wrapper.style.cssText = 'overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;margin:0.5rem 0;';
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
 
       let rows = Array.from(table.querySelectorAll('tbody tr'));
       // Fallback: if no tbody, get all rows except first (header)
@@ -123,7 +131,15 @@ const NewsDetail = () => {
       countEl.textContent = '\uD83D\uDCCB Hiển thị ' + rows.length + '/' + rows.length + ' dòng';
       filterBar.appendChild(countEl);
 
-      table.parentNode.insertBefore(filterBar, table);
+      wrapper.parentNode.insertBefore(filterBar, wrapper);
+
+      // Mobile scroll hint
+      if (window.innerWidth <= 640) {
+        const hint = document.createElement('div');
+        hint.style.cssText = 'font-size:0.7rem;color:#94a3b8;text-align:center;padding:0.3rem;margin-bottom:0.3rem;';
+        hint.textContent = '\u2194\uFE0F Vu\u1ED1t ngang \u0111\u1EC3 xem to\u00E0n b\u1ED9 b\u1EA3ng';
+        wrapper.parentNode.insertBefore(hint, wrapper);
+      }
 
       const searchInput = filterBar.querySelector('input');
       const mentorSelect = filterBar.querySelector('select');
