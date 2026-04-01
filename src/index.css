@@ -537,6 +537,15 @@ section {
 .news-content th { background: #059669; color: white; font-weight: 700; }
 .news-content pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; }
 
+/* News bottom bar responsive */
+@media (max-width: 640px) {
+  .news-bottom-bar { grid-template-columns: 1fr !important; }
+  .news-content table { font-size: 0.82rem; }
+  .news-content th, .news-content td { padding: 0.4rem 0.5rem; }
+  .table-filter-bar { flex-direction: column; }
+  .table-filter-bar > div { min-width: 100% !important; }
+}
+
 /* ═══════ Quill Editor Admin ═══════ */
 .ql-container { border-radius: 0 0 12px 12px !important; font-family: 'Lexend', sans-serif !important; min-height: 180px; }
 .ql-toolbar { border-radius: 12px 12px 0 0 !important; background: #f8fafc; }
