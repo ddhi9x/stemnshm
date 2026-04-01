@@ -15,6 +15,8 @@ const quickQuestions = [
   '🎯 Ngày hội có gì?',
 ];
 
+const genSessionId = () => 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -26,6 +28,17 @@ const Chatbot = () => {
   const [geminiKey, setGeminiKey] = useState('');
   const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
   const messagesEnd = useRef(null);
+  const sessionIdRef = useRef(sessionStorage.getItem('chat_session_id') || genSessionId());
+
+  useEffect(() => {
+    sessionStorage.setItem('chat_session_id', sessionIdRef.current);
+  }, []);
+
+  const logChat = async (role, message) => {
+    try {
+      await supabase.from('chat_logs').insert({ session_id: sessionIdRef.current, role, message });
+    } catch (e) { /* silent fail */ }
+  };
 
   // Re-fetch API key every time chatbot opens
   useEffect(() => {
@@ -224,12 +237,16 @@ ${eventContext}`;
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
+    logChat('user', text.trim());
 
     try {
       const answer = await callGemini(text.trim(), messages);
       setMessages(prev => [...prev, { from: 'bot', text: answer }]);
+      logChat('bot', answer);
     } catch {
-      setMessages(prev => [...prev, { from: 'bot', text: '⚠️ Có lỗi xảy ra. Thử lại nhé!' }]);
+      const errMsg = '⚠️ Có lỗi xảy ra. Thử lại nhé!';
+      setMessages(prev => [...prev, { from: 'bot', text: errMsg }]);
+      logChat('bot', errMsg);
     }
     setIsLoading(false);
   };
@@ -240,6 +257,9 @@ ${eventContext}`;
   };
 
   const resetChat = () => {
+    // New session
+    sessionIdRef.current = genSessionId();
+    sessionStorage.setItem('chat_session_id', sessionIdRef.current);
     setMessages([
       { from: 'bot', text: 'Chào bạn! 🌿 Mình là **Trợ lý AI STEM NSHM**. Hỏi mình bất cứ gì về Ngày Hội STEM nhé!' },
     ]);

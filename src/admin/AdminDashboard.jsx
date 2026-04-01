@@ -48,6 +48,9 @@ const AdminDashboard = () => {
   const [newAward, setNewAward] = useState({ title: '', qty: '', value: '', color: '#22c55e', bg: '#ecfdf5' });
   const [teams, setTeams] = useState([]);
   const [newTeam, setNewTeam] = useState({ team_name: '', field: 'Science', members: '', leader: '', class: '', notes: '' });
+  const [chatLogs, setChatLogs] = useState([]);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [chatSessionMessages, setChatSessionMessages] = useState([]);
   const [editingTeamId, setEditingTeamId] = useState(null);
   const [teamFilter, setTeamFilter] = useState('all');
   const [galleryItems, setGalleryItems] = useState([]);
@@ -385,6 +388,18 @@ const AdminDashboard = () => {
           <li className={activeTab === 'gallery' ? 'active' : ''} onClick={() => setActiveTab('gallery')}>🖼️ Thư Viện</li>
           <li className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>📊 Thống Kê</li>
           <li className={activeTab === 'rounds' ? 'active' : ''} onClick={() => setActiveTab('rounds')}>🎯 Vòng Thi</li>
+          <li className={activeTab === 'chatlog' ? 'active' : ''} onClick={() => {
+            setActiveTab('chatlog');
+            supabase.from('chat_logs').select('session_id, created_at').order('created_at', { ascending: false }).then(({ data }) => {
+              if (!data) return;
+              const sessions = {};
+              data.forEach(r => {
+                if (!sessions[r.session_id]) sessions[r.session_id] = { session_id: r.session_id, started: r.created_at, count: 0 };
+                sessions[r.session_id].count++;
+              });
+              setChatLogs(Object.values(sessions));
+            });
+          }}>💬 Lịch Sử Chat</li>
         </ul>
         <button className="btn btn-outline" onClick={handleLogout} style={{marginTop: 'auto', borderColor: '#ef4444', color: '#ef4444'}}>Thoát</button>
       </div>
@@ -1539,6 +1554,65 @@ const AdminDashboard = () => {
                         else alert('✅ Đã lưu ' + round.title);
                       }}>💾 Lưu {round.title}</button>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'chatlog' && (
+          <div className="fade-in">
+            <h2 className="text-secondary mb-6">💬 Lịch Sử Chat AI</h2>
+            <p style={{fontSize: '0.82rem', color: '#64748b', marginBottom: '1rem'}}>Xem các cuộc trò chuyện của học sinh với Chatbot AI. Mỗi phiên (session) là 1 cuộc hội thoại.</p>
+
+            {chatLogs.length === 0 ? (
+              <div className="admin-card card glass" style={{textAlign: 'center', padding: '3rem', color: '#94a3b8'}}>
+                <div style={{fontSize: '3rem', marginBottom: '1rem'}}>💬</div>
+                <p>Chưa có cuộc trò chuyện nào được ghi lại.</p>
+              </div>
+            ) : (
+              <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
+                {chatLogs.map((s, idx) => (
+                  <div key={s.session_id} className="admin-card card glass" style={{padding: '0.8rem 1rem', cursor: 'pointer', borderLeft: selectedSession === s.session_id ? '4px solid #22c55e' : '4px solid transparent', transition: 'all 0.2s'}}>
+                    <div onClick={async () => {
+                      if (selectedSession === s.session_id) { setSelectedSession(null); setChatSessionMessages([]); return; }
+                      setSelectedSession(s.session_id);
+                      const { data } = await supabase.from('chat_logs').select('*').eq('session_id', s.session_id).order('created_at', { ascending: true });
+                      setChatSessionMessages(data || []);
+                    }} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <div>
+                        <div style={{fontWeight: 700, fontSize: '0.85rem', color: '#334155'}}>Phiên #{chatLogs.length - idx}</div>
+                        <div style={{fontSize: '0.72rem', color: '#94a3b8'}}>{new Date(s.started).toLocaleString('vi-VN')} • {s.count} tin nhắn</div>
+                      </div>
+                      <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
+                        <span style={{fontSize: '0.7rem', background: '#f0fdf4', color: '#059669', padding: '0.15rem 0.5rem', borderRadius: '8px', fontWeight: 600}}>{Math.ceil(s.count / 2)} câu hỏi</span>
+                        <button onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!window.confirm('Xóa phiên chat này?')) return;
+                          await supabase.from('chat_logs').delete().eq('session_id', s.session_id);
+                          setChatLogs(chatLogs.filter(c => c.session_id !== s.session_id));
+                          if (selectedSession === s.session_id) { setSelectedSession(null); setChatSessionMessages([]); }
+                        }} style={{background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', fontSize: '0.75rem', padding: '0.2rem 0.4rem'}}>🗑️</button>
+                      </div>
+                    </div>
+
+                    {selectedSession === s.session_id && chatSessionMessages.length > 0 && (
+                      <div style={{marginTop: '0.8rem', paddingTop: '0.8rem', borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '0.4rem', maxHeight: '400px', overflowY: 'auto'}}>
+                        {chatSessionMessages.map((m) => (
+                          <div key={m.id} style={{display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start'}}>
+                            <div style={{
+                              maxWidth: '80%', padding: '0.5rem 0.8rem', borderRadius: '12px', fontSize: '0.8rem', lineHeight: 1.5,
+                              background: m.role === 'user' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : '#f1f5f9',
+                              color: m.role === 'user' ? 'white' : '#334155',
+                            }}>
+                              <div style={{fontSize: '0.6rem', color: m.role === 'user' ? 'rgba(255,255,255,0.7)' : '#94a3b8', marginBottom: '0.15rem'}}>{m.role === 'user' ? '👤 Học sinh' : '🤖 AI'} • {new Date(m.created_at).toLocaleTimeString('vi-VN')}</div>
+                              {m.message}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
