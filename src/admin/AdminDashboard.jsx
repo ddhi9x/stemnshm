@@ -811,6 +811,7 @@ const AdminDashboard = () => {
                   </div>
                 ))}
               </div>
+              <button className="btn w-full mt-4" style={{background: '#8b5cf6', color: 'white'}} onClick={handleSaveSettings}>💾 Lưu Số Thống Kê</button>
             </div>
 
             <div className="admin-card card glass border-l-4 border-primary">
