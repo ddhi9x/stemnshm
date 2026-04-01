@@ -122,8 +122,15 @@ const AdminDashboard = () => {
   };
 
   // --- Handlers for Data ---
+  // Ref for contentEditable preview
+  const previewEditRef = React.useRef(null);
+
   const handleSaveNews = async () => {
     if(!newArticle.title) return;
+    // Sync contentEditable content before saving
+    if (previewEditRef.current && !htmlMode) {
+      newArticle.content = previewEditRef.current.innerHTML;
+    }
     if (editingNewsId) {
       // Update existing
       const { error } = await supabase.from('news').update({
@@ -396,7 +403,12 @@ const AdminDashboard = () => {
               <div style={{display: 'flex', gap: '0.5rem', marginBottom: '0.5rem'}}>
                 <button
                   type="button"
-                  onClick={() => setHtmlMode(true)}
+                  onClick={() => {
+                    if (previewEditRef.current && !htmlMode) {
+                      setNewArticle(prev => ({...prev, content: previewEditRef.current.innerHTML}));
+                    }
+                    setHtmlMode(true);
+                  }}
                   style={{padding: '0.35rem 0.8rem', borderRadius: '8px', border: '2px solid', borderColor: htmlMode ? '#2563eb' : '#cbd5e1', background: htmlMode ? '#eff6ff' : 'white', color: htmlMode ? '#2563eb' : '#64748b', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s'}}
                 >{'<>'} Mã HTML</button>
                 <button
@@ -421,12 +433,12 @@ const AdminDashboard = () => {
                 <div>
                   {newArticle.content ? (
                     <div
+                      ref={previewEditRef}
                       className="news-content"
                       contentEditable
                       suppressContentEditableWarning
                       style={{background: 'white', border: '2px solid #bbf7d0', borderRadius: '12px', padding: '1.5rem', minHeight: '200px', maxHeight: '500px', overflowY: 'auto', outline: 'none', cursor: 'text'}}
                       dangerouslySetInnerHTML={{__html: newArticle.content}}
-                      onBlur={e => setNewArticle(prev => ({...prev, content: e.currentTarget.innerHTML}))}
                     />
                   ) : (
                     <div style={{background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '12px', padding: '2rem', textAlign: 'center', color: '#94a3b8', minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
