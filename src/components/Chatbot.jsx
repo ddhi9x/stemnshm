@@ -32,6 +32,7 @@ const Chatbot = () => {
   const [customPrompt, setCustomPrompt] = useState('');
   const messagesEnd = useRef(null);
   const sessionIdRef = useRef(sessionStorage.getItem('chat_session_id') || genSessionId());
+  const localDataRef = useRef({ faq: [], timeline: [], awards: [], mentors: [], news: [], rounds: [], about: null });
 
   useEffect(() => {
     sessionStorage.setItem('chat_session_id', sessionIdRef.current);
@@ -71,6 +72,17 @@ const Chatbot = () => {
       if (settingsRes.data?.gemini_key) setGeminiKeys(settingsRes.data.gemini_key.split(',').map(k => k.trim()).filter(Boolean));
       if (settingsRes.data?.gemini_model) setGeminiModel(settingsRes.data.gemini_model);
       if (settingsRes.data?.chatbot_prompt) setCustomPrompt(settingsRes.data.chatbot_prompt);
+
+      // Store raw data for offline fallback
+      localDataRef.current = {
+        faq: faq.data || [],
+        timeline: tl.data || [],
+        awards: aw.data || [],
+        mentors: mentorRes.data || [],
+        news: newsRes.data || [],
+        rounds: roundsRes.data || [],
+        about: ab.data || null,
+      };
 
       let ctx = `=== THÔNG TIN NGÀY HỘI STEM — TRƯỜNG NGÔI SAO HOÀNG MAI ===\n`;
       ctx += `Chủ đề: "Ngày Hội STEM — Kiến Tạo Thế Giới Xanh" (Mùa giải 2025-2026)\n`;
@@ -146,9 +158,90 @@ const Chatbot = () => {
     messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Offline fallback: answer from local data when API is unavailable
+  const fallbackAnswer = (question) => {
+    const q = question.toLowerCase();
+    const d = localDataRef.current;
+    const answers = [];
+
+    // Check FAQ first (best match)
+    for (const f of d.faq) {
+      const fqLow = (f.question || '').toLowerCase();
+      const words = q.replace(/[?!.,]/g, '').split(/\s+/).filter(w => w.length > 2);
+      const matchCount = words.filter(w => fqLow.includes(w)).length;
+      if (matchCount >= 2 || (q.length < 15 && matchCount >= 1)) {
+        return `${f.answer}\n\n_(ℹ️ Trả lời từ dữ liệu FAQ — AI đang nghỉ)_`;
+      }
+    }
+
+    // Timeline / Lịch trình
+    if (/l\u1ecbch|timeline|khi n[aà]o|deadline|h\u1ea1n|ng[aà]y|th\u1eddi gian/.test(q)) {
+      if (d.timeline.length) {
+        const items = d.timeline.map(t => `\u2022 **${t.date}**: ${t.title}`).join('\n');
+        return `📅 **Lịch trình sự kiện:**\n${items}\n\n_(ℹ️ Từ dữ liệu website)_`;
+      }
+    }
+
+    // Rounds / Vòng thi
+    if (/v[oò]ng|n\u1ed9p b[aà]i|thi|format/.test(q)) {
+      if (d.rounds.length) {
+        const items = d.rounds.map(r => `\u2022 **${r.title}**: ${r.content || ''}${r.deadline ? ' (Deadline: ' + r.deadline + ')' : ''}`).join('\n');
+        return `🎯 **Các vòng thi:**\n${items}\n\n_(ℹ️ Từ dữ liệu website)_`;
+      }
+    }
+
+    // Awards / Giải thưởng
+    if (/gi[aả]i|th\u01b0\u1edfng|prize|award/.test(q)) {
+      if (d.awards.length) {
+        const items = d.awards.map(a => `\u2022 **${a.title}**: ${a.qty || ''} \u2014 ${a.value || ''}`).join('\n');
+        return `🏆 **Giải thưởng:**\n${items}\n\n_(ℹ️ Từ dữ liệu website)_`;
+      }
+    }
+
+    // Mentors
+    if (/mentor|gi[aá]o vi[eê]n|th[aầ]y|c[oô]|h\u01b0\u1edbng d\u1eabn/.test(q)) {
+      if (d.mentors.length) {
+        const items = d.mentors.map(m => `\u2022 **${m.name}** (${m.subject || ''})`).join('\n');
+        return `👨\u200d🏫 **Đội ngũ Mentor:**\n${items}\n\nXem chi tiết tại mục **Mentor** trên website!\n\n_(ℹ️ Từ dữ liệu website)_`;
+      }
+    }
+
+    // Đăng ký
+    if (/\u0111[aă]ng k[yý]|tham gia|register|sign up/.test(q)) {
+      return `Để **đăng ký tham gia**, bạn bấm nút **"Đăng Ký Tham Gia"** trên thanh menu hoặc trang chủ website nhé! 😊\n\n_(ℹ️ Từ dữ liệu website)_`;
+    }
+
+    // Passport
+    if (/passport|st[i]cker|tr\u1ea1m|quay s[oố]/.test(q)) {
+      return `🛂 **Passport STEM**: Mỗi học sinh nhận 1 quyển Passport giấy tại sự kiện. Có **8 trạm** (5 trải nghiệm + 3 dự thi). Thu thập đủ 8 sticker để tham gia **Quay Số May Mắn**! 🌟\n\n_(ℹ️ Từ dữ liệu website)_`;
+    }
+
+    // Lĩnh vực STEM
+    if (/l\u0129nh v\u1ef1c|science|tech|engineering|math|stem/.test(q)) {
+      return `🔬 **4 l\u0129nh v\u1ef1c STEM:**\n\u2022 **Science**: Khoa học sự sống, năng lượng xanh\n\u2022 **Technology**: Lập trình, IoT, AI\n\u2022 **Engineering**: Thiết kế, chế tạo mô hình\n\u2022 **Mathematics**: Mô hình toán, thống kê\n\n_(ℹ️ Từ dữ liệu website)_`;
+    }
+
+    // News
+    if (/tin t[uứ]c|b[aà]i vi[eế]t|news|th[oô]ng b[aá]o/.test(q)) {
+      if (d.news.length) {
+        const items = d.news.slice(0, 3).map(n => `\u2022 [${n.date || ''}] **${n.title}**`).join('\n');
+        return `📰 **Tin tức mới nhất:**\n${items}\n\nXem tất cả tại mục **Tin Tức** trên website!\n\n_(ℹ️ Từ dữ liệu website)_`;
+      }
+    }
+
+    // General info
+    if (/gi\u1edbi thi\u1ec7u|l[aà] g[iì]|about|m\u1ee5c \u0111[ií]ch/.test(q) && d.about) {
+      return `\ud83c\udf3f **Ng\u00e0y H\u1ed9i STEM \u2014 Ki\u1ebfn T\u1ea1o Th\u1ebf Gi\u1edbi Xanh**\n${d.about.message || ''}\n\n**Tr\u1ecdng t\u00e2m**: ${d.about.focus || ''}\n**\u0110\u1ed1i t\u01b0\u1ee3ng**: ${d.about.target || ''}\n\n_(ℹ️ Từ dữ liệu website)_`;
+    }
+
+    return null; // No match
+  };
+
   const callGemini = async (userMessage, chatHistory) => {
     if (!geminiKeys.length) {
-      return '⚠️ Chatbot AI chưa được kích hoạt. Vui lòng liên hệ thầy cô để biết thêm thông tin! 😊';
+      const fb = fallbackAnswer(userMessage);
+      if (fb) return fb;
+      return '⚠️ Chatbot AI chưa được kích hoạt. Bạn có thể xem thông tin tại các mục trên website nhé! 😊';
     }
 
     // Check cache
@@ -239,13 +332,19 @@ ${eventContext}`;
       
       if (data.error) {
         console.error('Gemini API error:', data.error);
-        return `⚠️ Lỗi API: ${data.error.message || 'Không xác định'}. Kiểm tra API key và model name trong Admin.`;
+        // Try fallback
+        const fb = fallbackAnswer(userMessage);
+        if (fb) return fb;
+        return `⚠️ AI đang nghỉ ngơi. Bạn có thể xem **FAQ**, **Lịch Trình**, **Giải Thưởng** trực tiếp trên website nhé! 😊`;
       }
       
       return '🤔 Mình chưa hiểu câu hỏi này. Bạn thử hỏi lại hoặc xem FAQ nhé!';
     } catch (error) {
       console.error('Gemini fetch error:', error);
-      return `⚠️ Không kết nối được AI (${error.message}). Kiểm tra mạng và thử lại nhé!`;
+      // Try fallback on network error too
+      const fb = fallbackAnswer(userMessage);
+      if (fb) return fb;
+      return `⚠️ Không kết nối được AI. Bạn có thể xem thông tin trực tiếp trên website nhé!`;
     }
   };
 
