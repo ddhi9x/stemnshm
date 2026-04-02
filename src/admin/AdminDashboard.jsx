@@ -855,9 +855,13 @@ const AdminDashboard = () => {
             <div className="admin-card card glass border-l-4 mt-6" style={{borderColor: '#8b5cf6'}}>
               <h3 className="mb-4" style={{color: '#8b5cf6'}}>🤖 Cấu Hình Chatbot AI</h3>
               <div className="mb-5">
-                <label className="block text-sm font-bold text-muted mb-2">🔑 Gemini API Key</label>
-                <input type="password" placeholder="AIzaSy..." value={settingsData.gemini_key || ''} onChange={e => setSettingsData({...settingsData, gemini_key: e.target.value})} className="admin-input" style={{fontFamily: 'monospace'}} />
-                <p style={{fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.3rem'}}>Lấy key miễn phí tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{color: '#8b5cf6'}}>aistudio.google.com/apikey</a></p>
+                <label className="block text-sm font-bold text-muted mb-2">🔑 Gemini API Key(s)</label>
+                <textarea placeholder={"Nhập 1 hoặc nhiều key, mỗi key cách nhau bởi dấu phẩy:\nAIzaSy..., AIzaSy..., AIzaSy..."} value={settingsData.gemini_key || ''} onChange={e => setSettingsData({...settingsData, gemini_key: e.target.value})} className="admin-input" style={{fontFamily: 'monospace', minHeight: '60px', resize: 'vertical'}} />
+                <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '0.3rem'}}>
+                  <p style={{fontSize: '0.7rem', color: '#94a3b8'}}>Lấy key miễn phí tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{color: '#8b5cf6'}}>aistudio.google.com/apikey</a></p>
+                  {settingsData.gemini_key && <span style={{fontSize: '0.7rem', background: '#f0fdf4', color: '#059669', padding: '0.1rem 0.5rem', borderRadius: '8px', fontWeight: 600}}>{settingsData.gemini_key.split(',').filter(k => k.trim()).length} key</span>}
+                </div>
+                <p style={{fontSize: '0.68rem', color: '#8b5cf6', marginTop: '0.2rem'}}>💡 Nhập nhiều key để luân phiên → gấp đôi/gấp ba lượt trả lời miễn phí!</p>
               </div>
               <div className="mb-5">
                 <label className="block text-sm font-bold text-muted mb-2">🧠 Model AI</label>

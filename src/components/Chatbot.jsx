@@ -25,8 +25,10 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [eventContext, setEventContext] = useState('');
-  const [geminiKey, setGeminiKey] = useState('');
-  const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
+  const [geminiKeys, setGeminiKeys] = useState([]);
+  const [geminiModel, setGeminiModel] = useState('gemini-2.0-flash-lite');
+  const keyIndexRef = useRef(0);
+  const cacheRef = useRef({});
   const [customPrompt, setCustomPrompt] = useState('');
   const messagesEnd = useRef(null);
   const sessionIdRef = useRef(sessionStorage.getItem('chat_session_id') || genSessionId());
@@ -45,7 +47,7 @@ const Chatbot = () => {
   useEffect(() => {
     if (isOpen) {
       supabase.from('settings').select('gemini_key,gemini_model,chatbot_prompt').single().then(({ data }) => {
-        if (data?.gemini_key) setGeminiKey(data.gemini_key);
+        if (data?.gemini_key) setGeminiKeys(data.gemini_key.split(',').map(k => k.trim()).filter(Boolean));
         if (data?.gemini_model) setGeminiModel(data.gemini_model);
         if (data?.chatbot_prompt) setCustomPrompt(data.chatbot_prompt);
       });
@@ -66,7 +68,7 @@ const Chatbot = () => {
         supabase.from('settings').select('gemini_key,gemini_model,chatbot_prompt').single(),
       ]);
 
-      if (settingsRes.data?.gemini_key) setGeminiKey(settingsRes.data.gemini_key);
+      if (settingsRes.data?.gemini_key) setGeminiKeys(settingsRes.data.gemini_key.split(',').map(k => k.trim()).filter(Boolean));
       if (settingsRes.data?.gemini_model) setGeminiModel(settingsRes.data.gemini_model);
       if (settingsRes.data?.chatbot_prompt) setCustomPrompt(settingsRes.data.chatbot_prompt);
 
@@ -145,11 +147,18 @@ const Chatbot = () => {
   }, [messages]);
 
   const callGemini = async (userMessage, chatHistory) => {
-    if (!geminiKey) {
+    if (!geminiKeys.length) {
       return '⚠️ Chatbot AI chưa được kích hoạt. Vui lòng liên hệ thầy cô để biết thêm thông tin! 😊';
     }
 
-    const GEMINI_URL = `${GEMINI_BASE_URL}/${geminiModel}:generateContent?key=${geminiKey}`;
+    // Check cache
+    const cacheKey = userMessage.toLowerCase().trim();
+    if (cacheRef.current[cacheKey]) return cacheRef.current[cacheKey];
+
+    // Rotate API keys
+    const currentKey = geminiKeys[keyIndexRef.current % geminiKeys.length];
+    keyIndexRef.current++;
+    const GEMINI_URL = `${GEMINI_BASE_URL}/${geminiModel}:generateContent?key=${currentKey}`;
 
     const systemPrompt = `Bạn là "Trợ lý AI STEM NSHM" — chatbot thông minh của Ngày Hội STEM trường Ngôi Sao Hoàng Mai.
 ${customPrompt ? `
@@ -189,8 +198,8 @@ ${eventContext}`;
     // Build conversation for Gemini
     const contents = [];
     
-    // Add chat history (last 10 messages for context)
-    const recentHistory = chatHistory.slice(-10);
+    // Add chat history (last 6 messages for context — saves tokens)
+    const recentHistory = chatHistory.slice(-6);
     for (const msg of recentHistory) {
       contents.push({
         role: msg.from === 'user' ? 'user' : 'model',
@@ -205,7 +214,7 @@ ${eventContext}`;
     });
 
     try {
-      console.log('🤖 Calling Gemini:', GEMINI_URL.replace(geminiKey, '***'));
+      console.log('🤖 Calling Gemini key#' + ((keyIndexRef.current - 1) % geminiKeys.length));
       const response = await fetch(GEMINI_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -214,17 +223,18 @@ ${eventContext}`;
           contents,
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 500,
+            maxOutputTokens: 400,
             topP: 0.9,
           },
         }),
       });
 
       const data = await response.json();
-      console.log('🤖 Gemini response status:', response.status, data);
       
       if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        return data.candidates[0].content.parts[0].text;
+        const answer = data.candidates[0].content.parts[0].text;
+        cacheRef.current[cacheKey] = answer; // Cache response
+        return answer;
       }
       
       if (data.error) {
