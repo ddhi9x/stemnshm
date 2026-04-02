@@ -27,6 +27,7 @@ const Chatbot = () => {
   const [eventContext, setEventContext] = useState('');
   const [geminiKey, setGeminiKey] = useState('');
   const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
+  const [customPrompt, setCustomPrompt] = useState('');
   const messagesEnd = useRef(null);
   const sessionIdRef = useRef(sessionStorage.getItem('chat_session_id') || genSessionId());
 
@@ -43,9 +44,10 @@ const Chatbot = () => {
   // Re-fetch API key every time chatbot opens
   useEffect(() => {
     if (isOpen) {
-      supabase.from('settings').select('gemini_key,gemini_model').single().then(({ data }) => {
+      supabase.from('settings').select('gemini_key,gemini_model,chatbot_prompt').single().then(({ data }) => {
         if (data?.gemini_key) setGeminiKey(data.gemini_key);
         if (data?.gemini_model) setGeminiModel(data.gemini_model);
+        if (data?.chatbot_prompt) setCustomPrompt(data.chatbot_prompt);
       });
     }
   }, [isOpen]);
@@ -61,11 +63,12 @@ const Chatbot = () => {
         supabase.from('mentors').select('name,subject,bio'),
         supabase.from('news').select('title,summary,date').order('created_at', { ascending: false }).limit(5),
         supabase.from('rounds').select('*').order('id'),
-        supabase.from('settings').select('gemini_key,gemini_model').single(),
+        supabase.from('settings').select('gemini_key,gemini_model,chatbot_prompt').single(),
       ]);
 
       if (settingsRes.data?.gemini_key) setGeminiKey(settingsRes.data.gemini_key);
       if (settingsRes.data?.gemini_model) setGeminiModel(settingsRes.data.gemini_model);
+      if (settingsRes.data?.chatbot_prompt) setCustomPrompt(settingsRes.data.chatbot_prompt);
 
       let ctx = `=== THÔNG TIN NGÀY HỘI STEM — TRƯỜNG NGÔI SAO HOÀNG MAI ===\n`;
       ctx += `Chủ đề: "Ngày Hội STEM — Kiến Tạo Thế Giới Xanh" (Mùa giải 2025-2026)\n`;
@@ -149,6 +152,11 @@ const Chatbot = () => {
     const GEMINI_URL = `${GEMINI_BASE_URL}/${geminiModel}:generateContent?key=${geminiKey}`;
 
     const systemPrompt = `Bạn là "Trợ lý AI STEM NSHM" — chatbot thông minh của Ngày Hội STEM trường Ngôi Sao Hoàng Mai.
+${customPrompt ? `
+=== QUY TẮCH ĐẶC BIỆT TỪ QUẢN TRỊ (Ưu tiên cao nhất) ===
+${customPrompt}
+=== HẾT QUY TẮCH ĐẶC BIỆT ===
+` : ''}
 
 VAI TRÒ:
 - Trả lời câu hỏi về sự kiện (lịch trình, đăng ký, giải thưởng, mentor, passport...)

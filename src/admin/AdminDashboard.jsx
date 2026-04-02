@@ -246,6 +246,7 @@ const AdminDashboard = () => {
       stat4_num: settingsData.stat4_num, stat4_label: settingsData.stat4_label,
       gemini_key: settingsData.gemini_key || '',
       gemini_model: settingsData.gemini_model || 'gemini-2.5-flash',
+      chatbot_prompt: settingsData.chatbot_prompt || '',
       show_recruit_banner: settingsData.show_recruit_banner !== false,
     }).eq('id', 1);
     alert('Đã cập nhật Cài Đặt!');
@@ -872,7 +873,26 @@ const AdminDashboard = () => {
               <div style={{background: settingsData.gemini_key ? '#f0fdf4' : '#fef3c7', border: `1px solid ${settingsData.gemini_key ? '#bbf7d0' : '#fde68a'}`, borderRadius: '10px', padding: '0.6rem 0.8rem', fontSize: '0.78rem', color: settingsData.gemini_key ? '#166534' : '#92400e'}}>
                 {settingsData.gemini_key ? '✅ API Key đã được cấu hình — Chatbot AI đang hoạt động!' : '⚠️ Chưa có API Key — Chatbot sẽ không trả lời được.'}
               </div>
-              <button className="btn w-full mt-4" style={{background: '#8b5cf6', color: 'white'}} onClick={handleSaveSettings}>Lưu Cấu Hình AI</button>
+
+              <div className="mt-5">
+                <label className="block text-sm font-bold text-muted mb-2">🎯 Huấn Luyện AI — Quy Tắc & Thông Tin Tùy Chỉnh</label>
+                <textarea
+                  value={settingsData.chatbot_prompt || ''}
+                  onChange={e => setSettingsData({...settingsData, chatbot_prompt: e.target.value})}
+                  placeholder={`Ví dụ nhập:
+
+- Khi học sinh hỏi về deadline, trả lời: deadline nộp bài là 15/04/2026
+- Không được gợi ý bài làm cho học sinh, chỉ hướng dẫn phương pháp
+- Luôn nhắc học sinh kiểm tra lịch trình trên website
+- Thông tin thêm: Buổi chung kết sẽ tổ chức tại hội trường lớn
+- Nếu học sinh hỏi về điểm số, trả lời: kết quả sẽ công bố sau chung kết`}
+                  className="admin-input"
+                  style={{minHeight: '160px', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.6, resize: 'vertical'}}
+                />
+                <p style={{fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.3rem'}}>Nhập các quy tắc, thông tin cố định mà AI phải tuân theo. AI sẽ ưu tiên nội dung này hơn các quy tắc mặc định.</p>
+              </div>
+
+              <button className="btn w-full mt-4" style={{background: '#8b5cf6', color: 'white'}} onClick={handleSaveSettings}>💾 Lưu Cấu Hình AI</button>
             </div>
 
             {/* Recruit Banner Toggle */}
