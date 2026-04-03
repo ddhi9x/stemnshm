@@ -220,7 +220,7 @@ const NewsDetail = () => {
           <img src={article.image} alt={article.title} style={{width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '16px', marginBottom: '2rem'}} />
         )}
 
-        <h1 className="text-nshm mb-3" style={{fontSize: '2rem', lineHeight: 1.3}}>{article.title}</h1>
+        <h1 className="text-nshm mb-3" style={{fontSize: '1.5rem', lineHeight: 1.3}}>{article.title}</h1>
 
         <div className="flex items-center gap-4 mb-6 pb-4 flex-wrap" style={{borderBottom: '1px solid #f1f5f9'}}>
           <div className="flex items-center gap-2">
