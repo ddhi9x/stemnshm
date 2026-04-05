@@ -49,6 +49,7 @@ const Navbar = () => {
           <Link to="/gioi-thieu" className="nav-link">{t('nav.about')}</Link>
           <Link to="/mentor" className="nav-link">{t('nav.mentor')}</Link>
           <Link to="/lich-trinh" className="nav-link">{t('nav.schedule')}</Link>
+          <Link to="/chung-ket" className="nav-link">Chung kết</Link>
           <Link to="/tin-tuc" className="nav-link">{t('nav.news')}</Link>
           <Link to="/faq" className="nav-link">{t('nav.faq')}</Link>
           
@@ -144,6 +145,7 @@ const Navbar = () => {
           <Link to="/gioi-thieu" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.about')}</Link>
           <Link to="/mentor" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.mentor')}</Link>
           <Link to="/lich-trinh" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.schedule')}</Link>
+          <Link to="/chung-ket" className="nav-link" onClick={() => setIsOpen(false)}>🏆 Chung kết</Link>
           <Link to="/tin-tuc" className="nav-link" onClick={() => setIsOpen(false)}>{t('nav.news')}</Link>
           <Link to="/thu-vien" className="nav-link" onClick={() => setIsOpen(false)}>📸 {t('nav.gallery') || 'Thư Viện'}</Link>
           <Link to="/ket-qua" className="nav-link" onClick={() => setIsOpen(false)}>🏆 {t('nav.results') || 'Kết Quả'}</Link>
