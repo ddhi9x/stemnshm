@@ -266,7 +266,9 @@ const AdminDashboard = () => {
 
   const handleAddAward = async () => {
     if (!newAward.title) return;
-    const { data, error } = await supabase.from('awards').insert(newAward).select();
+    // Fix: Generate string ID for text PRIMARY KEY
+    const newId = 'aw_' + Date.now();
+    const { data, error } = await supabase.from('awards').insert({ id: newId, ...newAward }).select();
     if (error) { alert('Lỗi khi thêm giải!'); return; }
     if (data && data.length > 0) {
       setAwards([...awards, data[0]]);
@@ -1011,7 +1013,11 @@ const AdminDashboard = () => {
                 const title = document.getElementById('new-tl-title').value;
                 const desc = document.getElementById('new-tl-desc').value;
                 if (!date || !title) return;
-                const { data, error } = await supabase.from('timeline').insert({ date, title, desc }).select();
+                
+                // Fix: Calculate max ID to satisfy non-serial PRIMARY KEY
+                const maxId = timeline.length > 0 ? Math.max(...timeline.map(t => typeof t.id === 'number' ? t.id : 0)) : 0;
+                
+                const { data, error } = await supabase.from('timeline').insert({ id: maxId + 1, date, title, desc }).select();
                 if (error) { alert('Lỗi: ' + error.message); return; }
                 if (data?.[0]) {
                   setTimeline([...timeline, data[0]]);
@@ -1211,7 +1217,9 @@ const AdminDashboard = () => {
               <textarea placeholder="Câu trả lời..." value={newFaq.answer} onChange={e => setNewFaq({...newFaq, answer: e.target.value})} className="admin-input" rows="3"></textarea>
               <button className="btn btn-primary" onClick={async () => {
                 if (!newFaq.question) return;
-                const { data } = await supabase.from('faq').insert({ ...newFaq, sort_order: faqItems.length + 1 }).select();
+                // Fix: Calculate max ID
+                const maxId = faqItems.length > 0 ? Math.max(...faqItems.map(f => typeof f.id === 'number' ? f.id : 0)) : 0;
+                const { data } = await supabase.from('faq').insert({ id: maxId + 1, ...newFaq, sort_order: faqItems.length + 1 }).select();
                 if (data && data[0]) { setFaqItems([...faqItems, data[0]]); setNewFaq({ question: '', answer: '' }); alert('Đã thêm câu hỏi!'); }
               }}>Thêm Câu Hỏi</button>
             </div>
@@ -1268,7 +1276,9 @@ const AdminDashboard = () => {
                 <input type="text" placeholder="Tiêu đề" value={newCriteria.title} onChange={e => setNewCriteria({...newCriteria, title: e.target.value})} className="admin-input" style={{flex: 1, marginBottom: 0}} />
                 <button className="btn btn-primary" style={{whiteSpace: 'nowrap'}} onClick={async () => {
                   if (!newCriteria.title) return;
-                  const { data } = await supabase.from('criteria').insert({...newCriteria, sort_order: criteria.length + 1}).select();
+                  // Fix: Calculate max ID
+                  const maxId = criteria.length > 0 ? Math.max(...criteria.map(c => typeof c.id === 'number' ? c.id : 0)) : 0;
+                  const { data } = await supabase.from('criteria').insert({ id: maxId + 1, ...newCriteria, sort_order: criteria.length + 1 }).select();
                   if (data?.[0]) { setCriteria([...criteria, data[0]]); setNewCriteria({title:'', description:'', icon:'🔬'}); }
                 }}>+ Thêm</button>
               </div>
