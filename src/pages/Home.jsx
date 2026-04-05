@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getLocalData } from '../data/mockData';
 import { supabase } from '../supabaseClient';
 import { useI18n } from '../i18n/I18nContext';
+import { sortTimelineItems, parseTimelineDate } from '../utils/dateHelper';
 import { ChevronRight, ChevronDown, Leaf, Cpu, Wrench, FunctionSquare, Clock, X, Download, Award, Trophy, Medal, CheckCircle2, Navigation, Monitor } from 'lucide-react';
 import './Home.css';
 import '../components/Timeline.css';
@@ -96,7 +97,7 @@ const Home = () => {
       if (linksDb) setLinksData(linksDb);
 
       const { data: timelineData } = await supabase.from('timeline').select('*').order('id', { ascending: true });
-      if (timelineData) setTimeline(timelineData);
+      if (timelineData) setTimeline(sortTimelineItems(timelineData));
 
       const { data: stData } = await supabase.from('settings').select('*').single();
       if (stData) setSettings(stData);
@@ -161,18 +162,6 @@ const Home = () => {
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [settings.event_date]);
-
-  // Parse Vietnamese timeline dates: "30.03.2026", "09-10.04.2026", "06/04/2026"
-  const parseTimelineDate = (dateStr) => {
-    if (!dateStr) return null;
-    // Range: "09-10.04.2026" → use last day (10)
-    let m = dateStr.match(/(\d{1,2})-(\d{1,2})[./](\d{1,2})[./](\d{4})/);
-    if (m) return new Date(+m[4], +m[3] - 1, +m[2]);
-    // Single: "30.03.2026" or "06/04/2026"
-    m = dateStr.match(/(\d{1,2})[./](\d{1,2})[./](\d{4})/);
-    if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
-    return null;
-  };
 
   // Milestone countdown - nearest future milestone from timeline
   const [milestoneCD, setMilestoneCD] = useState(null);

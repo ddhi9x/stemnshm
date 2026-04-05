@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { initialData } from '../data/mockData';
+import { sortTimelineItems } from '../utils/dateHelper';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
 
 const Schedule = () => {
@@ -9,8 +10,8 @@ const Schedule = () => {
 
   useEffect(() => {
     const fetchTimeline = async () => {
-      const { data } = await supabase.from('timeline').select('*').order('id', { ascending: true });
-      if (data && data.length > 0) setTimeline(data);
+      const { data } = await supabase.from('timeline').select('*');
+      if (data && data.length > 0) setTimeline(sortTimelineItems(data));
     };
     fetchTimeline();
   }, []);

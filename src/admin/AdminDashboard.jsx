@@ -5,6 +5,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import * as XLSX from 'xlsx';
 import './Admin.css';
+import { sortTimelineItems } from '../utils/dateHelper';
 
 // Register table tags so Quill doesn't strip them
 const Block = Quill.import('blots/block');
@@ -78,8 +79,8 @@ const AdminDashboard = () => {
         const { data: stData } = await supabase.from('settings').select('*').single();
         if (stData) setSettingsData(stData);
 
-        const { data: tlData } = await supabase.from('timeline').select('*').order('id', {ascending: true});
-        if (tlData) setTimeline(tlData);
+        const { data: tlData } = await supabase.from('timeline').select('*');
+        if (tlData) setTimeline(sortTimelineItems(tlData));
 
         const { data: abData } = await supabase.from('about').select('*').single();
         if (abData) setAboutData(abData);
@@ -1020,7 +1021,8 @@ const AdminDashboard = () => {
                 const { data, error } = await supabase.from('timeline').insert({ id: maxId + 1, date, title, desc }).select();
                 if (error) { alert('Lỗi: ' + error.message); return; }
                 if (data?.[0]) {
-                  setTimeline([...timeline, data[0]]);
+                  const updatedTimeline = sortTimelineItems([...timeline, data[0]]);
+                  setTimeline(updatedTimeline);
                   document.getElementById('new-tl-date').value = '';
                   document.getElementById('new-tl-title').value = '';
                   document.getElementById('new-tl-desc').value = '';
